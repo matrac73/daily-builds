@@ -1,0 +1,26 @@
+[
+    {
+        "date":  "2026-10-26",
+        "title":  "gamepoll — Game Suggestion Polls",
+        "tagline":  "Terminal polls where friends suggest and vote for IGDB games to play next, with ranked top-5/10 results.",
+        "stack":  [
+                      "Python",
+                      "Rich",
+                      "IGDB API"
+                  ],
+        "code":  "https://github.com/matrac73/game-suggestion-app",
+        "demo":  null
+    },
+    {
+        "date":  "2026-10-27",
+        "title":  "Card Memory Game",
+        "tagline":  "Timed n×n card-matching memory game in vanilla JS with 3D flips, difficulty levels and persistent stats.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS"
+                  ],
+        "code":  "https://github.com/matrac73/card-memory-game",
+        "demo":  "https://matrac73.github.io/card-memory-game/"
+    }
+]
