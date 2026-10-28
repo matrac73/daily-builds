@@ -22,5 +22,20 @@
                   ],
         "code":  "https://github.com/matrac73/card-memory-game",
         "demo":  "https://matrac73.github.io/card-memory-game/"
+    },
+    {
+        "date":  "2026-10-28",
+        "title":  "Deal Screener",
+        "tagline":  "Tinder for deals: swipe an encrypted deal database to find platform acquisition targets from a few KPIs.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "Web Crypto API",
+                      "Node.js",
+                      "node:test"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-10-28-deal-screener",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-10-28-deal-screener/"
     }
 ]
