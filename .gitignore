@@ -1,0 +1,14 @@
+# Raw deal exports are confidential: only encrypted vaults (*.enc.json) may be committed.
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+!data/demo-deals.csv
+
+node_modules/
+.venv/
+__pycache__/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

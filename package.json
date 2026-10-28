@@ -1,0 +1,16 @@
+{
+  "name": "deal-screener",
+  "version": "1.0.0",
+  "description": "Swipe through an encrypted deal database to find platform acquisition targets.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "pack-deals": "node tools/pack.mjs",
+    "serve": "python -m http.server 8000"
+  }
+}
