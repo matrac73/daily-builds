@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Deal Screener</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <section id="lock" class="lock">
+      <form id="lock-form" class="lock-card">
+        <h1>Deal Screener</h1>
+        <p class="muted">Trouvez votre prochaine cible plateforme, un swipe à la fois.</p>
+        <label for="passphrase">Phrase secrète de l'équipe</label>
+        <input id="passphrase" type="password" autocomplete="current-password" required autofocus />
+        <button type="submit" class="primary">Déverrouiller</button>
+        <p id="lock-error" class="error" role="alert" hidden></p>
+        <p id="lock-hint" class="muted small" hidden></p>
+        <p class="muted small">Les données sont chiffrées (AES-256-GCM) et déchiffrées uniquement dans votre navigateur.</p>
+      </form>
+    </section>
+
+    <div id="app" class="app" hidden>
+      <header class="topbar">
+        <h1>Deal Screener</h1>
+        <p id="stats" class="muted"></p>
+        <button id="lock-button" type="button" class="ghost">Verrouiller</button>
+      </header>
+
+      <main class="layout">
+        <aside class="panel">
+          <h2>Profil recherché</h2>
+          <form id="criteria">
+            <fieldset>
+              <legend>Seuils</legend>
+              <label>CA min (M€) <input name="revenueMin" type="number" step="any" /></label>
+              <label>CA max (M€) <input name="revenueMax" type="number" step="any" /></label>
+              <label>Marge EBITDA min (%) <input name="marginMin" type="number" step="any" /></label>
+              <label>Croissance min (%) <input name="growthMin" type="number" step="any" /></label>
+              <label>Levier max (DN/EBITDA) <input name="leverageMax" type="number" step="any" /></label>
+            </fieldset>
+            <fieldset>
+              <legend>Pondérations</legend>
+              <label>Taille <input name="w-size" type="range" min="0" max="5" /></label>
+              <label>Marge <input name="w-margin" type="range" min="0" max="5" /></label>
+              <label>Croissance <input name="w-growth" type="range" min="0" max="5" /></label>
+              <label>Levier <input name="w-leverage" type="range" min="0" max="5" /></label>
+            </fieldset>
+            <fieldset>
+              <legend>Secteurs</legend>
+              <div id="sectors" class="chips"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Géographies</legend>
+              <div id="countries" class="chips"></div>
+            </fieldset>
+            <div class="row">
+              <button id="reset-criteria" type="button" class="ghost">Profil par défaut</button>
+              <button id="reset-deck" type="button" class="ghost">Revoir tous les deals</button>
+            </div>
+          </form>
+        </aside>
+
+        <section class="deck" aria-live="polite">
+          <div id="card-slot" class="card-slot"></div>
+          <div class="actions">
+            <button id="pass" type="button" class="round pass" title="Passer (←)" aria-label="Passer">✕</button>
+            <button id="undo" type="button" class="round undo" title="Annuler (Retour arrière)" aria-label="Annuler">↺</button>
+            <button id="like" type="button" class="round like" title="Shortlister (→)" aria-label="Shortlister">♥</button>
+          </div>
+          <p class="muted small">Glissez la carte ou utilisez ← / → · Retour arrière pour annuler</p>
+        </section>
+
+        <aside class="panel">
+          <h2>Shortlist <span id="shortlist-count" class="badge">0</span></h2>
+          <ol id="shortlist" class="shortlist"></ol>
+          <button id="export" type="button" class="primary" disabled>Exporter en CSV</button>
+        </aside>
+      </main>
+    </div>
+
+    <div id="match" class="match" hidden>
+      <div class="match-card">
+        <p class="match-title">It's a match!</p>
+        <p id="match-text"></p>
+      </div>
+    </div>
+  </body>
+</html>
