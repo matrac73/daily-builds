@@ -63,10 +63,10 @@ function leverageScore(deal, c) {
 }
 
 const CRITERIA = [
-  { key: 'size', label: 'Size', active: (c) => c.revenueMin != null || c.revenueMax != null, score: sizeScore },
-  { key: 'margin', label: 'EBITDA margin', active: (c) => c.marginMin != null, score: marginScore },
-  { key: 'growth', label: 'Growth', active: (c) => c.growthMin != null, score: growthScore },
-  { key: 'leverage', label: 'Leverage', active: (c) => c.leverageMax != null, score: leverageScore },
+  { key: 'size', label: 'Taille (CA)', active: (c) => c.revenueMin != null || c.revenueMax != null, score: sizeScore },
+  { key: 'margin', label: 'Marge EBITDA', active: (c) => c.marginMin != null, score: marginScore },
+  { key: 'growth', label: 'Croissance', active: (c) => c.growthMin != null, score: growthScore },
+  { key: 'leverage', label: 'Levier', active: (c) => c.leverageMax != null, score: leverageScore },
 ];
 
 /** Hard filters: sector and geography must match when a selection is made (case-insensitive). */

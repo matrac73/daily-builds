@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Encrypt a deal-sourcing CSV export into the vault file loaded by the web app.
 //
-//   node tools/pack.mjs <deals.csv> [--out data/deals.enc.json]
+//   node tools/pack.mjs <deals.csv> [--out data/deals.enc.json] [--hint "text shown on the lock screen"]
 //
 // The passphrase is read from DEAL_SCREENER_PASSPHRASE, or asked interactively.
+// The optional hint is stored in clear text: never put the passphrase itself there for real data.
 // Only the encrypted output is meant to be committed: raw exports stay on your machine.
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -26,10 +27,13 @@ async function askPassphrase() {
 async function main() {
   const { values, positionals } = parseArgs({
     allowPositionals: true,
-    options: { out: { type: 'string', short: 'o', default: 'data/deals.enc.json' } },
+    options: {
+      out: { type: 'string', short: 'o', default: 'data/deals.enc.json' },
+      hint: { type: 'string' },
+    },
   });
   if (positionals.length !== 1) {
-    console.error('Usage: node tools/pack.mjs <deals.csv> [--out data/deals.enc.json]');
+    console.error('Usage: node tools/pack.mjs <deals.csv> [--out data/deals.enc.json] [--hint "..."]');
     process.exit(2);
   }
 
@@ -49,6 +53,7 @@ async function main() {
   }
 
   const vault = await seal({ packedAt: new Date().toISOString(), deals }, passphrase);
+  if (values.hint) vault.hint = values.hint;
   await writeFile(values.out, JSON.stringify(vault) + '\n');
   console.error(`Encrypted ${deals.length} deals into ${values.out}`);
 }
