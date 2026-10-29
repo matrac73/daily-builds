@@ -1,0 +1,9 @@
+{
+ "range": "5y",
+ "stocks": [
+  { "symbol": "AAPL", "name": "Apple", "market": "^GSPC" },
+  { "symbol": "MSFT", "name": "Microsoft", "market": "^GSPC" },
+  { "symbol": "NVDA", "name": "NVIDIA", "market": "^GSPC" },
+  { "symbol": "MC.PA", "name": "LVMH", "market": "^FCHI" }
+ ]
+}

@@ -1,0 +1,50 @@
+[
+ {
+  "symbol": "AAPL",
+  "madeAt": "2026-10-29T09:09:29.674Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 343.83,
+  "predictedClose": 343.83,
+  "lower": 332.15065992884513,
+  "upper": 355.9200181186617,
+  "signal": "HOLD",
+  "targetDate": null,
+  "actualClose": null
+ },
+ {
+  "symbol": "MC.PA",
+  "madeAt": "2026-10-29T09:09:29.674Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 385,
+  "predictedClose": 385,
+  "lower": 371.11614257696516,
+  "upper": 399.40326758828564,
+  "signal": "HOLD",
+  "targetDate": null,
+  "actualClose": null
+ },
+ {
+  "symbol": "MSFT",
+  "madeAt": "2026-10-29T09:09:29.674Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 531.01,
+  "predictedClose": 531.01,
+  "lower": 512.8342124750064,
+  "upper": 549.8299708577696,
+  "signal": "HOLD",
+  "targetDate": null,
+  "actualClose": null
+ },
+ {
+  "symbol": "NVDA",
+  "madeAt": "2026-10-29T09:09:29.674Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 215.38,
+  "predictedClose": 215.26842794184532,
+  "lower": 203.03737451360232,
+  "upper": 228.23628496756845,
+  "signal": "HOLD",
+  "targetDate": null,
+  "actualClose": null
+ }
+]

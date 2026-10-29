@@ -13,11 +13,11 @@ import { parseBarsCsv, barsToCsv, sortAndDedupe } from '../src/csv.js';
 import { scoreText, dailySentiment } from '../src/sentiment.js';
 import { runPipeline } from '../src/pipeline.js';
 import { toLogEntry, upsert, settle, trackStats } from '../src/tracker.js';
+import { toReport } from '../src/report.js';
 import { fetchBars, fetchNews } from './sources.js';
 
 const DATA = join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
 const KEEP_HEADLINES = 1000;
-const CHART_DAYS = 120;
 
 const fileSafe = (symbol) => symbol.replace(/[^A-Za-z0-9.-]/g, '_');
 
@@ -68,31 +68,6 @@ async function loadNews(symbol, offline, warnings) {
   }
 }
 
-function summarise(symbol, name, bars, news, result, log) {
-  const { evaluation } = result;
-  const tail = (arr) => arr.slice(-CHART_DAYS);
-  const entries = log.filter((e) => e.symbol === symbol);
-  return {
-    symbol,
-    name,
-    asOf: result.asOf,
-    lastClose: result.lastClose,
-    forecast: result.forecast,
-    edge: result.edge,
-    model: result.model,
-    metrics: evaluation.metrics,
-    backtest: evaluation.backtest,
-    oos: {
-      dates: tail(evaluation.oos.dates),
-      actual: tail(evaluation.oos.actual),
-      predicted: tail(evaluation.oos.predicted),
-    },
-    prices: bars.slice(-CHART_DAYS).map((b) => [b.date, b.close]),
-    news: news.slice(-12).reverse(),
-    track: { stats: trackStats(entries), entries: entries.slice(-30).reverse() },
-  };
-}
-
 async function main() {
   const { values } = parseArgs({ options: { offline: { type: 'boolean' }, symbols: { type: 'string' } } });
   const config = await readJson(join(DATA, 'config.json'), null);
@@ -116,7 +91,9 @@ async function main() {
 
       log = settle(log, symbol, bars);
       log = upsert(log, toLogEntry(symbol, result, madeAt));
-      results.push(summarise(symbol, name, bars, news, result, log));
+      const entries = log.filter((e) => e.symbol === symbol);
+      const track = { stats: trackStats(entries), entries: entries.slice(-30).reverse() };
+      results.push(toReport(result, { symbol, name, bars, news, track }));
 
       const f = result.forecast;
       console.log(
