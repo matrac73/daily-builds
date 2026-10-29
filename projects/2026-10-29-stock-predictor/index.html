@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock Predictor — next-session forecasts</title>
+  <meta name="description" content="Daily next-session stock forecasts from price history, market context and news sentiment, validated walk-forward.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Stock Predictor</h1>
+      <p class="sub">Next-session forecasts from prices, market context &amp; news sentiment — retrained every day, judged out-of-sample.</p>
+    </div>
+    <p class="stamp" id="stamp"></p>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Stocks"></nav>
+  <div id="warnings"></div>
+  <main id="report" aria-live="polite"><p class="muted">Loading forecasts…</p></main>
+
+  <section class="lab" aria-labelledby="lab-title">
+    <h2 id="lab-title">Lab — retrain in your browser</h2>
+    <p class="muted">Re-run the whole pipeline (features, nested walk-forward, rules) on a cached stock or your own CSV
+      (<code>Date,Open,High,Low,Close,Volume</code>) and see how the settings change the out-of-sample verdict.</p>
+    <form id="lab-form" class="lab-form">
+      <label>Data
+        <select id="lab-source"></select>
+      </label>
+      <label id="lab-file-label" hidden>CSV file
+        <input type="file" id="lab-file" accept=".csv,text/csv">
+      </label>
+      <label>Trade threshold (%)
+        <input type="number" id="lab-threshold" min="0" max="5" step="0.05" value="0.2">
+      </label>
+      <label>Cost per trade (bps)
+        <input type="number" id="lab-cost" min="0" max="100" step="1" value="5">
+      </label>
+      <label>Initial training window (days)
+        <input type="number" id="lab-train" min="126" max="1008" step="21" value="252">
+      </label>
+      <label>Retrain every (days)
+        <input type="number" id="lab-step" min="5" max="126" step="1" value="21">
+      </label>
+      <button type="submit" id="lab-run">Run pipeline</button>
+    </form>
+    <div id="lab-report"></div>
+  </section>
+
+  <footer>
+    <p>Educational project — not investment advice. Daily returns are close to unpredictable; this app shows that honestly.
+      Data: Yahoo Finance. Methodology in <a href="./README.md">the README</a>.</p>
+  </footer>
+</body>
+</html>
