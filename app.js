@@ -232,7 +232,7 @@ async function setupLab() {
     else renderReport(out, data.report);
   };
 
-  const fileName = (symbol) => symbol.replace(/[^A-Za-z0-9.-]/g, '_');
+  const fileName = (symbol) => symbol.replace(/\^/g, 'IDX-').replace(/[^A-Za-z0-9.-]/g, '-'); // mirrors scripts/daily.js
   const text = async (url) => {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);

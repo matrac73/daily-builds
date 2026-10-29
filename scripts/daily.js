@@ -19,7 +19,8 @@ import { fetchBars, fetchNews } from './sources.js';
 const DATA = join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
 const KEEP_HEADLINES = 1000;
 
-const fileSafe = (symbol) => symbol.replace(/[^A-Za-z0-9.-]/g, '_');
+// '^GSPC' -> 'IDX-GSPC': no leading '_' so Jekyll-based static hosts still serve the file.
+const fileSafe = (symbol) => symbol.replace(/\^/g, 'IDX-').replace(/[^A-Za-z0-9.-]/g, '-');
 
 async function readJson(path, fallback) {
   return existsSync(path) ? JSON.parse(await readFile(path, 'utf8')) : fallback;
