@@ -1,0 +1,17 @@
+{
+  "name": "stock-predictor",
+  "version": "1.0.0",
+  "description": "Daily next-session stock forecasts from price history, market context and news sentiment, with honest walk-forward ML.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "daily": "node scripts/daily.js",
+    "daily:offline": "node scripts/daily.js --offline",
+    "serve": "node scripts/serve.js",
+    "test": "node --test"
+  }
+}
