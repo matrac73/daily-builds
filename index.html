@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HF Alpha Lab — prédiction haute fréquence & PnL</title>
+    <meta name="description" content="Prédiction live haute fréquence d'actions et cryptos : apprentissage en ligne, coûts de transaction, alpha et PnL projeté sur une semaine." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24 L10 14 L16 19 L30 4' stroke='%2334d399' stroke-width='4' fill='none'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 24 L10 14 L16 19 L30 4" /></svg>
+        <div>
+          <h1>HF Alpha Lab</h1>
+          <p>Prédiction haute fréquence · apprentissage en ligne · coûts réels</p>
+        </div>
+      </div>
+      <div class="live-indicator" id="live-status" data-state="idle">
+        <span class="dot"></span><span id="live-status-text">Hors ligne</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="controls">
+        <form id="controls">
+          <fieldset>
+            <legend>Marché</legend>
+            <label>Source
+              <select name="source">
+                <option value="binance">Binance — crypto live (WebSocket)</option>
+                <option value="alphavantage">Alpha Vantage — actions US</option>
+                <option value="synthetic">Synthétique — démo hors-ligne</option>
+                <option value="csv">Fichier CSV</option>
+              </select>
+            </label>
+            <label data-for="binance alphavantage synthetic">Symbole
+              <input name="symbol" value="BTCUSDT" autocomplete="off" spellcheck="false" required />
+            </label>
+            <label data-for="alphavantage">Clé API Alpha Vantage
+              <input name="apiKey" value="demo" autocomplete="off" spellcheck="false" />
+              <small>« demo » : IBM en barres de 5 min uniquement (≈ 1 mois). Clé gratuite sur alphavantage.co pour tout ticker.</small>
+            </label>
+            <label data-for="csv">Fichier (time, open, high, low, close, volume)
+              <input name="csvFile" type="file" accept=".csv,text/csv" />
+            </label>
+            <label data-for="csv">Type de marché
+              <select name="market">
+                <option value="stock">Action (6 h 30 / jour, 5 j / semaine)</option>
+                <option value="crypto">Crypto (24 h / 24, 7 j / 7)</option>
+              </select>
+            </label>
+            <div class="row" data-for="binance alphavantage synthetic">
+              <label>Barres
+                <select name="interval">
+                  <option value="1m">1 min</option>
+                  <option value="5m">5 min</option>
+                  <option value="15m">15 min</option>
+                </select>
+              </label>
+              <label>Historique
+                <select name="history">
+                  <option value="1000">1 000</option>
+                  <option value="3000" selected>3 000</option>
+                  <option value="10080">10 080</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Coûts de transaction (bp, aller simple)</legend>
+            <div class="row three">
+              <label>Frais <input name="feeBps" type="number" min="0" step="0.1" value="10" /></label>
+              <label>Spread <input name="spreadBps" type="number" min="0" step="0.1" value="1" /></label>
+              <label>Slippage <input name="slippageBps" type="number" min="0" step="0.1" value="1" /></label>
+            </div>
+            <small id="cost-summary"></small>
+          </fieldset>
+
+          <fieldset>
+            <legend>Stratégie</legend>
+            <label>Horizon de prévision
+              <select name="horizon">
+                <option value="1">1 barre</option>
+                <option value="5">5 barres</option>
+                <option value="15" selected>15 barres</option>
+                <option value="30">30 barres</option>
+                <option value="60">60 barres</option>
+              </select>
+              <small>Rendement prédit sur H barres, comparé au coût d'un aller simple.</small>
+            </label>
+            <label>Seuil de trading (× coût)
+              <input name="thresholdMult" type="number" min="0" step="0.1" value="1" />
+              <small>On ne trade que si |rendement prédit| &gt; seuil × coût.</small>
+            </label>
+            <label class="check"><input name="allowShort" type="checkbox" checked /> Autoriser la vente à découvert</label>
+            <label>Capital (USD)
+              <input name="capital" type="number" min="100" step="100" value="10000" />
+            </label>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit" class="primary" id="run">Analyser</button>
+            <button type="button" id="live-toggle" disabled>▶ Démarrer le live</button>
+          </div>
+          <p class="message" id="message" role="status" aria-live="polite"></p>
+        </form>
+      </aside>
+
+      <main>
+        <tab-bar>
+          <button data-tab="live">Live</button>
+          <button data-tab="backtest">Backtest &amp; alpha</button>
+          <button data-tab="week">PnL 1 semaine</button>
+          <button data-tab="method">Méthode</button>
+        </tab-bar>
+
+        <section id="panel-live" class="panel" role="tabpanel">
+          <stat-grid id="live-stats"></stat-grid>
+          <div class="card">
+            <h2>Prix et cône de prévision (espérance ± 1σ sur l'horizon)</h2>
+            <line-chart id="chart-price" class="tall" aria-label="Prix et prix prédit" empty="Cliquez sur « Analyser » pour charger les données."></line-chart>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h2>Position (+1 long, −1 short, 0 cash)</h2>
+              <line-chart id="chart-position" class="short" aria-label="Position"></line-chart>
+            </div>
+            <div class="card">
+              <h2>Poids des experts (Hedge)</h2>
+              <weight-bars id="weights"></weight-bars>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Dernières décisions</h2>
+            <div class="table-wrap">
+              <table id="journal">
+                <thead><tr><th>Heure</th><th>Clôture</th><th>Prévision</th><th>Position</th><th>Coût</th><th>PnL net</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-backtest" class="panel" role="tabpanel" hidden>
+          <stat-grid id="bt-stats"></stat-grid>
+          <div class="card">
+            <h2>Performance cumulée walk-forward (nette de coûts)</h2>
+            <line-chart id="chart-equity" class="tall" aria-label="Performance cumulée"></line-chart>
+          </div>
+          <div class="card callout" id="alpha-box"></div>
+          <div class="card">
+            <h2>Sensibilité aux coûts — rendement net selon le coût aller simple</h2>
+            <line-chart id="chart-costs" aria-label="Sensibilité aux coûts" empty="Calcul en cours…"></line-chart>
+            <p class="note" id="breakeven"></p>
+          </div>
+        </section>
+
+        <section id="panel-week" class="panel" role="tabpanel" hidden>
+          <stat-grid id="week-stats"></stat-grid>
+          <div class="card">
+            <h2>Projection du PnL sur une semaine (bootstrap par blocs, 1 000 trajectoires)</h2>
+            <line-chart id="chart-week" class="tall" aria-label="Projection du PnL"></line-chart>
+            <p class="note" id="week-note"></p>
+          </div>
+          <div class="card">
+            <h2 id="realized-title">PnL réalisé sur la dernière semaine</h2>
+            <line-chart id="chart-realized" aria-label="PnL réalisé"></line-chart>
+          </div>
+        </section>
+
+        <section id="panel-method" class="panel method" role="tabpanel" hidden>
+          <article class="card">
+            <h2>Vue d'ensemble</h2>
+            <p>
+              L'outil télécharge des barres de prix gratuites (Binance pour les cryptos, avec flux WebSocket temps réel ; Alpha Vantage
+              pour les actions US ; ou un CSV), apprend <strong>en ligne</strong> à prévoir le rendement de la barre suivante, et
+              transforme cette prévision en position <strong>uniquement quand l'avantage espéré dépasse les coûts de transaction</strong>.
+              Tout est rejoué barre par barre (<em>walk-forward</em>) : à l'instant <var>t</var>, le modèle n'a vu que les données
+              jusqu'à <var>t</var>. Il n'y a ni ré-optimisation sur l'échantillon complet, ni paramètre ajusté a posteriori.
+            </p>
+            <ol class="pipeline">
+              <li><b>Données</b> barres OHLCV + volume acheteur agressif</li>
+              <li><b>Features</b> 11 signaux normalisés par la volatilité</li>
+              <li><b>Experts</b> 5 régressions ridge récursives + marche aléatoire</li>
+              <li><b>Agrégation</b> forecaster pondéré + calibration hors échantillon</li>
+              <li><b>Décision</b> bande de non-trading calibrée sur les coûts</li>
+              <li><b>Évaluation</b> alpha de Jensen, Sharpe, projection bootstrap</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <h2>1. Features (microstructure et séries temporelles)</h2>
+            <p>Pour chaque barre close, on calcule le log-rendement <var>r<sub>t</sub> = ln(P<sub>t</sub>/P<sub>t−1</sub>)</var> et une volatilité EWMA
+              <var>σ<sub>t</sub></var> (demi-vie 60 barres, type RiskMetrics). Toutes les features sont divisées par <var>σ<sub>t</sub></var> puis bornées à ±5 :
+              le modèle est ainsi indépendant de l'échelle de prix et robuste aux valeurs extrêmes.</p>
+            <ul>
+              <li><b>Auto-corrélation</b> : <var>r<sub>t</sub></var>, <var>r<sub>t−1</sub></var>, momentum 5 et 20 barres (rebond du bid-ask, micro-tendances).</li>
+              <li><b>Tendance</b> : écart EMA 8 − EMA 32 du log-prix ; <b>retour à la moyenne</b> : z-score du prix sur 20 barres.</li>
+              <li><b>Déséquilibre de flux d'ordres</b> : <var>2·V<sub>acheteur</sub>/V − 1</var> sur la barre et sur 5 barres. Proxy, à partir des klines Binance, de l'<em>Order Flow Imbalance</em>
+                de Cont, Kukanov &amp; Stoikov (2014), l'une des variables les plus prédictives à très court terme.</li>
+              <li><b>Volume</b> : z-score du log-volume ; <b>range</b> haut-bas de Parkinson ; <b>close location value</b> (où la barre clôture dans son range).</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h2>2. Modèles : ridge récursive avec oubli exponentiel</h2>
+            <p>Chaque expert est une régression linéaire mise à jour à chaque barre par <strong>Recursive Least Squares</strong> (RLS) avec facteur d'oubli
+              <var>λ = 0,998</var> (mémoire effective ≈ 500 barres) et prior ridge. C'est la solution exacte d'une régression ridge pondérée exponentiellement,
+              en <var>O(d²)</var> par barre : idéale pour un marché non stationnaire et pour tourner en temps réel dans le navigateur.</p>
+            <p class="formula">k = P·x / (λ + xᵀ·P·x) &nbsp;·&nbsp; w ← w + k·(y − wᵀx) &nbsp;·&nbsp; P ← (P − k·xᵀ·P) / λ</p>
+            <p>La cible est le rendement cumulé sur l'horizon <var>H</var> normalisé, <var>y = (r<sub>t+1</sub> + … + r<sub>t+H</sub>) / (σ<sub>t</sub>·√H)</var>
+              (borné à ±6). Le modèle n'apprend d'une prévision qu'une fois ses <var>H</var> barres réalisées : aucune information future n'est utilisée.
+              Prévoir sur plusieurs barres est essentiel : un signal persistant amortit le coût d'un aller-retour sur une durée de détention plus longue. Les experts : ridge complet (11 features),
+              auto-régressif, tendance, microstructure, retour à la moyenne, et la <strong>marche aléatoire</strong> (prévision nulle), la référence la plus dure à battre.</p>
+          </article>
+
+          <article class="card">
+            <h2>3. Agrégation : prédiction avec avis d'experts (Hedge)</h2>
+            <p>Plutôt que de choisir un modèle a priori, on les combine avec le <em>forecaster</em> exponentiellement pondéré
+              (Cesa-Bianchi &amp; Lugosi, <em>Prediction, Learning, and Games</em>, 2006) :</p>
+            <p class="formula">w<sub>i</sub> ∝ exp(−η · L<sub>i</sub>) &nbsp;avec&nbsp; L<sub>i</sub> ← 0,995·L<sub>i</sub> + (y − ŷ<sub>i</sub>)²</p>
+            <p>Les pertes sont escomptées : la pondération suit les changements de régime. Garantie théorique : le regret par rapport au meilleur expert
+              croît sous-linéairement. En pratique, si aucun modèle ne bat la marche aléatoire, son poids domine et la prévision s'écrase vers 0 :
+              <strong>la stratégie reste alors en cash plutôt que de payer des frais sur du bruit</strong>.</p>
+          </article>
+
+          <article class="card">
+            <h2>4. Calibration hors échantillon (rétrécissement)</h2>
+            <p>Un modèle en ligne produit toujours une prévision, même sans aucun pouvoir prédictif. Avant d'agir, on la passe dans un
+              <strong>calibrateur</strong> : une régression (avec oubli, λ = 0,999) des rendements réalisés sur les prévisions <em>passées</em> de l'ensemble,
+              donc purement hors échantillon, avec un prior ridge qui tire la pente vers 0.</p>
+            <p class="formula">ŷ<sub>cal</sub> = b · ŷ &nbsp;avec&nbsp; b = max(0, Σ ŷ·y / (Σ ŷ² + κ))</p>
+            <p>Si le modèle n'a pas prouvé sa compétence, <var>b ≈ 0</var> et la prévision ne peut plus franchir le seuil de coût ; une pente négative
+              est ramenée à 0 (on ne parie jamais contre son propre modèle). C'est l'équivalent en ligne d'un <em>shrinkage</em> à la James-Stein / d'une
+              régression de Mincer-Zarnowitz. La pente courante est affichée dans l'onglet Live.</p>
+          </article>
+
+          <article class="card">
+            <h2>5. Décision tenant compte des coûts</h2>
+            <p>Coût aller simple <var>c = frais + spread/2 + slippage</var>. Le rendement espéré sur l'horizon est <var>μ̂ = ŷ<sub>cal</sub>·σ<sub>t</sub>·√H</var>. Règle de
+              <strong>bande de non-trading</strong> (Davis &amp; Norman, 1990 ; Gârleanu &amp; Pedersen, 2013) :</p>
+            <ul>
+              <li><var>μ̂ &gt; k·c</var> → long (+1) ; <var>μ̂ &lt; −k·c</var> → short (−1), ou cash si la vente à découvert est désactivée ;</li>
+              <li>si l'avantage espéré change de signe sans franchir le seuil, on <strong>revient en cash</strong> (pas de pari directionnel sans signal) ;</li>
+              <li>sinon on <strong>conserve</strong> la position courante : on ne paie pas de coût pour un signal trop faible.</li>
+            </ul>
+            <p>Chaque changement de position paie <var>|Δposition| · c</var> (un retournement long→short coûte donc 2c). PnL de la barre :
+              <var>position<sub>t−1</sub> · R<sub>t</sub> − |Δposition<sub>t</sub>| · c</var>. Le multiplicateur <var>k</var> se règle dans le panneau de gauche.</p>
+          </article>
+
+          <article class="card">
+            <h2>6. Alpha et indicateurs</h2>
+            <ul>
+              <li><b>Alpha de Jensen</b> : régression MCO des rendements nets de la stratégie sur ceux de l'actif (buy &amp; hold),
+                <var>R<sub>s</sub> = α + β·R<sub>m</sub> + ε</var>. α est la performance non expliquée par l'exposition au marché ; on affiche α par barre, α annualisé
+                (× barres/an) et sa <strong>statistique t</strong> (|t| &gt; 2 ≈ significatif à 95 %).</li>
+              <li><b>Sharpe annualisé</b> = moyenne/écart-type × √(barres par an) — 525 600 barres de 1 min pour la crypto (24/7), 98 280 pour les actions (252 j × 390 min).</li>
+              <li><b>IC</b> (information coefficient) : corrélation entre la prévision et le rendement réalisé sur l'horizon ; <b>précision directionnelle</b>, <b>taux de réussite</b>,
+                <b>drawdown maximal</b>, nombre de trades, turnover, coûts payés.</li>
+              <li><b>Sensibilité aux coûts</b> : le backtest est rejoué pour 0 → 20 bp ; on interpole le <strong>coût de break-even</strong>.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h2>7. Extrapolation : PnL sur une semaine</h2>
+            <p>Les rendements nets réalisés en walk-forward sont rééchantillonnés par <strong>bootstrap stationnaire par blocs</strong>
+              (Politis &amp; Romano, 1994 ; longueur moyenne 30 barres) pour simuler 1 000 semaines : 10 080 barres d'1 min pour la crypto,
+              1 950 pour une action (5 séances de 6 h 30). Les blocs préservent l'agrégation de volatilité et l'autocorrélation.
+              On en déduit la médiane, l'intervalle 5 %–95 %, la probabilité de perte et l'<em>expected shortfall</em> à 5 %.
+              À côté, on montre le PnL <strong>réellement réalisé</strong> sur les 7 derniers jours de l'historique.</p>
+          </article>
+
+          <article class="card warning">
+            <h2>Limites — à lire</h2>
+            <ul>
+              <li>Après coûts réalistes de détail (≈ 10 bp chez Binance en taker), l'alpha à 1 minute est le plus souvent <strong>nul ou négatif</strong> : c'est le résultat
+                honnête attendu. Le vrai trading haute fréquence vit de la microstructure du carnet d'ordres, de la colocation et de frais maker/rebates inaccessibles ici.</li>
+              <li>Les barres de 1 minute ne sont pas du tick-by-tick ; exécution supposée au cours de clôture plus slippage forfaitaire ; pas d'impact de marché, de frais de financement du short ni d'emprunt de titres.</li>
+              <li>Le bootstrap suppose que la semaine à venir ressemble à l'historique : les intervalles sous-estiment le risque de rupture de régime.</li>
+              <li>Outil pédagogique et de recherche : <strong>ce n'est pas un conseil en investissement</strong>.</li>
+            </ul>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      Données : Binance public market data, Alpha Vantage. Code MIT — aucune donnée n'est envoyée ailleurs que vers ces API.
+    </footer>
+  </body>
+</html>
