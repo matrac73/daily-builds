@@ -52,5 +52,20 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-10-29-stock-predictor",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-10-29-stock-predictor/"
+    },
+    {
+        "date":  "2026-10-30",
+        "title":  "HF Alpha Lab",
+        "tagline":  "Live high-frequency crypto/stock forecaster in the browser: online learning, cost-aware trading, alpha and 1-week PnL",
+        "stack":  [
+                      "JavaScript",
+                      "Web Components",
+                      "HTML",
+                      "CSS",
+                      "SVG",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-10-30-high-frequency-stock-predictor",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-10-30-high-frequency-stock-predictor/"
     }
 ]
