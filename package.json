@@ -1,0 +1,16 @@
+{
+  "name": "hf-alpha-lab",
+  "version": "1.0.0",
+  "description": "Live high-frequency price forecaster with online learning, cost-aware backtest, alpha and one-week PnL projection — runs in the browser.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes http-server -c-1 -p 8080 .",
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
