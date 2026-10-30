@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { FEATURE_NAMES, FeatureEngine } from '../src/core/features.js';
-import { HedgeEnsemble, LinearExpert, RLS, ZeroExpert } from '../src/core/models.js';
+import { Calibrator, HedgeEnsemble, LinearExpert, RLS, ZeroExpert } from '../src/core/models.js';
 import { gaussian, mulberry32 } from '../src/core/rng.js';
 import { generateSynthetic } from '../src/core/synthetic.js';
 
@@ -47,6 +47,24 @@ test('FeatureEngine warms up, then returns bounded finite features', () => {
     assert.ok(o.sigma > 0);
     for (const v of o.x) assert.ok(Number.isFinite(v) && Math.abs(v) <= 5);
   }
+});
+
+test('Calibrator keeps skilful forecasts and shrinks useless ones to zero', () => {
+  const rng = mulberry32(21);
+  const skilled = new Calibrator();
+  const useless = new Calibrator();
+  const contrarian = new Calibrator();
+  for (let i = 0; i < 3000; i++) {
+    const yhat = gaussian(rng);
+    const noise = gaussian(rng);
+    skilled.update(yhat, 0.5 * yhat + 0.5 * noise);
+    useless.update(yhat, noise);
+    contrarian.update(yhat, -0.5 * yhat + 0.5 * noise);
+  }
+  assert.ok(Math.abs(skilled.slope - 0.5) < 0.1, `slope = ${skilled.slope}`);
+  assert.ok(useless.slope < 0.1, `slope = ${useless.slope}`);
+  assert.equal(contrarian.slope, 0);
+  assert.equal(new Calibrator().apply(2), 0);
 });
 
 test('Hedge ensemble shifts weight to the expert that predicts well', () => {

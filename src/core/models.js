@@ -102,6 +102,34 @@ export function createDefaultExperts(options = {}) {
 }
 
 /**
+ * Out-of-sample shrinkage: regresses realised targets on the ensemble's own
+ * past forecasts (y = b * yhat, ridge prior towards b = 0). A model without
+ * proven skill gets b ~ 0, so its forecasts can no longer trigger trades.
+ * Negative slopes are floored at 0: we never bet against our own model.
+ */
+export class Calibrator {
+  constructor({ lambda = 0.999, priorStrength = 20 } = {}) {
+    this.lambda = lambda;
+    this.priorStrength = priorStrength;
+    this.sxy = 0;
+    this.sxx = 0;
+  }
+
+  get slope() {
+    return Math.max(0, this.sxy / (this.sxx + this.priorStrength));
+  }
+
+  apply(yhat) {
+    return this.slope * yhat;
+  }
+
+  update(yhat, y) {
+    this.sxy = this.lambda * this.sxy + yhat * y;
+    this.sxx = this.lambda * this.sxx + yhat * yhat;
+  }
+}
+
+/**
  * Exponentially weighted average forecaster (Hedge): each expert gets a weight
  * proportional to exp(-eta * discounted cumulative squared loss).
  */

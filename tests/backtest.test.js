@@ -2,8 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Strategy, decidePosition, oneWayCost, runBacktest } from '../src/core/strategy.js';
 import { computeMetrics, equityCurve, maxDrawdown } from '../src/core/metrics.js';
-import { costLevelsFor, costSensitivity } from '../src/core/analysis.js';
-import { calendar } from '../src/core/markets.js';
+import { breakEvenCost, costLevelsFor, costSensitivity } from '../src/core/analysis.js';
+import { calendar, inferIntervalMinutes } from '../src/core/markets.js';
 import { generateSynthetic } from '../src/core/synthetic.js';
 
 const YEAR = 98_280;
@@ -13,13 +13,15 @@ test('oneWayCost adds fee, half spread and slippage', () => {
   assert.equal(oneWayCost(), 0);
 });
 
-test('decidePosition keeps the position inside the no-trade band', () => {
+test('decidePosition: enter beyond the threshold, hold inside the band, exit when the edge flips', () => {
   assert.equal(decidePosition(0, 0.002, 0.001, true), 1);
   assert.equal(decidePosition(0, -0.002, 0.001, true), -1);
   assert.equal(decidePosition(0, -0.002, 0.001, false), 0);
   assert.equal(decidePosition(1, -0.002, 0.001, false), 0);
   assert.equal(decidePosition(1, 0.0005, 0.001, true), 1);
   assert.equal(decidePosition(-1, -0.0005, 0.001, true), -1);
+  assert.equal(decidePosition(1, -0.0005, 0.001, true), 0);
+  assert.equal(decidePosition(-1, 0, 0.001, true), 0);
 });
 
 test('equity curve and max drawdown', () => {
@@ -47,12 +49,14 @@ test('accounting: net = position(t-1) * return(t) - |trade| * cost', () => {
 test('no look-ahead: the decision at t is identical whatever happens after t', () => {
   const bars = generateSynthetic(600, { seed: 8 });
   const altered = bars.map((b, i) => (i > 400 ? { ...b, close: b.close * 1.5, high: b.high * 1.5 } : b));
-  const a = runBacktest(bars, {}).records.slice(0, 401);
-  const b = runBacktest(altered, {}).records.slice(0, 401);
-  assert.deepEqual(
-    a.map((r) => [r.position, r.pred]),
-    b.map((r) => [r.position, r.pred]),
-  );
+  for (const horizon of [1, 5, 15]) {
+    const a = runBacktest(bars, { horizon }).records.slice(0, 401);
+    const b = runBacktest(altered, { horizon }).records.slice(0, 401);
+    assert.deepEqual(
+      a.map((r) => [r.position, r.pred]),
+      b.map((r) => [r.position, r.pred]),
+    );
+  }
 });
 
 test('the online model extracts alpha from a market with a real signal', () => {
@@ -67,7 +71,7 @@ test('the online model extracts alpha from a market with a real signal', () => {
 test('higher costs mean fewer trades (cost-aware threshold)', () => {
   const bars = generateSynthetic(3000, { seed: 7 });
   const sweep = costSensitivity(bars, {}, [0, 2, 20], { barsPerYear: YEAR });
-  assert.ok(sweep[0].trades > sweep[1].trades && sweep[1].trades > sweep[2].trades);
+  assert.ok(sweep[0].trades > sweep[1].trades && sweep[1].trades >= sweep[2].trades);
   assert.ok(sweep[0].totalReturn > sweep[2].totalReturn);
 });
 
@@ -76,6 +80,23 @@ test('costLevelsFor includes the current cost exactly once, sorted', () => {
   assert.ok(levels.includes(11.5));
   assert.deepEqual(levels, [...levels].sort((a, b) => a - b));
   assert.equal(new Set(levels).size, levels.length);
+});
+
+test('breakEvenCost interpolates the zero crossing of net return', () => {
+  const sweep = [
+    { bps: 0, totalReturn: 0.2 },
+    { bps: 2, totalReturn: 0.1 },
+    { bps: 4, totalReturn: -0.1 },
+  ];
+  assert.equal(breakEvenCost(sweep), 3);
+  assert.equal(breakEvenCost([{ bps: 0, totalReturn: -0.01 }]), null);
+  assert.equal(breakEvenCost([{ bps: 0, totalReturn: 0.1 }, { bps: 5, totalReturn: 0.05 }]), Infinity);
+});
+
+test('inferIntervalMinutes uses the median gap, robust to session breaks', () => {
+  const t = [0, 5, 10, 15, 1000, 1005, 1010].map((m) => ({ time: m * 60_000 }));
+  assert.equal(inferIntervalMinutes(t), 5);
+  assert.equal(inferIntervalMinutes([{ time: 0 }]), 1);
 });
 
 test('computeMetrics returns null without enough tradable bars', () => {

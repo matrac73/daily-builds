@@ -2,7 +2,7 @@
 // walk-forward backtest that replays it bar by bar (no look-ahead).
 
 import { FeatureEngine } from './features.js';
-import { HedgeEnsemble, createDefaultExperts } from './models.js';
+import { Calibrator, HedgeEnsemble, createDefaultExperts } from './models.js';
 import { clip } from './stats.js';
 
 const TARGET_CLIP = 6;
@@ -19,19 +19,22 @@ export function oneWayCost({ feeBps = 0, spreadBps = 0, slippageBps = 0 } = {}) 
 export function decidePosition(current, expectedReturn, threshold, allowShort) {
   if (expectedReturn > threshold) return 1;
   if (expectedReturn < -threshold) return allowShort ? -1 : 0;
+  if (current * expectedReturn <= 0) return 0;
   return current;
 }
 
 export class Strategy {
-  constructor({ costs = {}, thresholdMult = 1, allowShort = true, warmup = 100, model = {} } = {}) {
+  constructor({ costs = {}, thresholdMult = 1, allowShort = true, horizon = 1, warmup = 100, model = {} } = {}) {
     this.cost = oneWayCost(costs);
     this.threshold = thresholdMult * this.cost;
     this.allowShort = allowShort;
+    this.horizon = horizon;
     this.warmup = warmup;
     this.features = new FeatureEngine(model.features);
     this.forecaster = new HedgeEnsemble(createDefaultExperts(model.rls), model.hedge);
+    this.calibrator = new Calibrator(model.calibration);
     this.position = 0;
-    this.pending = null;
+    this.pending = []; // forecasts waiting for their horizon to be realised
     this.seen = 0;
   }
 
@@ -42,8 +45,8 @@ export class Strategy {
   /**
    * Process a newly closed bar:
    * 1. book the PnL of the position held over the bar,
-   * 2. let the model learn from the return it just observed,
-   * 3. forecast the next bar and rebalance (paying costs on the traded notional).
+   * 2. let the model learn from forecasts whose horizon is now fully realised,
+   * 3. forecast the next horizon bars and rebalance (paying costs on the traded notional).
    */
   step(bar) {
     const f = this.features.push(bar);
@@ -52,17 +55,27 @@ export class Strategy {
     const benchRet = f.simpleRet ?? 0;
     const grossRet = prevPosition * benchRet;
 
-    if (this.pending && f.logRet !== null) {
-      this.forecaster.update(this.pending.x, clip(f.logRet / this.pending.sigma, TARGET_CLIP));
+    if (f.logRet !== null) {
+      for (const p of this.pending) {
+        p.sum += f.logRet;
+        p.count += 1;
+      }
+    }
+    const scale = Math.sqrt(this.horizon);
+    while (this.pending.length > 0 && this.pending[0].count >= this.horizon) {
+      const p = this.pending.shift();
+      const y = clip(p.sum / (p.sigma * scale), TARGET_CLIP);
+      this.calibrator.update(p.yhat, y);
+      this.forecaster.update(p.x, y);
     }
 
     let pred = 0;
     let weights = null;
     if (f.x) {
       const out = this.forecaster.predict(f.x);
-      pred = out.yhat * f.sigma;
+      pred = this.calibrator.apply(out.yhat) * f.sigma * scale;
       weights = out.weights;
-      this.pending = { x: f.x, sigma: f.sigma };
+      this.pending.push({ x: f.x, sigma: f.sigma, yhat: out.yhat, sum: 0, count: 0 });
     }
 
     const tradable = this.seen > this.warmup && f.x !== null;

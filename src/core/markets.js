@@ -15,6 +15,15 @@ export function calendar(market, intervalMinutes) {
   };
 }
 
+/** Bar size in minutes, inferred from the median spacing of timestamps (ignores session gaps). */
+export function inferIntervalMinutes(bars) {
+  const gaps = [];
+  for (let i = 1; i < bars.length; i++) gaps.push(bars[i].time - bars[i - 1].time);
+  if (gaps.length === 0) return 1;
+  gaps.sort((a, b) => a - b);
+  return Math.max(1, Math.round(gaps[Math.floor(gaps.length / 2)] / 60_000));
+}
+
 /**
  * Realistic retail costs in basis points.
  * crypto: Binance spot taker fee 0.10 %, tight spread on majors.

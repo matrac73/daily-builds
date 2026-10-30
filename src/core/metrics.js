@@ -32,7 +32,7 @@ export function sharpe(returns, barsPerYear) {
  * Summary of a backtest. Alpha is Jensen's alpha from regressing the strategy's
  * net returns on the asset's buy-and-hold returns (r_s = alpha + beta * r_m + e).
  */
-export function computeMetrics(records, { barsPerYear }) {
+export function computeMetrics(records, { barsPerYear, horizon = 1 }) {
   const rows = records.filter((r) => r.tradable);
   if (rows.length < 3) return null;
 
@@ -58,14 +58,15 @@ export function computeMetrics(records, { barsPerYear }) {
     prevPosition = r.position;
   }
 
-  // Forecast quality: prediction made at bar t vs return realised at bar t+1.
+  // Forecast quality: prediction made at bar t vs return realised over bars t+1..t+horizon.
   const preds = [];
   const realised = [];
   let agree = 0;
   let directional = 0;
-  for (let i = 0; i < rows.length - 1; i++) {
+  for (let i = 0; i < rows.length - horizon; i++) {
     const p = rows[i].pred;
-    const y = rows[i + 1].benchRet;
+    let y = 0;
+    for (let k = 1; k <= horizon; k++) y += rows[i + k].benchRet;
     preds.push(p);
     realised.push(y);
     if (p !== 0 && y !== 0) {
