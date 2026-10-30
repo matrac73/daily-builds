@@ -18,6 +18,7 @@ export function toReport(result, { symbol, name = symbol, bars, news = [], track
     model: result.model,
     metrics: evaluation.metrics,
     backtest: evaluation.backtest,
+    strategies: evaluation.strategies,
     options: { threshold: options.threshold, cost: options.cost, minTrain: options.minTrain, testSize: options.testSize },
     oos: {
       dates: evaluation.oos.dates,

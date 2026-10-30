@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildDataset, FEATURE_NAMES } from '../src/features.js';
-import { walkForwardSplits, forecastMetrics, backtest } from '../src/validation.js';
+import { walkForwardSplits, forecastMetrics, backtest, alphaBeta } from '../src/validation.js';
 import { hasEdge, clipReturn, position } from '../src/rules.js';
 import { runPipeline, selectLambda } from '../src/pipeline.js';
 import { syntheticBars } from './helpers.js';
@@ -62,6 +62,17 @@ test('backtest applies positions and costs', () => {
   assert.equal(free.trades, 3);
   assert.ok(backtest(r, [1, -1, 0], 0.001).strategyReturn < free.strategyReturn);
   assert.ok(Math.abs(free.buyHoldReturn - Math.expm1(0.02)) < 1e-12);
+  assert.ok(Math.abs(free.excessReturn - (free.strategyReturn - free.buyHoldReturn)) < 1e-12);
+});
+
+test('alphaBeta recovers Jensen alpha and beta', () => {
+  const bench = [0.01, -0.02, 0.015, 0.003, -0.007, 0.012];
+  const strat = bench.map((r) => 0.5 * r + 0.001);
+  const { alpha, beta } = alphaBeta(strat, bench);
+  assert.ok(Math.abs(beta - 0.5) < 1e-12);
+  assert.ok(Math.abs(alpha - 0.001 * 252) < 1e-12);
+  assert.deepEqual(alphaBeta([0.01], [0.02]), { alpha: 0, beta: 0 });
+  assert.equal(alphaBeta([0.01, 0.01], [0, 0]).beta, 0); // flat benchmark: no beta, alpha = mean return
 });
 
 test('rules: edge gating, clipping and hurdle', () => {
@@ -100,6 +111,24 @@ test('pipeline finds a real edge on autocorrelated returns', () => {
   assert.equal(result.model.weights[0].name, 'ret_1d');
   const f = result.forecast;
   assert.ok(f.lower < f.predictedClose && f.predictedClose < f.upper);
+
+  // 95% / 50% / 25% intervals are nested around the forecast, the 95% one matching lower/upper.
+  assert.deepEqual(f.intervals.map((i) => i.level), [0.95, 0.5, 0.25]);
+  assert.ok(Math.abs(f.intervals[0].lower - f.lower) / f.lower < 1e-5);
+  for (let k = 1; k < f.intervals.length; k++) {
+    assert.ok(f.intervals[k].lower > f.intervals[k - 1].lower && f.intervals[k].upper < f.intervals[k - 1].upper);
+    assert.ok(f.intervals[k].lower < f.predictedClose && f.predictedClose < f.intervals[k].upper);
+  }
+
+  // Every algorithm gets an alpha; a real timing edge shows up as positive alpha for the model only.
+  const s = result.evaluation.strategies;
+  assert.equal(result.evaluation.backtest, s.model);
+  assert.ok(s.model.alpha > 0.1, `alpha ${s.model.alpha}`);
+  assert.ok(Math.abs(s.model.beta) < 0.3);
+  assert.ok(Math.abs(s.buyHold.alpha) < 0.01 && Math.abs(s.buyHold.beta - 1) < 0.01); // only the entry cost differs
+  assert.equal(s.zero.strategyReturn, 0);
+  assert.equal(s.zero.trades, 0);
+  assert.ok(Math.abs(s.zero.excessReturn + s.zero.buyHoldReturn) < 1e-12);
 });
 
 test('pipeline falls back to the random walk when there is no edge', () => {

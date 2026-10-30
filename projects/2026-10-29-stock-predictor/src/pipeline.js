@@ -16,6 +16,13 @@ export const DEFAULTS = {
   cost: 0.0005, // 5 bps per unit of turnover
 };
 
+/** Central prediction intervals reported with every forecast: confidence level -> two-sided normal quantile. */
+export const INTERVALS = [
+  { level: 0.95, z: 1.959964 },
+  { level: 0.5, z: 0.67449 },
+  { level: 0.25, z: 0.318639 },
+];
+
 function winsorize(y, k) {
   const m = mean(y);
   const s = std(y);
@@ -75,6 +82,13 @@ export function walkForward(X, y, dates, opts = DEFAULTS) {
   }
   const zero = oos.actual.map(() => 0);
   const positions = oos.predicted.map((p) => position(p, opts));
+  // Every forecaster traded with the same rules, so their alphas vs buy & hold are comparable.
+  const strategies = {
+    model: backtest(oos.actual, positions, opts.cost),
+    drift: backtest(oos.actual, oos.drift.map((p) => position(p, opts)), opts.cost),
+    zero: backtest(oos.actual, zero, opts.cost),
+    buyHold: backtest(oos.actual, oos.actual.map(() => 1), opts.cost),
+  };
   return {
     oos,
     metrics: {
@@ -82,7 +96,8 @@ export function walkForward(X, y, dates, opts = DEFAULTS) {
       drift: forecastMetrics(oos.actual, oos.drift),
       zero: forecastMetrics(oos.actual, zero),
     },
-    backtest: backtest(oos.actual, positions, opts.cost),
+    backtest: strategies.model,
+    strategies,
   };
 }
 
@@ -130,6 +145,11 @@ export function runPipeline(bars, { market, sentiment, ...overrides } = {}) {
       predictedClose: lastClose * Math.exp(expectedReturn),
       lower: lastClose * Math.exp(expectedReturn - 1.96 * sigma),
       upper: lastClose * Math.exp(expectedReturn + 1.96 * sigma),
+      intervals: INTERVALS.map(({ level, z }) => ({
+        level,
+        lower: lastClose * Math.exp(expectedReturn - z * sigma),
+        upper: lastClose * Math.exp(expectedReturn + z * sigma),
+      })),
       probUp: normalCdf(expectedReturn / sigma),
       signal: SIGNAL_LABELS[pos],
       reasons,

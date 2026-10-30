@@ -54,12 +54,37 @@ export function backtest(returns, positions, cost = 0) {
   let logEquity = 0;
   let prev = 0;
   let trades = 0;
+  const daily = [];
   for (let i = 0; i < returns.length; i++) {
     const turnover = Math.abs(positions[i] - prev);
     if (turnover > 0) trades += 1;
-    logEquity += positions[i] * returns[i] + Math.log(1 - cost * turnover);
+    const net = positions[i] * returns[i] + Math.log(1 - cost * turnover);
+    daily.push(net);
+    logEquity += net;
     prev = positions[i];
   }
   const buyHold = returns.reduce((a, b) => a + b, 0);
-  return { strategyReturn: Math.expm1(logEquity), buyHoldReturn: Math.expm1(buyHold), trades };
+  const strategyReturn = Math.expm1(logEquity);
+  const buyHoldReturn = Math.expm1(buyHold);
+  return { strategyReturn, buyHoldReturn, excessReturn: strategyReturn - buyHoldReturn, ...alphaBeta(daily, returns), trades };
+}
+
+/**
+ * Jensen's alpha of a strategy against its underlying asset: regress the strategy's daily returns on the
+ * asset's daily returns. Alpha (annualised, periods sessions a year) is the return not explained by
+ * simply holding beta units of the asset.
+ */
+export function alphaBeta(strategy, benchmark, periods = 252) {
+  const n = strategy.length;
+  if (n < 2) return { alpha: 0, beta: 0 };
+  const ms = strategy.reduce((a, b) => a + b, 0) / n;
+  const mb = benchmark.reduce((a, b) => a + b, 0) / n;
+  let cov = 0;
+  let varB = 0;
+  for (let i = 0; i < n; i++) {
+    cov += (strategy[i] - ms) * (benchmark[i] - mb);
+    varB += (benchmark[i] - mb) ** 2;
+  }
+  const beta = varB > 0 ? cov / varB : 0;
+  return { alpha: (ms - beta * mb) * periods, beta };
 }

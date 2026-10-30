@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseBarsCsv, barsToCsv } from '../src/csv.js';
 import { scoreText, sessionDate, dailySentiment } from '../src/sentiment.js';
-import { toLogEntry, upsert, settle, trackStats } from '../src/tracker.js';
+import { toLogEntry, upsert, settle, trackStats, evaluateEntry, withOutcomes, historySummary } from '../src/tracker.js';
 import { parseYahooChart, parseRss } from '../scripts/sources.js';
 
 test('CSV round trip, sorting, dedupe and Yahoo-style headers', () => {
@@ -58,6 +58,49 @@ test('tracker logs, settles and scores forecasts', () => {
   assert.equal(stats.hitRate, 1);
   assert.equal(stats.intervalCoverage, 1);
   assert.ok(Math.abs(stats.mape - 1 / 103) < 1e-12);
+});
+
+test('history grades BUY / SELL / HOLD calls and interval coverage', () => {
+  const opts = { options: { threshold: 0.002, cost: 0.0005 } };
+  const make = (symbol, asOf, signal, predictedClose) => toLogEntry(symbol, {
+    ...opts,
+    asOf,
+    lastClose: 100,
+    forecast: {
+      predictedClose, lower: 95, upper: 105, signal, probUp: 0.5,
+      intervals: [{ level: 0.95, lower: 95, upper: 105 }, { level: 0.5, lower: 99, upper: 101 }, { level: 0.25, lower: 99.5, upper: 100.5 }],
+    },
+  }, 'now');
+  let log = [make('AAA', '2024-03-07', 'BUY', 101), make('AAA', '2024-03-08', 'SELL', 99), make('BBB', '2024-03-08', 'HOLD', 100)];
+  assert.equal(log[0].hurdle, 0.003);
+  log = settle(log, 'AAA', [{ date: '2024-03-07', close: 100 }, { date: '2024-03-08', close: 102 }, { date: '2024-03-11', close: 101 }]);
+  log = settle(log, 'BBB', [{ date: '2024-03-08', close: 100 }, { date: '2024-03-11', close: 100.2 }]);
+
+  const [buy, sell, hold] = log.map(evaluateEntry);
+  assert.equal(buy.correct, true); // 100 -> 102
+  assert.ok(Math.abs(buy.pnl - 0.02) < 1e-12);
+  assert.equal(sell.correct, false); // lastClose 100 -> 101: the SELL lost 1%
+  assert.ok(Math.abs(sell.pnl + 0.01) < 1e-12);
+  assert.equal(hold.correct, true); // +0.2% stays inside the 0.3% hurdle
+  assert.equal(hold.pnl, 0);
+  assert.deepEqual(buy.intervals, { 0.95: true, 0.5: false, 0.25: false });
+  assert.equal(evaluateEntry({ ...log[0], actualClose: null }), null);
+  assert.equal(evaluateEntry({ ...log[2], hurdle: undefined, actualClose: 101 }).correct, false); // default hurdle
+
+  const { overall, bySymbol } = historySummary(log);
+  assert.equal(overall.settled, 3);
+  assert.ok(Math.abs(overall.recommendations.accuracy - 2 / 3) < 1e-12);
+  assert.deepEqual(overall.recommendations.bySignal, { BUY: { n: 1, correct: 1 }, SELL: { n: 1, correct: 0 }, HOLD: { n: 1, correct: 1 } });
+  assert.equal(overall.recommendations.trades, 2);
+  assert.ok(Math.abs(overall.recommendations.meanTradeReturn - 0.005) < 1e-12);
+  assert.ok(Math.abs(overall.recommendations.cumulativeReturn - (1.02 * 0.99 - 1)) < 1e-12);
+  assert.equal(overall.coverage[0.95], 1);
+  assert.ok(Math.abs(overall.coverage[0.5] - 2 / 3) < 1e-12); // 101 and 100.2 inside [99, 101]
+  assert.deepEqual(bySymbol.map((b) => [b.symbol, b.stats.settled]), [['AAA', 2], ['BBB', 1]]);
+
+  const graded = withOutcomes(log);
+  assert.equal(graded[0].basedOn, '2024-03-08'); // most recent first
+  assert.ok(graded.every((e) => e.outcome));
 });
 
 test('Yahoo chart parsing adjusts prices and drops the in-progress session', () => {

@@ -2,7 +2,9 @@
 // Daily job: refresh prices + news, settle yesterday's forecasts, retrain, forecast the next session
 // and write data/forecasts.json for the web dashboard.
 //
-// Usage: node scripts/daily.js [--offline] [--symbols AAPL,MSFT]
+// Usage: node scripts/daily.js [--offline] [--symbols PSP5.PA,SAF.PA] [--backfill 20]
+//   --backfill N  also replay the last N sessions point-in-time (truncated history) so the prediction
+//                 history starts with graded recommendations; replays never overwrite live entries.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -12,7 +14,7 @@ import { parseArgs } from 'node:util';
 import { parseBarsCsv, barsToCsv, sortAndDedupe } from '../src/csv.js';
 import { scoreText, dailySentiment } from '../src/sentiment.js';
 import { runPipeline } from '../src/pipeline.js';
-import { toLogEntry, upsert, settle, trackStats } from '../src/tracker.js';
+import { toLogEntry, upsert, settle, trackStats, withOutcomes } from '../src/tracker.js';
 import { toReport } from '../src/report.js';
 import { fetchBars, fetchNews } from './sources.js';
 
@@ -70,7 +72,10 @@ async function loadNews(symbol, offline, warnings) {
 }
 
 async function main() {
-  const { values } = parseArgs({ options: { offline: { type: 'boolean' }, symbols: { type: 'string' } } });
+  const { values } = parseArgs({
+    options: { offline: { type: 'boolean' }, symbols: { type: 'string' }, backfill: { type: 'string' } },
+  });
+  const backfill = Math.max(0, Number(values.backfill ?? 0) || 0);
   const config = await readJson(join(DATA, 'config.json'), null);
   if (!config) throw new Error('data/config.json not found');
   const wanted = values.symbols?.split(',').map((s) => s.trim().toUpperCase());
@@ -90,10 +95,16 @@ async function main() {
       const sentiment = dailySentiment(news, bars.map((b) => b.date));
       const result = runPipeline(bars, { market: markets.get(market), sentiment });
 
+      for (let k = backfill; k >= 1; k--) {
+        const past = bars.slice(0, bars.length - k);
+        if (log.some((e) => e.symbol === symbol && e.basedOn === past.at(-1).date)) continue;
+        const replay = runPipeline(past, { market: markets.get(market), sentiment });
+        log = upsert(log, { ...toLogEntry(symbol, replay, madeAt), replayed: true });
+      }
       log = settle(log, symbol, bars);
       log = upsert(log, toLogEntry(symbol, result, madeAt));
       const entries = log.filter((e) => e.symbol === symbol);
-      const track = { stats: trackStats(entries), entries: entries.slice(-30).reverse() };
+      const track = { stats: trackStats(entries), entries: withOutcomes(entries.slice(-30)) };
       results.push(toReport(result, { symbol, name, bars, news, track }));
 
       const f = result.forecast;
