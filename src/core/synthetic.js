@@ -5,7 +5,7 @@
 import { gaussian, mulberry32 } from './rng.js';
 
 export class SyntheticMarket {
-  constructor({ seed = 7, startPrice = 100, intervalMs = 60_000, startTime = Date.UTC(2026, 9, 1), baseVol = 0.001, signal = 0.12 } = {}) {
+  constructor({ seed = 7, startPrice = 100, intervalMs = 60_000, startTime = Date.UTC(2026, 9, 1), baseVol = 0.001, signal = 0.2 } = {}) {
     this.rng = mulberry32(seed);
     this.price = startPrice;
     this.time = startTime;

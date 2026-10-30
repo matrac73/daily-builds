@@ -85,8 +85,8 @@
             <label>Horizon de prévision
               <select name="horizon">
                 <option value="1">1 barre</option>
-                <option value="5">5 barres</option>
-                <option value="15" selected>15 barres</option>
+                <option value="5" selected>5 barres</option>
+                <option value="15">15 barres</option>
                 <option value="30">30 barres</option>
                 <option value="60">60 barres</option>
               </select>
@@ -177,7 +177,7 @@
             <h2>Vue d'ensemble</h2>
             <p>
               L'outil télécharge des barres de prix gratuites (Binance pour les cryptos, avec flux WebSocket temps réel ; Alpha Vantage
-              pour les actions US ; ou un CSV), apprend <strong>en ligne</strong> à prévoir le rendement de la barre suivante, et
+              pour les actions US ; ou un CSV), apprend <strong>en ligne</strong> à prévoir le rendement des <var>H</var> prochaines barres, et
               transforme cette prévision en position <strong>uniquement quand l'avantage espéré dépasse les coûts de transaction</strong>.
               Tout est rejoué barre par barre (<em>walk-forward</em>) : à l'instant <var>t</var>, le modèle n'a vu que les données
               jusqu'à <var>t</var>. Il n'y a ni ré-optimisation sur l'échantillon complet, ni paramètre ajusté a posteriori.
