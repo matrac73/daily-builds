@@ -10,7 +10,7 @@
   <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <header class="top">
+  <header class="top" id="forecasts">
     <div>
       <h1>Stock Predictor</h1>
       <p class="sub">Next-session forecasts from prices, market context &amp; news sentiment — retrained every day, judged out-of-sample.</p>
@@ -18,11 +18,25 @@
     <p class="stamp" id="stamp"></p>
   </header>
 
+  <nav class="sections" aria-label="Sections"><a href="#forecasts">Forecasts</a><a href="#history">History</a><a href="#lab">Lab</a></nav>
+
   <nav class="tabs" id="tabs" aria-label="Stocks"></nav>
   <div id="warnings"></div>
   <main id="report" aria-live="polite"><p class="muted">Loading forecasts…</p></main>
 
-  <section class="lab" aria-labelledby="lab-title">
+  <section class="history" id="history" aria-labelledby="hist-title">
+    <h2 id="hist-title">History — were the recommendations right?</h2>
+    <p class="muted">Every forecast is logged, then graded on the next close: BUY is right if the price rose, SELL if it fell,
+      HOLD if the move stayed inside the trading hurdle (no trade missed). “Replay” rows were rebuilt point-in-time with
+      <code>--backfill</code>; tick “live only” to keep genuine out-of-sample forecasts.</p>
+    <div class="hist-filters">
+      <label>Stock <select id="hist-symbol"></select></label>
+      <label class="check"><input type="checkbox" id="hist-live"> Live forecasts only</label>
+    </div>
+    <div id="hist-body"><p class="muted">Loading history…</p></div>
+  </section>
+
+  <section class="lab" id="lab" aria-labelledby="lab-title">
     <h2 id="lab-title">Lab — retrain in your browser</h2>
     <p class="muted">Re-run the whole pipeline (features, nested walk-forward, rules) on a cached stock or your own CSV
       (<code>Date,Open,High,Low,Close,Volume</code>) and see how the settings change the out-of-sample verdict.</p>

@@ -1,20 +1,27 @@
 // Dashboard: renders data/forecasts.json (produced by the daily job) and drives the in-browser lab.
 
 import { position } from './src/rules.js';
+import { historySummary, withOutcomes } from './src/tracker.js';
 
 const $ = (sel) => document.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const pct = (v, d = 2) => (v === null || v === undefined ? '—' : `${(v * 100).toFixed(d)}%`);
 const signed = (v, d = 2) => `${v > 0 ? '+' : ''}${pct(v, d)}`;
 const tone = (v) => (v > 0 ? 'pos' : v < 0 ? 'neg' : '');
-const money = (v) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = (v) => {
+  const d = Math.abs(v) < 10 ? 4 : 2; // FX rates such as EUR=X need more precision
+  return v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+};
 
 const COLORS = { price: '#5aa9ff', forecast: '#f2c14e', past: '#8a99a8', strategy: '#3ecf8e', hold: '#8a99a8' };
+const level = (l) => `${Math.round(l * 100)}%`;
+const mobile = window.matchMedia('(max-width: 600px)');
 
-/** Minimal responsive SVG line chart with optional error-bar markers. */
+/** Minimal responsive SVG line chart with optional error-bar markers. Narrower viewBox on phones keeps labels legible. */
 function chart({ labels, series, markers = [], format, height = 230 }) {
-  const width = 640;
-  const pad = { l: 56, r: 14, t: 10, b: 24 };
+  const width = mobile.matches ? 380 : 640;
+  if (mobile.matches) height = Math.round(height * 0.85);
+  const pad = { l: mobile.matches ? 46 : 56, r: 10, t: 10, b: 24 };
   const ys = [...series.flatMap((s) => s.values), ...markers.flatMap((m) => [m.y, m.y0 ?? m.y, m.y1 ?? m.y])]
     .filter((v) => v !== null && Number.isFinite(v));
   let lo = Math.min(...ys);
@@ -48,9 +55,11 @@ function chart({ labels, series, markers = [], format, height = 230 }) {
     return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" ${s.dash ? 'stroke-dasharray="5 4"' : ''}/>`;
   });
   const marks = markers.map((m) => {
-    const bar = m.y0 === undefined ? '' : `<line x1="${x(m.x)}" x2="${x(m.x)}" y1="${y(m.y0)}" y2="${y(m.y1)}" stroke="${m.color}" stroke-width="2"/>
-      <line x1="${x(m.x) - 5}" x2="${x(m.x) + 5}" y1="${y(m.y0)}" y2="${y(m.y0)}" stroke="${m.color}" stroke-width="2"/>
-      <line x1="${x(m.x) - 5}" x2="${x(m.x) + 5}" y1="${y(m.y1)}" y2="${y(m.y1)}" stroke="${m.color}" stroke-width="2"/>`;
+    const w = m.w ?? 5;
+    const bar = m.y0 === undefined ? '' : `<line x1="${x(m.x)}" x2="${x(m.x)}" y1="${y(m.y0)}" y2="${y(m.y1)}" stroke="${m.color}" stroke-width="${m.width ?? 2}" opacity="${m.opacity ?? 1}"/>
+      <line x1="${x(m.x) - w}" x2="${x(m.x) + w}" y1="${y(m.y0)}" y2="${y(m.y0)}" stroke="${m.color}" stroke-width="2"/>
+      <line x1="${x(m.x) - w}" x2="${x(m.x) + w}" y1="${y(m.y1)}" y2="${y(m.y1)}" stroke="${m.color}" stroke-width="2"/>`;
+    if (m.y === undefined) return bar;
     return `${bar}<circle cx="${x(m.x)}" cy="${y(m.y)}" r="${m.r ?? 4}" fill="${m.color}"><title>${esc(m.title ?? '')}</title></circle>`;
   });
   return `<svg class="chart" viewBox="0 0 ${width} ${height}" role="img">${grid.join('')}${ticks.join('')}${paths.join('')}${marks.join('')}</svg>`;
@@ -64,7 +73,10 @@ function priceChart(r) {
   const markers = (r.track?.entries ?? [])
     .filter((e) => e.targetDate && dates.includes(e.targetDate))
     .map((e) => ({ x: dates.indexOf(e.targetDate), y: e.predictedClose, color: COLORS.past, r: 3, title: `Forecast for ${e.targetDate}: ${money(e.predictedClose)}` }));
-  markers.push({ x: n, y: f.predictedClose, y0: f.lower, y1: f.upper, color: COLORS.forecast, title: `Next session: ${money(f.predictedClose)}` });
+  // Nested 95% / 50% / 25% intervals: the narrower the band, the thicker the bar.
+  const bands = f.intervals ?? [{ level: 0.95, lower: f.lower, upper: f.upper }];
+  bands.forEach((b, k) => markers.push({ x: n, y0: b.lower, y1: b.upper, color: COLORS.forecast, w: 4 + 2 * k, width: 2 + 3 * k, opacity: 0.45 + 0.25 * k }));
+  markers.push({ x: n, y: f.predictedClose, color: COLORS.forecast, title: `Next session: ${money(f.predictedClose)}` });
   return chart({
     labels: [...dates, 'next'],
     series: [
@@ -101,6 +113,7 @@ function equityChart(r) {
 
 function forecastCard(r) {
   const f = r.forecast;
+  const bands = f.intervals ?? [{ level: 0.95, lower: f.lower, upper: f.upper }];
   return `<article class="card span-4">
     <h3>Next session · ${esc(r.name)}</h3>
     <span class="badge ${f.signal}">${f.signal}</span>
@@ -108,7 +121,7 @@ function forecastCard(r) {
     <p class="${tone(f.expectedReturn)}">${signed(f.expectedReturn)} vs last close ${money(r.lastClose)}</p>
     <dl class="kv">
       <dt>Based on close of</dt><dd>${esc(r.asOf)}</dd>
-      <dt>95% interval</dt><dd>${money(f.lower)} – ${money(f.upper)}</dd>
+      ${bands.map((b) => `<dt>${level(b.level)} interval</dt><dd>${money(b.lower)} – ${money(b.upper)}</dd>`).join('')}
       <dt>P(up)</dt><dd>${pct(f.probUp, 0)}</dd>
       <dt>Raw model view</dt><dd class="${tone(f.modelReturn)}">${signed(f.modelReturn, 3)}</dd>
     </dl>
@@ -121,7 +134,7 @@ function priceCard(r) {
     <h3>Last ${r.prices.length} sessions &amp; forecast</h3>
     ${priceChart(r)}
     <div class="legend"><span><i style="background:${COLORS.price}"></i>Close</span>
-      <span><i style="background:${COLORS.forecast}"></i>Forecast ± 95% interval</span>
+      <span><i style="background:${COLORS.forecast}"></i>Forecast ± 95 / 50 / 25% intervals</span>
       <span><i style="background:${COLORS.past}"></i>Past live forecasts</span></div>
   </article>`;
 }
@@ -136,12 +149,32 @@ function evaluationCard(r) {
   return `<article class="card span-7">
     <h3>Walk-forward evaluation · ${model.n} out-of-sample days</h3>
     ${verdict}
-    <table><thead><tr><th>Forecaster</th><th>RMSE</th><th>MAE</th><th>Hit rate</th><th>R² vs RW</th></tr></thead>
-      <tbody>${row(`Ridge (λ = ${r.model.lambda})`, model)}${row('Historical drift', drift)}${row('Random walk (0%)', zero)}</tbody></table>
+    <div class="table-wrap"><table><thead><tr><th>Forecaster</th><th>RMSE</th><th>MAE</th><th>Hit rate</th><th>R² vs RW</th></tr></thead>
+      <tbody>${row(`Ridge (λ = ${r.model.lambda})`, model)}${row('Historical drift', drift)}${row('Random walk (0%)', zero)}</tbody></table></div>
     <h3 style="margin-top:18px">Rule-based strategy vs buy &amp; hold</h3>
     ${equityChart(r)}
     <div class="legend"><span><i style="background:${COLORS.strategy}"></i>Strategy ${signed(r.backtest.strategyReturn, 1)} (${r.backtest.trades} trades)</span>
       <span><i style="background:${COLORS.hold}"></i>Buy &amp; hold ${signed(r.backtest.buyHoldReturn, 1)}</span></div>
+  </article>`;
+}
+
+/** Alpha of each forecaster traded with the same BUY / SELL / HOLD rules, over the out-of-sample period. */
+function alphaCard(r) {
+  if (!r.strategies) return '';
+  const rows = [
+    [`Ridge model (λ = ${r.model.lambda})`, r.strategies.model],
+    ['Historical drift', r.strategies.drift],
+    ['Random walk (always flat)', r.strategies.zero],
+    ['Buy &amp; hold (reference)', r.strategies.buyHold],
+  ].map(([label, s]) => `<tr><td>${label}</td><td class="${tone(s.strategyReturn)}">${signed(s.strategyReturn, 1)}</td>
+    <td class="${tone(s.excessReturn)}">${signed(s.excessReturn, 1)}</td><td class="${tone(s.alpha)}"><strong>${signed(s.alpha, 1)}</strong></td>
+    <td>${s.beta.toFixed(2)}</td><td>${s.trades}</td></tr>`);
+  return `<article class="card span-12">
+    <h3>Algorithm alphas · out-of-sample, after costs</h3>
+    <p class="muted" style="margin-top:0;font-size:.85rem">α = annualised Jensen's alpha vs holding the asset (return not explained by β × the asset's own move);
+      “vs B&amp;H” = total return minus buy &amp; hold. A positive α with β near 0 is genuine timing skill.</p>
+    <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Return</th><th>vs B&amp;H</th><th>α / year</th><th>β</th><th>Trades</th></tr></thead>
+      <tbody>${rows.join('')}</tbody></table></div>
   </article>`;
 }
 
@@ -173,27 +206,86 @@ function newsCard(r) {
   </article>`;
 }
 
+const verdictCell = (o) => (o ? `<td class="${o.correct ? 'pos' : 'neg'}" title="${o.correct ? 'good call' : 'bad call'}">${o.correct ? '✔' : '✖'}</td>` : '<td class="muted">…</td>');
+
 function trackCard(r) {
   const { stats, entries } = r.track;
   const summary = stats.settled
-    ? `${stats.settled} settled · MAPE ${pct(stats.mape)} · direction ${stats.hitRate === null ? '—' : pct(stats.hitRate, 0)} · interval coverage ${pct(stats.intervalCoverage, 0)}`
+    ? `${stats.settled} settled · calls right ${pct(stats.recommendations?.accuracy, 0)} · MAPE ${pct(stats.mape)} · direction ${stats.hitRate === null ? '—' : pct(stats.hitRate, 0)} · 95% coverage ${pct(stats.intervalCoverage, 0)}`
     : `No settled forecast yet — ${stats.pending} pending. Each daily run settles the previous one.`;
-  const rows = entries.map((e) => `<tr><td>${esc(e.basedOn)}</td><td>${money(e.lastClose)}</td><td>${money(e.predictedClose)}</td>
-    <td class="${e.signal}">${e.signal}</td><td>${e.actualClose === null ? '<span class="muted">pending</span>' : money(e.actualClose)}</td>
-    <td>${e.actualClose === null ? '' : signed(e.predictedClose / e.actualClose - 1)}</td></tr>`);
+  const rows = entries.map((e) => `<tr><td>${esc(e.basedOn)}${e.replayed ? ' <span class="tag">replay</span>' : ''}</td><td class="opt">${money(e.lastClose)}</td>
+    <td>${money(e.predictedClose)}</td><td class="${e.signal}">${e.signal}</td>
+    <td>${e.actualClose === null ? '<span class="muted">pending</span>' : money(e.actualClose)}</td>
+    <td class="opt">${e.actualClose === null ? '' : signed(e.predictedClose / e.actualClose - 1)}</td>${verdictCell(e.outcome)}</tr>`);
   return `<article class="card span-6">
     <h3>Live track record</h3>
     <p class="muted" style="margin-top:0">${summary}</p>
-    <div class="scroll"><table><thead><tr><th>Close of</th><th>Close</th><th>Forecast</th><th>Signal</th><th>Actual</th><th>Error</th></tr></thead>
+    <div class="scroll"><table><thead><tr><th>Close of</th><th class="opt">Close</th><th>Forecast</th><th>Signal</th><th>Actual</th><th class="opt">Error</th><th>Call</th></tr></thead>
       <tbody>${rows.join('')}</tbody></table></div>
   </article>`;
 }
 
 function renderReport(el, r) {
-  const cards = [forecastCard(r), priceCard(r), evaluationCard(r), weightsCard(r)];
+  const cards = [forecastCard(r), priceCard(r), evaluationCard(r), weightsCard(r), alphaCard(r)];
   if (r.track) cards.push(newsCard(r), trackCard(r));
   else if (r.news.length) cards.push(newsCard(r));
   el.innerHTML = `<div class="grid">${cards.join('')}</div>`;
+  el.lastReport = r; // re-rendered when the phone / desktop layout switches
+}
+
+/** History module: every logged forecast, graded once settled, with per-stock recommendation scores. */
+function renderHistory(log, names) {
+  const symbol = $('#hist-symbol').value;
+  const live = $('#hist-live').checked;
+  const entries = log.filter((e) => (symbol === 'all' || e.symbol === symbol) && (!live || !e.replayed));
+  const { overall, bySymbol } = historySummary(entries);
+  const rec = overall.recommendations;
+  const tile = (label, value, cls = '') => `<div class="tile"><span>${label}</span><strong class="${cls}">${value}</strong></div>`;
+  const cov = (s, l) => (s.coverage?.[l] === undefined ? '—' : pct(s.coverage[l], 0));
+  const tiles = overall.settled
+    ? [
+      tile('Settled / pending', `${overall.settled} / ${overall.pending}`),
+      tile('Calls right', pct(rec.accuracy, 0), rec.accuracy >= 0.5 ? 'pos' : 'neg'),
+      tile('BUY / SELL right', rec.trades ? `${rec.bySignal.BUY.correct + rec.bySignal.SELL.correct} / ${rec.trades}` : '—'),
+      tile('Avg BUY/SELL return', rec.meanTradeReturn === null ? '—' : signed(rec.meanTradeReturn), tone(rec.meanTradeReturn)),
+      tile('In 95 / 50 / 25% band', `${cov(overall, 0.95)} · ${cov(overall, 0.5)} · ${cov(overall, 0.25)}`),
+      tile('Forecast MAPE', pct(overall.mape)),
+    ].join('')
+    : `<p class="muted">No settled forecast yet — ${overall.pending} pending. Run <code>npm run daily -- --backfill 20</code> to replay recent sessions.</p>`;
+  const sig = (s, k) => (s.recommendations.bySignal[k].n ? `${s.recommendations.bySignal[k].correct}/${s.recommendations.bySignal[k].n}` : '—');
+  const summaryRows = bySymbol.filter((b) => b.stats.settled).map(({ symbol: s, stats }) => `<tr><td>${esc(s)} <span class="muted opt">${esc(names[s] ?? '')}</span></td>
+    <td>${stats.settled}</td><td class="${stats.recommendations.accuracy >= 0.5 ? 'pos' : 'neg'}">${pct(stats.recommendations.accuracy, 0)}</td>
+    <td>${sig(stats, 'BUY')}</td><td>${sig(stats, 'SELL')}</td><td>${sig(stats, 'HOLD')}</td>
+    <td class="${tone(stats.recommendations.cumulativeReturn)}">${signed(stats.recommendations.cumulativeReturn)}</td>
+    <td class="opt">${cov(stats, 0.95)} · ${cov(stats, 0.5)} · ${cov(stats, 0.25)}</td></tr>`);
+  const rows = withOutcomes(entries).slice(0, 200).map((e) => {
+    const o = e.outcome;
+    return `<tr><td>${esc(e.basedOn)}${e.replayed ? ' <span class="tag">replay</span>' : ''}</td><td>${esc(e.symbol)}</td><td class="${e.signal}">${e.signal}</td>
+      <td class="opt">${money(e.lastClose)}</td><td class="opt">${money(e.predictedClose)}</td>
+      <td>${e.actualClose === null ? '<span class="muted">pending</span>' : money(e.actualClose)}</td>
+      <td class="${o ? tone(o.move) : ''}">${o ? signed(o.move) : ''}</td>${verdictCell(o)}
+      <td class="opt ${o ? tone(o.pnl) : ''}">${o && e.signal !== 'HOLD' ? signed(o.pnl) : ''}</td></tr>`;
+  });
+  $('#hist-body').innerHTML = `<div class="tiles">${tiles}</div>
+    ${summaryRows.length ? `<div class="table-wrap"><table><thead><tr><th>Stock</th><th>Settled</th><th>Calls right</th><th>BUY</th><th>SELL</th><th>HOLD</th>
+      <th>Following calls</th><th class="opt">In 95/50/25% band</th></tr></thead><tbody>${summaryRows.join('')}</tbody></table></div>` : ''}
+    <div class="scroll table-wrap" style="margin-top:14px"><table><thead><tr><th>Close of</th><th>Stock</th><th>Call</th><th class="opt">Close</th><th class="opt">Forecast</th>
+      <th>Actual</th><th>Move</th><th>Right?</th><th class="opt">P&amp;L</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+}
+
+async function setupHistory() {
+  const [log, config] = await Promise.all([
+    fetch('./data/predictions.json').then((r) => (r.ok ? r.json() : [])),
+    fetch('./data/config.json').then((r) => r.json()),
+  ]);
+  const names = Object.fromEntries(config.stocks.map((s) => [s.symbol, s.name]));
+  const symbols = [...new Set(log.map((e) => e.symbol))].sort();
+  $('#hist-symbol').innerHTML = '<option value="all">All stocks</option>'
+    + symbols.map((s) => `<option value="${esc(s)}">${esc(s)}${names[s] ? ` — ${esc(names[s])}` : ''}</option>`).join('');
+  const render = () => renderHistory(log, names);
+  $('#hist-symbol').addEventListener('change', render);
+  $('#hist-live').addEventListener('change', render);
+  render();
 }
 
 async function loadDashboard() {
@@ -277,4 +369,10 @@ loadDashboard().catch((err) => {
 });
 setupLab().catch((err) => {
   $('#lab-report').innerHTML = `<div class="warn">Lab unavailable: ${esc(err.message)}</div>`;
+});
+setupHistory().catch((err) => {
+  $('#hist-body').innerHTML = `<div class="warn">History unavailable: ${esc(err.message)}</div>`;
+});
+mobile.addEventListener('change', () => {
+  for (const el of [$('#report'), $('#lab-report')]) if (el.lastReport) renderReport(el, el.lastReport);
 });
