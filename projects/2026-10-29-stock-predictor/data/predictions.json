@@ -1,49 +1,2685 @@
 [
  {
-  "symbol": "AAPL",
-  "madeAt": "2026-10-29T09:16:39.153Z",
-  "basedOn": "2026-10-28",
-  "lastClose": 343.83,
-  "predictedClose": 343.83,
-  "lower": 332.15065992884513,
-  "upper": 355.9200181186617,
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-09-30",
+  "lastClose": 0.8828,
+  "predictedClose": 0.8825384041814263,
+  "lower": 0.8757662192939142,
+  "upper": 0.88936295748318,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.875766343202523,
+    "upper": 0.8893628316508416
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8802020192898717,
+    "upper": 0.8848809907110614
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8814338897426333,
+    "upper": 0.88364430267427
+   }
+  ],
+  "probUp": 0.469944658080152,
   "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-01",
+  "actualClose": 0.8889,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-01",
+  "lastClose": 0.8889,
+  "predictedClose": 0.8891852024766197,
+  "lower": 0.8823535283283711,
+  "upper": 0.8960697712642274,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.882353653324835,
+    "upper": 0.8960696443247032
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8868282865364635,
+    "upper": 0.8915483823720798
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8880709811138119,
+    "upper": 0.890300821801158
+   }
+  ],
+  "probUp": 0.5324869000104985,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-04",
+  "actualClose": 0.8885,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-02",
+  "lastClose": 138.92,
+  "predictedClose": 138.92,
+  "lower": 136.0643931858806,
+  "upper": 141.83553792530807,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.06444509300533,
+    "upper": 141.8354838165734
+   },
+   {
+    "level": 0.5,
+    "lower": 137.93060650651415,
+    "upper": 139.9164905367726
+   },
+   {
+    "level": 0.25,
+    "lower": 138.45171462621738,
+    "upper": 139.38986925587383
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-05",
+  "actualClose": 137.68,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-02",
+  "lastClose": 60.26,
+  "predictedClose": 60.30611251535676,
+  "lower": 59.35475533861178,
+  "upper": 61.27271835200407,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.354772673961556,
+    "upper": 61.27270045649278
+   },
+   {
+    "level": 0.5,
+    "lower": 59.97701570303026,
+    "upper": 60.637015097953984
+   },
+   {
+    "level": 0.25,
+    "lower": 60.150417908851054,
+    "upper": 60.46221012505575
+   }
+  ],
+  "probUp": 0.5375592332944865,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-05",
+  "actualClose": 60.84,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-02",
+  "lastClose": 330.1,
+  "predictedClose": 330.1,
+  "lower": 319.0392646618207,
+  "upper": 341.54419869135296,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 319.03946437597835,
+    "upper": 341.5439848895523
+   },
+   {
+    "level": 0.5,
+    "lower": 326.2510805131137,
+    "upper": 333.99432678850576
+   },
+   {
+    "level": 0.25,
+    "lower": 328.27608769535493,
+    "upper": 331.9340460189781
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-05",
+  "actualClose": 329.8,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-04",
+  "lastClose": 0.8885,
+  "predictedClose": 0.8874733714547323,
+  "lower": 0.880658249562979,
+  "upper": 0.8943412333127806,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8806583742568338,
+    "upper": 0.8943411066815474
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8851221689866545,
+    "upper": 0.8898308195612535
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8863618514993572,
+    "upper": 0.8885862852839627
+   }
+  ],
+  "probUp": 0.38439854858749245,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-05",
+  "actualClose": 0.8915,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-05",
+  "lastClose": 137.68,
+  "predictedClose": 137.68,
+  "lower": 134.85017721254005,
+  "upper": 140.56920644696976,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.8502286510381,
+    "upper": 140.5691528269728
+   },
+   {
+    "level": 0.5,
+    "lower": 136.6995407009893,
+    "upper": 138.6674915131066
+   },
+   {
+    "level": 0.25,
+    "lower": 137.21594332148177,
+    "upper": 138.14562609236086
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-06",
+  "actualClose": 138.14,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-05",
+  "lastClose": 0.8915,
+  "predictedClose": 0.8910092304560773,
+  "lower": 0.8841653816811372,
+  "upper": 0.8979060537842227,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.884165506900486,
+    "upper": 0.8979059266188781
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8886481158986029,
+    "upper": 0.893376618432528
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8898930244265756,
+    "upper": 0.89212683655937
+   }
+  ],
+  "probUp": 0.4443411258134036,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-06",
+  "actualClose": 0.8886,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-05",
+  "lastClose": 60.84,
+  "predictedClose": 60.91778452346759,
+  "lower": 59.956676377949485,
+  "upper": 61.894299274608024,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.95669389096366,
+    "upper": 61.89428119563018
+   },
+   {
+    "level": 0.5,
+    "lower": 60.585314437794494,
+    "upper": 61.25207908358459
+   },
+   {
+    "level": 0.25,
+    "lower": 60.760494008416686,
+    "upper": 61.075482216019736
+   }
+  ],
+  "probUp": 0.5625639146785417,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-06",
+  "actualClose": 61.18,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-05",
+  "lastClose": 329.8,
+  "predictedClose": 329.8,
+  "lower": 318.7537529222266,
+  "upper": 341.2290490789564,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 318.75395237617806,
+    "upper": 341.2288355616598
+   },
+   {
+    "level": 0.5,
+    "lower": 325.95613955345004,
+    "upper": 333.68918943821365
+   },
+   {
+    "level": 0.25,
+    "lower": 327.9784873500556,
+    "upper": 331.63162888763037
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-06",
+  "actualClose": 329.4,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-06",
+  "lastClose": 138.14,
+  "predictedClose": 138.14,
+  "lower": 135.301779017062,
+  "upper": 141.03775825145368,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 135.30183060841853,
+    "upper": 141.03770447295534
+   },
+   {
+    "level": 0.5,
+    "lower": 137.15663345306908,
+    "upper": 139.13041695157614
+   },
+   {
+    "level": 0.25,
+    "lower": 137.67456763467933,
+    "upper": 138.60700583884162
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-07",
+  "actualClose": 136.4,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-06",
+  "lastClose": 0.8886,
+  "predictedClose": 0.8874518954236896,
+  "lower": 0.8806375021680334,
+  "upper": 0.8943190186111605,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8806376268485966,
+    "upper": 0.8943188919935875
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8851009448261646,
+    "upper": 0.8898090904713468
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8863404946034795,
+    "upper": 0.8885646898525532
+   }
+  ],
+  "probUp": 0.37117495996359934,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-07",
+  "actualClose": 0.8928,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-06",
+  "lastClose": 61.18,
+  "predictedClose": 61.236572924689845,
+  "lower": 60.27078540148041,
+  "upper": 62.21783636270232,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.27080299981203,
+    "upper": 62.21781819586098
+   },
+   {
+    "level": 0.5,
+    "lower": 60.90248476567969,
+    "upper": 61.57249376587084
+   },
+   {
+    "level": 0.25,
+    "lower": 61.07851698766594,
+    "upper": 61.39503787097691
+   }
+  ],
+  "probUp": 0.545363623844722,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-07",
+  "actualClose": 61.15,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-06",
+  "lastClose": 329.4,
+  "predictedClose": 329.4,
+  "lower": 318.371557847197,
+  "upper": 340.8104691690985,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 318.37175698104414,
+    "upper": 340.8102560003787
+   },
+   {
+    "level": 0.5,
+    "lower": 325.56235258038345,
+    "upper": 333.2828846456058
+   },
+   {
+    "level": 0.25,
+    "lower": 327.5814338323331,
+    "upper": 331.2286619257429
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-07",
+  "actualClose": 319.4,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-07",
+  "lastClose": 136.4,
+  "predictedClose": 136.4,
+  "lower": 133.59698961341087,
+  "upper": 139.26182059818194,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 133.59704056462863,
+    "upper": 139.26176748653128
+   },
+   {
+    "level": 0.5,
+    "lower": 135.42883168926926,
+    "upper": 137.37813261719344
+   },
+   {
+    "level": 0.25,
+    "lower": 135.940340953453,
+    "upper": 136.8612133051107
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-08",
+  "actualClose": 135.3,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-07",
+  "lastClose": 0.8928,
+  "predictedClose": 0.8928806950065664,
+  "lower": 0.8860194562544047,
+  "upper": 0.8997950664488535,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8860195817917175,
+    "upper": 0.8997949389597361
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8905135783035104,
+    "upper": 0.8952541038556632
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8917616511449113,
+    "upper": 0.8940011431214352
+   }
+  ],
+  "probUp": 0.5091605137512634,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-08",
+  "actualClose": 0.8918,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-07",
+  "lastClose": 61.15,
+  "predictedClose": 61.135845635966135,
+  "lower": 60.17213169567095,
+  "upper": 62.11499437194741,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.17214925628921,
+    "upper": 62.114976244329924
+   },
+   {
+    "level": 0.5,
+    "lower": 60.80247565505751,
+    "upper": 61.47104342968951
+   },
+   {
+    "level": 0.25,
+    "lower": 60.97812958172312,
+    "upper": 61.29396961275346
+   }
+  ],
+  "probUp": 0.48860917083488004,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-08",
+  "actualClose": 61.01,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-07",
+  "lastClose": 319.4,
+  "predictedClose": 319.4,
+  "lower": 308.6962361400749,
+  "upper": 330.474907227922,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 308.6964294082167,
+    "upper": 330.47470032474746
+   },
+   {
+    "level": 0.5,
+    "lower": 315.67529349394493,
+    "upper": 323.16865495194924
+   },
+   {
+    "level": 0.25,
+    "lower": 317.63494849658446,
+    "upper": 321.1748596395304
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-08",
+  "actualClose": 310.8,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-08",
+  "lastClose": 135.3,
+  "predictedClose": 135.3,
+  "lower": 132.52003846668728,
+  "upper": 138.13827864683094,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 132.52008899902359,
+    "upper": 138.13822597217606
+   },
+   {
+    "level": 0.5,
+    "lower": 134.3368185551459,
+    "upper": 136.27008735870325
+   },
+   {
+    "level": 0.25,
+    "lower": 134.84412131728166,
+    "upper": 135.75741990951659
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-09",
+  "actualClose": 136.68,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-08",
+  "lastClose": 0.8918,
+  "predictedClose": 0.8910065132277947,
+  "lower": 0.8841629277808072,
+  "upper": 0.8979030692985197,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.884163052995355,
+    "upper": 0.8979029421381203
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8886454897299071,
+    "upper": 0.8933738096793201
+   },
+   {
+    "level": 0.25,
+    "lower": 0.88989035027406,
+    "upper": 0.892124076151468
+   }
+  ],
+  "probUp": 0.410491995303282,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-11",
+  "actualClose": 0.8925,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-08",
+  "lastClose": 61.01,
+  "predictedClose": 60.981780253558064,
+  "lower": 60.02096106212726,
+  "upper": 61.95798029698266,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.02097857006611,
+    "upper": 61.95796222402623
+   },
+   {
+    "level": 0.5,
+    "lower": 60.649412473833145,
+    "upper": 61.315969458033756
+   },
+   {
+    "level": 0.25,
+    "lower": 60.82453844754508,
+    "upper": 61.139428556458476
+   }
+  ],
+  "probUp": 0.47723338395539655,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-09",
+  "actualClose": 61.22,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-08",
+  "lastClose": 310.8,
+  "predictedClose": 310.8,
+  "lower": 300.3775841234819,
+  "upper": 321.5840498946493,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 300.37777230941884,
+    "upper": 321.58384842303144
+   },
+   {
+    "level": 0.5,
+    "lower": 307.1731703086723,
+    "upper": 314.46965209537
+   },
+   {
+    "level": 0.25,
+    "lower": 309.081326484507,
+    "upper": 312.52823034859733
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-09",
+  "actualClose": 316.2,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-09",
+  "lastClose": 136.68,
+  "predictedClose": 136.68,
+  "lower": 133.87181212455056,
+  "upper": 139.5470943697941,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 133.87186316999149,
+    "upper": 139.5470411603833
+   },
+   {
+    "level": 0.5,
+    "lower": 135.70703919514048,
+    "upper": 137.6599365132193
+   },
+   {
+    "level": 0.25,
+    "lower": 136.21949273630167,
+    "upper": 137.14206406688163
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-12",
+  "actualClose": 137.12,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-09",
+  "lastClose": 61.22,
+  "predictedClose": 61.33692855782379,
+  "lower": 60.3708899219429,
+  "upper": 62.31842548241337,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.37090752504487,
+    "upper": 62.31840731144918
+   },
+   {
+    "level": 0.5,
+    "lower": 61.002755941821576,
+    "upper": 61.67293176878127
+   },
+   {
+    "level": 0.25,
+    "lower": 61.17883298063526,
+    "upper": 61.49543267846285
+   }
+  ],
+  "probUp": 0.5931238904084302,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-12",
+  "actualClose": 61.51,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-09",
+  "lastClose": 316.2,
+  "predictedClose": 316.2,
+  "lower": 305.5970072126553,
+  "upper": 327.17087419126904,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 305.59719865922807,
+    "upper": 327.17066922949965
+   },
+   {
+    "level": 0.5,
+    "lower": 312.51033450117563,
+    "upper": 319.93322767898377
+   },
+   {
+    "level": 0.25,
+    "lower": 314.4515502628295,
+    "upper": 317.9581716688348
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-12",
+  "actualClose": 318.4,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-11",
+  "lastClose": 0.8925,
+  "predictedClose": 0.8920869280372634,
+  "lower": 0.8852376968617932,
+  "upper": 0.8989891528525902,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8852378221798269,
+    "upper": 0.8989890255878595
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8897239590921953,
+    "upper": 0.8944561726616344
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8909698456860323,
+    "upper": 0.8932054109667356
+   }
+  ],
+  "probUp": 0.4531429301614577,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-12",
+  "actualClose": 0.896,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-12",
+  "lastClose": 137.12,
+  "predictedClose": 137.12,
+  "lower": 134.30382403383328,
+  "upper": 139.9952275019623,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.30387522467777,
+    "upper": 139.9951741418198
+   },
+   {
+    "level": 0.5,
+    "lower": 136.14427403350965,
+    "upper": 138.102718850829
+   },
+   {
+    "level": 0.25,
+    "lower": 136.65818429914793,
+    "upper": 137.58337633728704
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-13",
+  "actualClose": 137.1,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-12",
+  "lastClose": 0.896,
+  "predictedClose": 0.8962631597801592,
+  "lower": 0.8893805758036711,
+  "upper": 0.9031990055024988,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8893807017318582,
+    "upper": 0.9031988776177658
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8938886830693987,
+    "upper": 0.898643943920197
+   },
+   {
+    "level": 0.25,
+    "lower": 0.895140637039772,
+    "upper": 0.8973870901846058
+   }
+  ],
+  "probUp": 0.5297592959145239,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-13",
+  "actualClose": 0.8925,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-12",
+  "lastClose": 61.51,
+  "predictedClose": 61.486009315425974,
+  "lower": 60.51805726691954,
+  "upper": 62.469443208699424,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.5180749049511,
+    "upper": 62.46942500194032
+   },
+   {
+    "level": 0.5,
+    "lower": 61.15117559635355,
+    "upper": 61.822676419029996
+   },
+   {
+    "level": 0.25,
+    "lower": 61.32760107643914,
+    "upper": 61.64482672042841
+   }
+  ],
+  "probUp": 0.4807840181420874,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-13",
+  "actualClose": 61.19,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-12",
+  "lastClose": 318.4,
+  "predictedClose": 318.4,
+  "lower": 307.72703209879455,
+  "upper": 329.4431409179964,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 307.72722481002637,
+    "upper": 329.4429346073798
+   },
+   {
+    "level": 0.5,
+    "lower": 314.6859992345461,
+    "upper": 322.157834306569
+   },
+   {
+    "level": 0.25,
+    "lower": 316.6400202911366,
+    "upper": 320.16976220121154
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-13",
+  "actualClose": 312.8,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-13",
+  "lastClose": 137.1,
+  "predictedClose": 137.1,
+  "lower": 134.2853788833238,
+  "upper": 139.9736155663796,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.28543004612385,
+    "upper": 139.9735622363787
+   },
+   {
+    "level": 0.5,
+    "lower": 136.12481545721724,
+    "upper": 138.0821706671664
+   },
+   {
+    "level": 0.25,
+    "lower": 136.63844091389507,
+    "upper": 137.56311821389164
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-14",
+  "actualClose": 138.02,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-13",
+  "lastClose": 0.8925,
+  "predictedClose": 0.8916270861956214,
+  "lower": 0.8847801245512246,
+  "upper": 0.8985270337542118,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8847802498276441,
+    "upper": 0.8985269065313795
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8892648991313838,
+    "upper": 0.8939955480242535
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8905103733304539,
+    "upper": 0.8927451994348448
+   }
+  ],
+  "probUp": 0.4017591767896895,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-14",
+  "actualClose": 0.8932,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-13",
+  "lastClose": 61.19,
+  "predictedClose": 61.23299565739795,
+  "lower": 60.2693557324787,
+  "upper": 62.21204311229014,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.26937329198276,
+    "upper": 62.212024986788514
+   },
+   {
+    "level": 0.5,
+    "lower": 60.899654181636684,
+    "upper": 61.568161717238645
+   },
+   {
+    "level": 0.25,
+    "lower": 61.075293469668615,
+    "upper": 61.39110504710048
+   }
+  ],
+  "probUp": 0.5345815436233532,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-14",
+  "actualClose": 61.24,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-13",
+  "lastClose": 312.8,
+  "predictedClose": 312.8,
+  "lower": 302.3141237400987,
+  "upper": 323.64958272381926,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 302.3143130730052,
+    "upper": 323.6493800290954
+   },
+   {
+    "level": 0.5,
+    "lower": 309.15110130840685,
+    "upper": 316.49196650408084
+   },
+   {
+    "level": 0.25,
+    "lower": 311.07087034654376,
+    "upper": 314.53874125532417
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-14",
+  "actualClose": 314.9,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-14",
+  "lastClose": 138.02,
+  "predictedClose": 138.02,
+  "lower": 135.18720687176375,
+  "upper": 140.9121531600993,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 135.1872583650224,
+    "upper": 140.91209948620994
+   },
+   {
+    "level": 0.5,
+    "lower": 137.03852107766707,
+    "upper": 139.00850833907953
+   },
+   {
+    "level": 0.25,
+    "lower": 137.55546197941484,
+    "upper": 138.4861068101444
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-15",
+  "actualClose": 139.08,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-14",
+  "lastClose": 0.8932,
+  "predictedClose": 0.8944954128225286,
+  "lower": 0.8876290270329881,
+  "upper": 0.9014149145562024,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8876291526649885,
+    "upper": 0.9014147869730121
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8921265267434535,
+    "upper": 0.8968705890645878
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8933755333273319,
+    "upper": 0.8956166961283705
+   }
+  ],
+  "probUp": 0.643794318297565,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-15",
+  "actualClose": 0.8918,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-14",
+  "lastClose": 61.24,
+  "predictedClose": 60.98393887199329,
+  "lower": 60.024710761533534,
+  "upper": 61.95849597873179,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.024728240717124,
+    "upper": 61.958477936435585
+   },
+   {
+    "level": 0.5,
+    "lower": 60.65212441657245,
+    "upper": 61.31756861144392
+   },
+   {
+    "level": 0.25,
+    "lower": 60.826959226692075,
+    "upper": 61.14132364372778
+   }
+  ],
+  "probUp": 0.30222922924768875,
+  "signal": "SELL",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-15",
+  "actualClose": 60.62,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-14",
+  "lastClose": 314.9,
+  "predictedClose": 314.9,
+  "lower": 304.34751213300495,
+  "upper": 325.8183689593116,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 304.347702669842,
+    "upper": 325.8181649807669
+   },
+   {
+    "level": 0.5,
+    "lower": 311.2279365175523,
+    "upper": 318.6153888033363
+   },
+   {
+    "level": 0.25,
+    "lower": 313.1598950411794,
+    "upper": 316.64977402984675
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-15",
+  "actualClose": 317,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-15",
+  "lastClose": 139.08,
+  "predictedClose": 139.08,
+  "lower": 136.22603216256056,
+  "upper": 141.99375914375472,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.22608404083473,
+    "upper": 141.99370506900667
+   },
+   {
+    "level": 0.5,
+    "lower": 138.09118604526316,
+    "upper": 140.07589444310895
+   },
+   {
+    "level": 0.25,
+    "lower": 138.6119904593017,
+    "upper": 139.54958972816593
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-16",
+  "actualClose": 139.52,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-15",
+  "lastClose": 0.8918,
+  "predictedClose": 0.890165169990332,
+  "lower": 0.8833334395146123,
+  "upper": 0.8970497372989,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8833335645126361,
+    "upper": 0.8970496103599395
+   },
+   {
+    "level": 0.5,
+    "lower": 0.887808241144816,
+    "upper": 0.8925283559455768
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8890509433817103,
+    "upper": 0.8912807930329204
+   }
+  ],
+  "probUp": 0.32032276733228787,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-18",
+  "actualClose": 0.8908,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-15",
+  "lastClose": 60.62,
+  "predictedClose": 60.85277626041544,
+  "lower": 59.89583318580566,
+  "upper": 61.82500821238674,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.89585062338341,
+    "upper": 61.82499021317016
+   },
+   {
+    "level": 0.5,
+    "lower": 60.521752641308154,
+    "upper": 61.18561041262239
+   },
+   {
+    "level": 0.25,
+    "lower": 60.696170808157845,
+    "upper": 61.009785778816756
+   }
+  ],
+  "probUp": 0.6822208232510274,
+  "signal": "BUY",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-16",
+  "actualClose": 60.35,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-15",
+  "lastClose": 317,
+  "predictedClose": 317,
+  "lower": 306.380954269064,
+  "upper": 327.98709776114373,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 306.3811460088772,
+    "upper": 327.98689249986813
+   },
+   {
+    "level": 0.5,
+    "lower": 313.30479062842585,
+    "upper": 320.7387917638905
+   },
+   {
+    "level": 0.25,
+    "lower": 315.24892871926806,
+    "upper": 318.7607977233963
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-16",
+  "actualClose": 317,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-16",
+  "lastClose": 139.52,
+  "predictedClose": 139.52,
+  "lower": 136.6580729105175,
+  "upper": 142.44186227290106,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.65812493367605,
+    "upper": 142.44180804798327
+   },
+   {
+    "level": 0.5,
+    "lower": 138.52843093747387,
+    "upper": 140.51866658899854
+   },
+   {
+    "level": 0.25,
+    "lower": 139.05068678882714,
+    "upper": 139.99089720112121
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-19",
+  "actualClose": 137.88,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-16",
+  "lastClose": 60.35,
+  "predictedClose": 60.18999709306211,
+  "lower": 59.24345097618312,
+  "upper": 61.15166639295316,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.24346822430202,
+    "upper": 61.151648589282225
+   },
+   {
+    "level": 0.5,
+    "lower": 59.86256992019474,
+    "upper": 60.51921517723975
+   },
+   {
+    "level": 0.25,
+    "lower": 60.035093093656265,
+    "upper": 60.34530077951424
+   }
+  ],
+  "probUp": 0.3713547088698868,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-19",
+  "actualClose": 60.56,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-16",
+  "lastClose": 317,
+  "predictedClose": 317,
+  "lower": 306.38522230343676,
+  "upper": 327.98252880642536,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 306.38541396752794,
+    "upper": 327.98232363192807
+   },
+   {
+    "level": 0.5,
+    "lower": 313.3062925617016,
+    "upper": 320.737254200568
+   },
+   {
+    "level": 0.25,
+    "lower": 315.24964265659554,
+    "upper": 318.7600758344511
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-19",
+  "actualClose": 315.3,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-18",
+  "lastClose": 0.8908,
+  "predictedClose": 0.8903192919608004,
+  "lower": 0.8834897108824713,
+  "upper": 0.8972016672903028,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8834898358414044,
+    "upper": 0.8972015403919973
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8879631075609358,
+    "upper": 0.8926817284277598
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8892054176663547,
+    "upper": 0.8914345615638205
+   }
+  ],
+  "probUp": 0.44536124172374786,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-19",
+  "actualClose": 0.8916,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-19",
+  "lastClose": 137.88,
+  "predictedClose": 137.88,
+  "lower": 135.05138242706587,
+  "upper": 140.76786226358533,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 135.05143384467186,
+    "upper": 140.76780866958586
+   },
+   {
+    "level": 0.5,
+    "lower": 136.8999708682569,
+    "upper": 138.86704488998595
+   },
+   {
+    "level": 0.25,
+    "lower": 137.41614857655875,
+    "upper": 138.34541716476974
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-20",
+  "actualClose": 137.46,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-19",
+  "lastClose": 0.8916,
+  "predictedClose": 0.8918737282027773,
+  "lower": 0.8850352126721054,
+  "upper": 0.898765083771895,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8850353377947212,
+    "upper": 0.8987649567082249
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8895144640533312,
+    "upper": 0.8942392498416203
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8907583983140254,
+    "upper": 0.8929904546102299
+   }
+  ],
+  "probUp": 0.5311515059399377,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-20",
+  "actualClose": 0.8907,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-19",
+  "lastClose": 60.56,
+  "predictedClose": 60.636326407316375,
+  "lower": 59.68297187145486,
+  "upper": 61.60490948898498,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.68298924366861,
+    "upper": 61.604891557348694
+   },
+   {
+    "level": 0.5,
+    "lower": 60.306544461127395,
+    "upper": 60.96791174205967
+   },
+   {
+    "level": 0.25,
+    "lower": 60.48030842746499,
+    "upper": 60.792746858826206
+   }
+  ],
+  "probUp": 0.5618970144694978,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-20",
+  "actualClose": 60.4,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-19",
+  "lastClose": 315.3,
+  "predictedClose": 315.3,
+  "lower": 304.74584554847496,
+  "upper": 326.21967272786503,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 304.74603611909487,
+    "upper": 326.2194687288695
+   },
+   {
+    "level": 0.5,
+    "lower": 311.62740261332675,
+    "upper": 319.0158797535367
+   },
+   {
+    "level": 0.25,
+    "lower": 313.5596481041125,
+    "upper": 317.0500113809005
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-20",
+  "actualClose": 312.9,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-20",
+  "lastClose": 137.46,
+  "predictedClose": 137.46,
+  "lower": 134.6410346246001,
+  "upper": 140.33798576104874,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.64108586694965,
+    "upper": 140.33793235054577
+   },
+   {
+    "level": 0.5,
+    "lower": 136.48331751105553,
+    "upper": 138.4436716851452
+   },
+   {
+    "level": 0.25,
+    "lower": 136.9977328772972,
+    "upper": 137.9238269360533
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-21",
+  "actualClose": 139.14,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-20",
+  "lastClose": 0.8907,
+  "predictedClose": 0.8899684256192576,
+  "lower": 0.8831475604738295,
+  "upper": 0.8968419707509242,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8831476852737157,
+    "upper": 0.8968418440158629
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8876152534444446,
+    "upper": 0.892327836329588
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8888559760274574,
+    "upper": 0.8910822674997162
+   }
+  ],
+  "probUp": 0.4170961776757454,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-21",
+  "actualClose": 0.8901,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-20",
+  "lastClose": 60.4,
+  "predictedClose": 60.483421835907805,
+  "lower": 59.53284328897707,
+  "upper": 61.44917855213074,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.532860610660464,
+    "upper": 61.4491606728754
+   },
+   {
+    "level": 0.5,
+    "lower": 60.15460082398393,
+    "upper": 60.81404027074535
+   },
+   {
+    "level": 0.25,
+    "lower": 60.32785855675245,
+    "upper": 60.639386255339005
+   }
+  ],
+  "probUp": 0.5677977786839532,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-21",
+  "actualClose": 60.69,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-20",
+  "lastClose": 312.9,
+  "predictedClose": 312.9,
+  "lower": 302.4293811480572,
+  "upper": 323.73312946095336,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 302.429570211326,
+    "upper": 323.73292707980505
+   },
+   {
+    "level": 0.5,
+    "lower": 309.2564835805339,
+    "upper": 316.58644263962236
+   },
+   {
+    "level": 0.25,
+    "lower": 311.1734304993347,
+    "upper": 314.6361495031605
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-21",
+  "actualClose": 313.9,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-21",
+  "lastClose": 139.14,
+  "predictedClose": 139.14,
+  "lower": 136.28625669699395,
+  "upper": 142.05349878412954,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.28630857146464,
+    "upper": 142.05344471450113
+   },
+   {
+    "level": 0.5,
+    "lower": 138.15126728704132,
+    "upper": 140.1358089591406
+   },
+   {
+    "level": 0.25,
+    "lower": 138.67202936433472,
+    "upper": 139.60954987638777
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-22",
+  "actualClose": 137.16,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-21",
+  "lastClose": 0.8901,
+  "predictedClose": 0.8902969237464802,
+  "lower": 0.8834769636187148,
+  "upper": 0.8971695302454131,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.883477088402284,
+    "upper": 0.8971694035279036
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8879440667833366,
+    "upper": 0.8926560152643623
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8891846235602406,
+    "upper": 0.8914106153329664
+   }
+  ],
+  "probUp": 0.5224818965995488,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-22",
+  "actualClose": 0.8911,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-21",
+  "lastClose": 60.69,
+  "predictedClose": 60.77495395109329,
+  "lower": 59.82019543573366,
+  "upper": 61.74495086238279,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.820212833644085,
+    "upper": 61.74493290468799
+   },
+   {
+    "level": 0.5,
+    "lower": 60.44468774319257,
+    "upper": 61.10702471406996
+   },
+   {
+    "level": 0.25,
+    "lower": 60.61870705340983,
+    "upper": 60.9316035807752
+   }
+  ],
+  "probUp": 0.5687322107331707,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-22",
+  "actualClose": 60.15,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-21",
+  "lastClose": 313.9,
+  "predictedClose": 313.9,
+  "lower": 303.4000657297522,
+  "upper": 324.7633113163745,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 303.4002553236596,
+    "upper": 324.7631083727576
+   },
+   {
+    "level": 0.5,
+    "lower": 310.2462987953444,
+    "upper": 317.596730025772
+   },
+   {
+    "level": 0.25,
+    "lower": 312.16860633192954,
+    "upper": 315.6409965684679
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-22",
+  "actualClose": 302,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-22",
+  "lastClose": 137.16,
+  "predictedClose": 137.16,
+  "lower": 134.34586168724024,
+  "upper": 140.03308597474117,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.34591284159166,
+    "upper": 140.0330326549078
+   },
+   {
+    "level": 0.5,
+    "lower": 136.18498679654283,
+    "upper": 138.1419937875089
+   },
+   {
+    "level": 0.25,
+    "lower": 136.69852254325804,
+    "upper": 137.62303534807185
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-23",
+  "actualClose": 136,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-22",
+  "lastClose": 0.8911,
+  "predictedClose": 0.8904321512886726,
+  "lower": 0.8836144020880181,
+  "upper": 0.8973025045483525,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.883614526831364,
+    "upper": 0.8973023778726208
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8880800599152653,
+    "upper": 0.8927904722061026
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8893202134014295,
+    "upper": 0.8915454794578934
+   }
+  ],
+  "probUp": 0.42418886995194677,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-26",
+  "actualClose": 0.8915,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-22",
+  "lastClose": 60.15,
+  "predictedClose": 60.01276140141059,
+  "lower": 59.0696695949587,
+  "upper": 60.97091037952935,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.06968678022989,
+    "upper": 60.97089264113109
+   },
+   {
+    "level": 0.5,
+    "lower": 59.686530340028405,
+    "upper": 60.34077555698177
+   },
+   {
+    "level": 0.25,
+    "lower": 59.858423433805406,
+    "upper": 60.167497311475294
+   }
+  ],
+  "probUp": 0.38872306747181595,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-23",
+  "actualClose": 60.14,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-22",
+  "lastClose": 302,
+  "predictedClose": 302,
+  "lower": 291.8811732633735,
+  "upper": 312.4696224161871,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 291.8813559704119,
+    "upper": 312.46942682164797
+   },
+   {
+    "level": 0.5,
+    "lower": 298.4788476732207,
+    "upper": 305.5626913296434
+   },
+   {
+    "level": 0.25,
+    "lower": 300.33140901775255,
+    "upper": 303.67786139414056
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-23",
+  "actualClose": 271.8,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-23",
+  "lastClose": 136,
+  "predictedClose": 136,
+  "lower": 133.21003290797037,
+  "upper": 138.84840050132084,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 133.2100836230173,
+    "upper": 138.84834763968337
+   },
+   {
+    "level": 0.5,
+    "lower": 135.0333622676541,
+    "upper": 136.97355741863603
+   },
+   {
+    "level": 0.25,
+    "lower": 135.5424868011373,
+    "upper": 136.45905749934053
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-26",
+  "actualClose": 137.1,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-23",
+  "lastClose": 60.14,
+  "predictedClose": 60.058067188864825,
+  "lower": 59.11471207457823,
+  "upper": 61.016476404582676,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.114729264712885,
+    "upper": 61.016458661433745
+   },
+   {
+    "level": 0.5,
+    "lower": 59.73174585426738,
+    "upper": 60.38617125410057
+   },
+   {
+    "level": 0.25,
+    "lower": 59.90368661976449,
+    "upper": 60.2128456192899
+   }
+  ],
+  "probUp": 0.43298663031722046,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-26",
+  "actualClose": 60.42,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-23",
+  "lastClose": 271.8,
+  "predictedClose": 271.8,
+  "lower": 262.5614876103711,
+  "upper": 281.36357952704543,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 262.561654380306,
+    "upper": 281.36340081478846
+   },
+   {
+    "level": 0.5,
+    "lower": 268.5846555892667,
+    "upper": 275.0538367053022
+   },
+   {
+    "level": 0.25,
+    "lower": 270.2762550783856,
+    "upper": 273.33233538615775
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-26",
+  "actualClose": 274.4,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-26",
+  "lastClose": 137.1,
+  "predictedClose": 137.1,
+  "lower": 134.2879707344341,
+  "upper": 139.97091397837485,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 134.28802185061573,
+    "upper": 139.97086069902377
+   },
+   {
+    "level": 0.5,
+    "lower": 136.12571959646067,
+    "upper": 138.08125353328683
+   },
+   {
+    "level": 0.25,
+    "lower": 136.63886965346515,
+    "upper": 137.5626865742542
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-27",
+  "actualClose": 138.16,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-26",
+  "lastClose": 0.8915,
+  "predictedClose": 0.8933156013775124,
+  "lower": 0.8864788841410618,
+  "upper": 0.9002050448586679,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8864790092316827,
+    "upper": 0.900204917831173
+   },
+   {
+    "level": 0.5,
+    "lower": 0.890956968829628,
+    "upper": 0.8956804779390701
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8922005715418824,
+    "upper": 0.8944320247243931
+   }
+  ],
+  "probUp": 0.6981346901814298,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-27",
+  "actualClose": 0.8949,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-26",
+  "lastClose": 60.42,
+  "predictedClose": 60.57250261186312,
+  "lower": 59.621285121216665,
+  "upper": 61.53889613758953,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.62130245465397,
+    "upper": 61.5388782466587
+   },
+   {
+    "level": 0.5,
+    "lower": 60.24346195117746,
+    "upper": 60.903340442779
+   },
+   {
+    "level": 0.25,
+    "lower": 60.416835598323765,
+    "upper": 60.728570709286856
+   }
+  ],
+  "probUp": 0.622538007830518,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-27",
+  "actualClose": 60.98,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-26",
+  "lastClose": 274.4,
+  "predictedClose": 274.4,
+  "lower": 265.0759313793479,
+  "upper": 284.0520435340674,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 265.07609969460947,
+    "upper": 284.05186316965853
+   },
+   {
+    "level": 0.5,
+    "lower": 271.1548900787448,
+    "upper": 277.68394653747094
+   },
+   {
+    "level": 0.25,
+    "lower": 272.8621507456675,
+    "upper": 275.9465165624314
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-27",
+  "actualClose": 274.6,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-27",
+  "lastClose": 138.16,
+  "predictedClose": 138.16,
+  "lower": 135.32679295532915,
+  "upper": 141.05252317847314,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 135.3268444565814,
+    "upper": 141.05246949820292
+   },
+   {
+    "level": 0.5,
+    "lower": 137.17838349133683,
+    "upper": 139.14864072738888
+   },
+   {
+    "level": 0.25,
+    "lower": 137.6953976244334,
+    "upper": 138.62617000506697
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-28",
+  "actualClose": 137.94,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-27",
+  "lastClose": 0.8949,
+  "predictedClose": 0.8959863944695251,
+  "lower": 0.8891319657350415,
+  "upper": 0.9028936648462917,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8891320911499204,
+    "upper": 0.9028935374902998
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8936216539209714,
+    "upper": 0.8983573926975312
+   },
+   {
+    "level": 0.25,
+    "lower": 0.894868477423292,
+    "upper": 0.8971057080768772
+   }
+  ],
+  "probUp": 0.6215858693314937,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-28",
+  "actualClose": 0.8985,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-27",
+  "lastClose": 60.98,
+  "predictedClose": 60.98152968714065,
+  "lower": 60.02404136475249,
+  "upper": 61.95429162101289,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.02405881248142,
+    "upper": 61.95427361220595
+   },
+   {
+    "level": 0.5,
+    "lower": 60.650320124833016,
+    "upper": 61.31454797484228
+   },
+   {
+    "level": 0.25,
+    "lower": 60.82483661631492,
+    "upper": 61.138626420677376
+   }
+  ],
+  "probUp": 0.501239398171414,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-28",
+  "actualClose": 61.07,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-27",
+  "lastClose": 274.6,
+  "predictedClose": 274.6,
+  "lower": 265.2728731436754,
+  "upper": 284.25507330016194,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 265.2730415153364,
+    "upper": 284.2548928804006
+   },
+   {
+    "level": 0.5,
+    "lower": 271.3538405865948,
+    "upper": 277.8849926612209
+   },
+   {
+    "level": 0.25,
+    "lower": 273.06165535597074,
+    "upper": 276.14701120045487
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-28",
+  "actualClose": 271.9,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 137.94,
+  "predictedClose": 137.94,
+  "lower": 135.1124125491603,
+  "upper": 140.82676225677574,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 135.11246394847262,
+    "upper": 140.8267086836373
+   },
+   {
+    "level": 0.5,
+    "lower": 136.96033312526953,
+    "upper": 138.92667435758003
+   },
+   {
+    "level": 0.25,
+    "lower": 137.47632073730554,
+    "upper": 138.40524315717096
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-29",
+  "actualClose": 139.42,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 0.8985,
+  "predictedClose": 0.8975090340495606,
+  "lower": 0.8906446167444957,
+  "upper": 0.9044263571085618,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8906447423422517,
+    "upper": 0.9044262295673372
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8951408489434525,
+    "upper": 0.8998834844274451
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8963894887984872,
+    "upper": 0.8986299775561745
+   }
+  ],
+  "probUp": 0.3890822398827977,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-29",
+  "actualClose": 0.8964,
+  "replayed": true
+ },
+ {
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 61.07,
+  "predictedClose": 61.0469917155618,
+  "lower": 60.08894632734878,
+  "upper": 62.02031197580995,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 60.08896378529736,
+    "upper": 62.020293956737085
+   },
+   {
+    "level": 0.5,
+    "lower": 60.71559030427349,
+    "upper": 61.38020200155352
+   },
+   {
+    "level": 0.25,
+    "lower": 60.890207993599795,
+    "upper": 61.204179133557744
+   }
+  ],
+  "probUp": 0.48137930423931913,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-29",
+  "actualClose": 60.79,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-28",
+  "lastClose": 271.9,
+  "predictedClose": 271.9,
+  "lower": 262.66693092640514,
+  "upper": 281.4576229267087,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 262.66709760090106,
+    "upper": 281.4574443287501
+   },
+   {
+    "level": 0.5,
+    "lower": 268.68658526550456,
+    "upper": 275.15184625591155
+   },
+   {
+    "level": 0.25,
+    "lower": 270.3771741880264,
+    "upper": 273.43140271370567
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-29",
+  "actualClose": 279,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-29",
+  "lastClose": 139.42,
+  "predictedClose": 139.42,
+  "lower": 136.56209083297776,
+  "upper": 142.33771818691298,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.5621427834752,
+    "upper": 142.3376640392911
+   },
+   {
+    "level": 0.5,
+    "lower": 138.4298276777123,
+    "upper": 140.41725490878127
+   },
+   {
+    "level": 0.25,
+    "lower": 138.9513484826243,
+    "upper": 139.89023217310253
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-30",
+  "actualClose": 139.2,
+  "replayed": true
+ },
+ {
+  "symbol": "EUR=X",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-29",
+  "lastClose": 0.8964,
+  "predictedClose": 0.8963827839736034,
+  "lower": 0.889530088879009,
+  "upper": 0.903288270346027,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 0.8895302142625039,
+    "upper": 0.903288143023269
+   },
+   {
+    "level": 0.5,
+    "lower": 0.8940186456681966,
+    "upper": 0.8987531739941774
+   },
+   {
+    "level": 0.25,
+    "lower": 0.8952651521774919,
+    "upper": 0.8975018109997522
+   }
+  ],
+  "probUp": 0.49804309792411994,
+  "signal": "HOLD",
+  "hurdle": 0.003,
   "targetDate": null,
   "actualClose": null
  },
  {
-  "symbol": "MC.PA",
-  "madeAt": "2026-10-29T09:16:39.153Z",
-  "basedOn": "2026-10-28",
-  "lastClose": 385,
-  "predictedClose": 385,
-  "lower": 371.11614257696516,
-  "upper": 399.40326758828564,
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-29",
+  "lastClose": 60.79,
+  "predictedClose": 60.79078066516777,
+  "lower": 59.837107416801345,
+  "upper": 61.75965338930956,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.8371247951299,
+    "upper": 61.75963545262642
+   },
+   {
+    "level": 0.5,
+    "lower": 60.460892271549454,
+    "upper": 61.12246900496875
+   },
+   {
+    "level": 0.25,
+    "lower": 60.63471282448976,
+    "upper": 60.947250209255586
+   }
+  ],
+  "probUp": 0.5006350500616392,
   "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-30",
+  "actualClose": 59.87,
+  "replayed": true
+ },
+ {
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-29",
+  "lastClose": 279,
+  "predictedClose": 279,
+  "lower": 269.5219953396829,
+  "upper": 288.8113079672616,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 269.5221664345082,
+    "upper": 288.81112462753504
+   },
+   {
+    "level": 0.5,
+    "lower": 275.7013242656321,
+    "upper": 282.33814330540514
+   },
+   {
+    "level": 0.25,
+    "lower": 277.43676728930853,
+    "upper": 280.5720408313009
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
+  "targetDate": "2026-10-30",
+  "actualClose": 275.7,
+  "replayed": true
+ },
+ {
+  "symbol": "C40.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-30",
+  "lastClose": 139.2,
+  "predictedClose": 139.2,
+  "lower": 136.3477167380031,
+  "upper": 142.11195070639056,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 136.34776858644696,
+    "upper": 142.1118966660232
+   },
+   {
+    "level": 0.5,
+    "lower": 138.2117795110879,
+    "upper": 140.19528631020574
+   },
+   {
+    "level": 0.25,
+    "lower": 138.73227263818225,
+    "upper": 139.66930427597643
+   }
+  ],
+  "probUp": 0.5000000005,
+  "signal": "HOLD",
+  "hurdle": 0.003,
   "targetDate": null,
   "actualClose": null
  },
  {
-  "symbol": "MSFT",
-  "madeAt": "2026-10-29T09:16:39.153Z",
-  "basedOn": "2026-10-28",
-  "lastClose": 531.01,
-  "predictedClose": 531.01,
-  "lower": 512.8342124750064,
-  "upper": 549.8299708577696,
-  "signal": "HOLD",
+  "symbol": "PSP5.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-30",
+  "lastClose": 59.87,
+  "predictedClose": 60.125202349959686,
+  "lower": 59.180740541037835,
+  "upper": 61.08473676696919,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 59.18075775133145,
+    "upper": 61.084719002981466
+   },
+   {
+    "level": 0.5,
+    "lower": 59.798498098201044,
+    "upper": 60.45369152394067
+   },
+   {
+    "level": 0.25,
+    "lower": 59.97064061280717,
+    "upper": 60.28016243754415
+   }
+  ],
+  "probUp": 0.7007496915300832,
+  "signal": "BUY",
+  "hurdle": 0.003,
   "targetDate": null,
   "actualClose": null
  },
  {
-  "symbol": "NVDA",
-  "madeAt": "2026-10-29T09:16:39.153Z",
-  "basedOn": "2026-10-28",
-  "lastClose": 215.38,
-  "predictedClose": 215.26842794184532,
-  "lower": 203.03737451360232,
-  "upper": 228.23628496756845,
+  "symbol": "SAF.PA",
+  "madeAt": "2026-10-30T17:54:53.934Z",
+  "basedOn": "2026-10-30",
+  "lastClose": 275.7,
+  "predictedClose": 275.7,
+  "lower": 266.3359102229535,
+  "upper": 285.39332130004755,
+  "intervals": [
+   {
+    "level": 0.95,
+    "lower": 266.33607926199033,
+    "upper": 285.39314016569926
+   },
+   {
+    "level": 0.5,
+    "lower": 272.4409778173696,
+    "upper": 278.9980076013143
+   },
+   {
+    "level": 0.25,
+    "lower": 274.1555599403701,
+    "upper": 277.2531405765857
+   }
+  ],
+  "probUp": 0.5000000005,
   "signal": "HOLD",
+  "hurdle": 0.003,
   "targetDate": null,
   "actualClose": null
  }

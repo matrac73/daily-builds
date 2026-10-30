@@ -1,9 +1,9 @@
 {
  "range": "5y",
  "stocks": [
-  { "symbol": "AAPL", "name": "Apple", "market": "^GSPC" },
-  { "symbol": "MSFT", "name": "Microsoft", "market": "^GSPC" },
-  { "symbol": "NVDA", "name": "NVIDIA", "market": "^GSPC" },
-  { "symbol": "MC.PA", "name": "LVMH", "market": "^FCHI" }
+  { "symbol": "PSP5.PA", "name": "Amundi PEA S&P 500 ETF", "market": "^GSPC" },
+  { "symbol": "SAF.PA", "name": "Safran", "market": "^FCHI" },
+  { "symbol": "EUR=X", "name": "USD/EUR exchange rate", "market": "DX-Y.NYB" },
+  { "symbol": "C40.PA", "name": "Amundi CAC 40 ETF", "market": "^FCHI" }
  ]
 }
