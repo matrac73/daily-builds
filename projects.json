@@ -67,5 +67,21 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-10-30-high-frequency-stock-predictor",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-10-30-high-frequency-stock-predictor/"
+    },
+    {
+        "date":  "2026-11-01",
+        "title":  "RAG Prod Lab",
+        "tagline":  "Production-minded RAG over a fictional French doc base with an open source LLM and a KPI-driven spec",
+        "stack":  [
+                      "Python",
+                      "Rich",
+                      "pytest",
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "Ollama"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-01-projet-ai-engineer",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-01-projet-ai-engineer/"
     }
 ]
