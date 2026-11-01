@@ -262,7 +262,7 @@ def cmd_cdc(config: RAGConfig, args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ragprod", description="RAG de production sur une base documentaire fictive, avec un LLM open source.")
-    parser.add_argument("--config", default=DEFAULT_CONFIG, help="fichier TOML (défaut : %(default)s)")
+    parser.add_argument("--config", default=DEFAULT_CONFIG, help="fichier TOML, \"\" pour les valeurs intégrées (défaut : %(default)s)")
     parser.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                         help="surcharge un paramètre, ex. --set retrieval_mode=bm25")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -296,7 +296,9 @@ COMMANDS = {"ingest": cmd_ingest, "ask": cmd_ask, "chat": cmd_chat,
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    config_path = args.config if Path(args.config).exists() or args.config != DEFAULT_CONFIG else None
+    # --config "" uses built-in defaults; the default file is optional (e.g. installed package)
+    use_file = args.config and (args.config != DEFAULT_CONFIG or Path(DEFAULT_CONFIG).exists())
+    config_path = args.config if use_file else None
     try:
         config = load_config(config_path, args.set)
         return COMMANDS[args.command](config, args)
