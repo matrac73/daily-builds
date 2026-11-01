@@ -1,0 +1,23 @@
+# Offline configuration: extractive answers, hashing embeddings. Runs anywhere.
+# Every key maps to a field of ragprod.config.RAGConfig; see docs/CDC.md.
+chunk_size = 60
+chunk_overlap = 15
+sanitize = true
+
+retrieval_mode = "hybrid"
+embedding_backend = "hashing"
+candidates = 12
+top_k = 4
+mmr = true
+mmr_lambda = 0.7
+acl = true
+
+abstain_threshold = 0.4
+max_context_tokens = 450
+llm_backend = "extractive"
+grounding_check = true
+grounding_min = 0.6
+
+cache = true
+trace_path = "runs/traces.jsonl"
+index_path = "runs/index.json"

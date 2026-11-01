@@ -1,0 +1,30 @@
+# Open source LLM + embeddings served locally by Ollama (OpenAI-compatible API).
+#   ollama pull qwen2.5:3b     # Qwen2.5-3B-Instruct, Apache-2.0, good French
+#   ollama pull bge-m3         # multilingual embedding model, MIT
+# Works unchanged with llama.cpp `llama-server` or vLLM: just change llm_url.
+chunk_size = 60
+chunk_overlap = 15
+sanitize = true
+
+retrieval_mode = "hybrid"
+embedding_backend = "openai-compatible"
+embedding_model = "bge-m3"
+candidates = 12
+top_k = 4
+mmr = true
+mmr_lambda = 0.7
+acl = true
+
+abstain_threshold = 0.4
+max_context_tokens = 450
+llm_backend = "openai-compatible"
+llm_url = "http://localhost:11434/v1"
+llm_model = "qwen2.5:3b"
+llm_temperature = 0.1
+llm_timeout = 60.0
+grounding_check = true
+grounding_min = 0.6
+
+cache = true
+trace_path = "runs/traces-ollama.jsonl"
+index_path = "runs/index-ollama.json"
