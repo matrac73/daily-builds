@@ -1,0 +1,201 @@
+[
+  {
+    "feature": "",
+    "label": "Configuration de référence",
+    "overrides": {},
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 4.02,
+      "prompt_tokens_avg": 407.619
+    }
+  },
+  {
+    "feature": "F1",
+    "label": "Gros extraits (150 mots), sans chevauchement",
+    "overrides": {
+      "chunk_size": 150,
+      "chunk_overlap": 0
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.8696,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 3.56,
+      "prompt_tokens_avg": 458.619
+    }
+  },
+  {
+    "feature": "F2",
+    "label": "BM25 seul",
+    "overrides": {
+      "retrieval_mode": "bm25"
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 2.56,
+      "prompt_tokens_avg": 408.0476
+    }
+  },
+  {
+    "feature": "F2",
+    "label": "Vectoriel seul",
+    "overrides": {
+      "retrieval_mode": "vector"
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 0.971,
+      "answer_accuracy": 0.8696,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 4.94,
+      "prompt_tokens_avg": 390.381
+    }
+  },
+  {
+    "feature": "F3",
+    "label": "Sans MMR",
+    "overrides": {
+      "mmr": false
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 2.12,
+      "prompt_tokens_avg": 410.2857
+    }
+  },
+  {
+    "feature": "F4",
+    "label": "Sans seuil d'abstention",
+    "overrides": {
+      "abstain_threshold": 0.0
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.9565,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 0.5,
+      "false_abstention": 0.0,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 4.1,
+      "prompt_tokens_avg": 412.0769
+    }
+  },
+  {
+    "feature": "F5",
+    "label": "Sans ACL",
+    "overrides": {
+      "acl": false
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 0.5,
+      "false_abstention": 0.087,
+      "acl_leak": 0.3571,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 3.91,
+      "prompt_tokens_avg": 405.7826
+    }
+  },
+  {
+    "feature": "F6",
+    "label": "Sans quarantaine",
+    "overrides": {
+      "sanitize": false
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 0.971,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 0.0,
+      "latency_p95_ms": 4.45,
+      "prompt_tokens_avg": 408.9545
+    }
+  },
+  {
+    "feature": "F7",
+    "label": "Sans vérification d'ancrage",
+    "overrides": {
+      "grounding_check": false
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 4.33,
+      "prompt_tokens_avg": 407.619
+    }
+  },
+  {
+    "feature": "F8",
+    "label": "Budget contexte x4",
+    "overrides": {
+      "max_context_tokens": 1800
+    },
+    "kpis": {
+      "hit_rate": 1.0,
+      "mrr": 1.0,
+      "answer_accuracy": 0.913,
+      "groundedness": 1.0,
+      "citation_rate": 1.0,
+      "correct_abstention": 1.0,
+      "false_abstention": 0.087,
+      "acl_leak": 0.0,
+      "injection_resistance": 1.0,
+      "latency_p95_ms": 3.87,
+      "prompt_tokens_avg": 407.619
+    }
+  }
+]

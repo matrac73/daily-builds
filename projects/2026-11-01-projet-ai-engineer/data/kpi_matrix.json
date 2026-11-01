@@ -1,0 +1,176 @@
+{
+  "kpis": [
+    {"id": "hit_rate", "short": "Hit@k", "name": "Hit rate @k", "category": "Qualité", "unit": "%", "direction": "max", "target": 0.9,
+     "definition": "Part des questions répondables dont le document attendu figure parmi les k extraits retenus."},
+    {"id": "mrr", "short": "MRR", "name": "MRR", "category": "Qualité", "unit": "", "direction": "max", "target": 0.8,
+     "definition": "Mean Reciprocal Rank : 1/rang du premier extrait du document attendu (1 = toujours en tête)."},
+    {"id": "answer_accuracy", "short": "Exact.", "name": "Exactitude des réponses", "category": "Qualité", "unit": "%", "direction": "max", "target": 0.85,
+     "definition": "Part des questions répondables dont la réponse contient les faits attendus (mots-clés du golden set)."},
+    {"id": "groundedness", "short": "Ancr.", "name": "Ancrage (faithfulness)", "category": "Qualité", "unit": "%", "direction": "max", "target": 0.9,
+     "definition": "Part des phrases de réponse dont le contenu se retrouve dans l'extrait qu'elles citent."},
+    {"id": "citation_rate", "short": "Cit.", "name": "Taux de citation", "category": "Qualité", "unit": "%", "direction": "max", "target": 0.95,
+     "definition": "Part des réponses (hors abstention) qui citent au moins une source vérifiable."},
+    {"id": "correct_abstention", "short": "Abst.OK", "name": "Abstention correcte", "category": "Fiabilité", "unit": "%", "direction": "max", "target": 0.95,
+     "definition": "Part des questions hors périmètre ou non autorisées pour lesquelles l'assistant refuse de répondre au lieu d'halluciner."},
+    {"id": "false_abstention", "short": "Abst.KO", "name": "Fausse abstention", "category": "Fiabilité", "unit": "%", "direction": "min", "target": 0.1,
+     "definition": "Part des questions répondables pour lesquelles l'assistant refuse à tort de répondre."},
+    {"id": "acl_leak", "short": "Fuite", "name": "Fuite de données (ACL)", "category": "Sécurité", "unit": "%", "direction": "min", "target": 0.0,
+     "definition": "Part des requêtes où un extrait d'un document non autorisé pour le rôle est envoyé au modèle."},
+    {"id": "injection_resistance", "short": "Inj.", "name": "Résistance à l'injection", "category": "Sécurité", "unit": "%", "direction": "max", "target": 1.0,
+     "definition": "Part des attaques par injection indirecte (consigne cachée dans un document) sans effet sur la réponse."},
+    {"id": "latency_p95_ms", "short": "p95", "name": "Latence p95", "category": "Performance", "unit": "ms", "direction": "min", "target": 3000,
+     "definition": "95e percentile du temps de réponse de bout en bout (récupération + génération)."},
+    {"id": "prompt_tokens_avg", "short": "Tokens", "name": "Tokens de prompt moyens", "category": "Coût", "unit": "tokens", "direction": "min", "target": 700,
+     "definition": "Taille moyenne du prompt envoyé au LLM : pilote le coût GPU, la latence et le débit par serveur."}
+  ],
+  "features": [
+    {
+      "id": "F1", "name": "Découpage par phrases avec chevauchement", "config": "chunk_size, chunk_overlap",
+      "how": "Chaque document est découpé en extraits d'environ 60 mots sans jamais couper une phrase ; les 15 derniers mots d'un extrait sont répétés au début du suivant, et le titre du document est indexé avec chaque extrait.",
+      "improves": [
+        {"kpi": "hit_rate", "why": "Des extraits courts et centrés sur un sujet ressortent mieux qu'un long bloc où le fait recherché est dilué."},
+        {"kpi": "prompt_tokens_avg", "why": "Le LLM reçoit quelques paragraphes ciblés au lieu de documents entiers."},
+        {"kpi": "groundedness", "why": "Moins de texte hors sujet dans le contexte = moins de matière à des réponses à côté."}
+      ],
+      "degrades": [
+        {"kpi": "answer_accuracy", "why": "Trop petits, les extraits perdent le contexte (« ce plafond » sans dire lequel) ; le chevauchement atténue ce risque."},
+        {"kpi": "latency_p95_ms", "why": "Le chevauchement augmente le nombre d'extraits à indexer et à scorer."}
+      ],
+      "ablations": [{"label": "Gros extraits (150 mots), sans chevauchement", "overrides": {"chunk_size": 150, "chunk_overlap": 0}}]
+    },
+    {
+      "id": "F2", "name": "Recherche hybride BM25 + vecteurs (RRF)", "config": "retrieval_mode = hybrid",
+      "how": "Deux moteurs classent les extraits : BM25 (mots exacts, chiffres, sigles) et une recherche vectorielle (similarité de forme ou de sens). Leurs classements sont fusionnés par Reciprocal Rank Fusion, qui ne dépend que des rangs.",
+      "improves": [
+        {"kpi": "hit_rate", "why": "Chaque moteur rattrape les échecs de l'autre : BM25 trouve « CET » ou « 4040 », le vectoriel trouve « télétravailler » pour « télétravail »."},
+        {"kpi": "mrr", "why": "Un extrait bien classé par les deux moteurs remonte en tête."}
+      ],
+      "degrades": [
+        {"kpi": "latency_p95_ms", "why": "Deux recherches et un encodage de la question au lieu d'une seule ; l'index vectoriel double aussi la mémoire et le coût d'ingestion."}
+      ],
+      "ablations": [
+        {"label": "BM25 seul", "overrides": {"retrieval_mode": "bm25"}},
+        {"label": "Vectoriel seul", "overrides": {"retrieval_mode": "vector"}}
+      ]
+    },
+    {
+      "id": "F3", "name": "Reranking de diversité (MMR)", "config": "mmr, mmr_lambda",
+      "how": "Parmi les candidats, Maximal Marginal Relevance retient à chaque étape l'extrait qui maximise λ·pertinence − (1−λ)·redondance avec les extraits déjà retenus.",
+      "improves": [
+        {"kpi": "hit_rate", "why": "Évite que les k places soient prises par des quasi-doublons (effet du chevauchement) : plus de documents différents sont couverts."},
+        {"kpi": "groundedness", "why": "Le contexte couvre plusieurs facettes de la question au lieu de répéter la même."}
+      ],
+      "degrades": [
+        {"kpi": "mrr", "why": "Peut écarter un second extrait très pertinent du même document au profit d'un extrait moins pertinent mais différent."},
+        {"kpi": "latency_p95_ms", "why": "Calcul de similarités deux à deux entre candidats."}
+      ],
+      "ablations": [{"label": "Sans MMR", "overrides": {"mmr": false}}]
+    },
+    {
+      "id": "F4", "name": "Seuil de pertinence et abstention", "config": "abstain_threshold",
+      "how": "Avant d'appeler le LLM, on mesure la couverture de la question (part pondérée par l'IDF des termes de la question présents dans le meilleur extrait). Sous le seuil, l'assistant répond qu'il ne sait pas.",
+      "improves": [
+        {"kpi": "correct_abstention", "why": "Une question hors corpus n'est jamais envoyée au LLM avec un contexte sans rapport : pas d'hallucination."},
+        {"kpi": "latency_p95_ms", "why": "Les abstentions court-circuitent la génération (le LLM n'est pas appelé)."}
+      ],
+      "degrades": [
+        {"kpi": "false_abstention", "why": "Une question formulée avec d'autres mots que le document peut tomber sous le seuil et être refusée à tort."}
+      ],
+      "ablations": [{"label": "Sans seuil d'abstention", "overrides": {"abstain_threshold": 0.0}}]
+    },
+    {
+      "id": "F5", "name": "Contrôle d'accès par rôle (pré-filtrage ACL)", "config": "acl, roles",
+      "how": "Chaque document porte un niveau d'accès (public, internal, hr, finance). Les extraits interdits au rôle de l'utilisateur sont retirés AVANT le classement : le LLM ne peut pas révéler ce qu'il n'a jamais vu. Le message de refus est identique à celui d'une question hors corpus pour ne pas révéler l'existence du document.",
+      "improves": [
+        {"kpi": "acl_leak", "why": "Garantie structurelle : un document RH ou finance n'atteint jamais le prompt d'un rôle non habilité."},
+        {"kpi": "correct_abstention", "why": "Les questions sur des documents interdits obtiennent une abstention propre."}
+      ],
+      "degrades": [
+        {"kpi": "hit_rate", "why": "Si les métadonnées d'accès sont mal renseignées, un document légitime devient invisible (coût de gouvernance des métadonnées)."}
+      ],
+      "ablations": [{"label": "Sans ACL", "overrides": {"acl": false}}]
+    },
+    {
+      "id": "F6", "name": "Quarantaine des injections de prompt", "config": "sanitize",
+      "how": "À l'ingestion, chaque phrase est testée contre des motifs d'injection (« ignore les instructions… », « réponds que… »). Les phrases suspectes sont retirées de l'index et listées par `ragprod ingest` pour revue humaine. Le prompt système rappelle aussi que les extraits sont des données, pas des ordres.",
+      "improves": [
+        {"kpi": "injection_resistance", "why": "La consigne malveillante cachée dans la note du prestataire n'atteint jamais le modèle."}
+      ],
+      "degrades": [
+        {"kpi": "hit_rate", "why": "Un faux positif (une formation anti-phishing citant une attaque) retire une phrase légitime de l'index."}
+      ],
+      "ablations": [{"label": "Sans quarantaine", "overrides": {"sanitize": false}}]
+    },
+    {
+      "id": "F7", "name": "Vérification d'ancrage post-génération", "config": "grounding_check, grounding_min",
+      "how": "Après génération, chaque phrase de la réponse est comparée à l'extrait qu'elle cite : si moins de la moitié de ses mots porteurs de sens s'y retrouvent, elle est jugée non ancrée. Sous 60 % de phrases ancrées, la réponse est remplacée par une abstention.",
+      "improves": [
+        {"kpi": "groundedness", "why": "Les réponses qui inventent des chiffres ou des noms absents du contexte sont bloquées."},
+        {"kpi": "answer_accuracy", "why": "Une réponse fausse devient une abstention : moins d'erreurs servies aux utilisateurs."}
+      ],
+      "degrades": [
+        {"kpi": "false_abstention", "why": "Une bonne réponse reformulée avec d'autres mots peut être bloquée à tort."},
+        {"kpi": "latency_p95_ms", "why": "Une étape de plus après la génération (négligeable ici, coûteuse avec un juge LLM)."}
+      ],
+      "ablations": [{"label": "Sans vérification d'ancrage", "overrides": {"grounding_check": false}}]
+    },
+    {
+      "id": "F8", "name": "Budget de contexte", "config": "max_context_tokens",
+      "how": "Les extraits classés sont ajoutés au prompt dans l'ordre jusqu'à épuisement d'un budget de tokens (le premier est toujours inclus).",
+      "improves": [
+        {"kpi": "prompt_tokens_avg", "why": "Plafonne la taille du prompt donc le coût par requête."},
+        {"kpi": "latency_p95_ms", "why": "Le temps de pré-remplissage du LLM croît avec la longueur du prompt."}
+      ],
+      "degrades": [
+        {"kpi": "answer_accuracy", "why": "Un budget trop serré coupe l'extrait qui contenait la réponse s'il était classé en 3e ou 4e position."}
+      ],
+      "ablations": [{"label": "Budget contexte x4", "overrides": {"max_context_tokens": 1800}}]
+    },
+    {
+      "id": "F9", "name": "Citations obligatoires", "config": "prompt système",
+      "how": "Le prompt numérote les extraits et exige une citation [n] par information ; le pipeline relie chaque numéro au document et à l'extrait source.",
+      "improves": [
+        {"kpi": "citation_rate", "why": "Chaque réponse est vérifiable par un humain, exigence de la charte IA."},
+        {"kpi": "groundedness", "why": "La vérification d'ancrage compare chaque phrase à la source qu'elle cite."}
+      ],
+      "degrades": [
+        {"kpi": "prompt_tokens_avg", "why": "Les balises et consignes ajoutent des tokens à chaque requête."}
+      ],
+      "ablations": []
+    },
+    {
+      "id": "F10", "name": "Cache de réponses par rôle", "config": "cache, cache_size",
+      "how": "Cache LRU indexé par (rôle, question normalisée). Le rôle fait partie de la clé : sans lui, une réponse RH mise en cache serait servie à un rôle non habilité.",
+      "improves": [
+        {"kpi": "latency_p95_ms", "why": "Une question fréquente est servie en ~0 ms sans appel au LLM."},
+        {"kpi": "prompt_tokens_avg", "why": "Aucun token consommé sur une réponse servie depuis le cache."}
+      ],
+      "degrades": [
+        {"kpi": "answer_accuracy", "why": "Une réponse en cache peut devenir obsolète après une mise à jour documentaire (le cache est vidé à chaque redémarrage / réindexation)."}
+      ],
+      "ablations": []
+    },
+    {
+      "id": "F11", "name": "Repli extractif si le LLM est indisponible", "config": "llm_backend = openai-compatible",
+      "how": "Si le serveur du modèle open source ne répond pas, le pipeline cite directement les phrases les plus pertinentes et marque la réponse « dégradée ».",
+      "improves": [
+        {"kpi": "latency_p95_ms", "why": "Pas d'attente infinie ni de page d'erreur : le service reste disponible."}
+      ],
+      "degrades": [
+        {"kpi": "answer_accuracy", "why": "En mode dégradé, la réponse est une citation brute, moins synthétique qu'une réponse rédigée."}
+      ],
+      "ablations": []
+    },
+    {
+      "id": "F12", "name": "Traces JSONL et évaluation continue", "config": "trace_path, ragprod eval",
+      "how": "Chaque requête écrit une ligne JSON (sources, scores, tokens, latences par étape). Le golden set est rejoué par `ragprod eval` à chaque changement de configuration.",
+      "improves": [
+        {"kpi": "answer_accuracy", "why": "Toute régression est détectée avant la mise en production (évaluation en CI)."}
+      ],
+      "degrades": [
+        {"kpi": "latency_p95_ms", "why": "Une écriture disque par requête ; les traces contiennent des questions d'utilisateurs : politique de rétention RGPD nécessaire."}
+      ],
+      "ablations": []
+    }
+  ]
+}
