@@ -38,6 +38,7 @@ class ItemResult:
 class KPI:
     id: str
     name: str
+    short: str  # compact column header
     category: str
     unit: str
     direction: str  # "max" = higher is better, "min" = lower is better

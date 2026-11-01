@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG Prod Lab — un RAG de production expliqué, KPI par KPI</title>
+  <meta name="description" content="RAG de production sur une base documentaire fictive avec un LLM open source : pipeline expliqué, cahier des charges, matrice fonctionnalités × KPI et démo dans le navigateur.">
+  <link rel="stylesheet" href="./web/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Projet AI engineer · Helios Mobility (entreprise fictive)</p>
+      <h1>RAG Prod Lab</h1>
+      <p class="pitch">Un assistant documentaire RAG pensé pour la production : LLM open source, recherche hybride,
+        contrôle d'accès, garde-fous anti-injection, abstention, citations et évaluation continue —
+        avec, pour chaque fonctionnalité, le KPI qu'elle améliore et celui qu'elle dégrade.</p>
+      <nav>
+        <a href="#demo">Démo</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#cdc">Cahier des charges</a>
+        <a href="#matrix">Matrice KPI</a>
+        <a href="#ablation">Ablation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="demo">
+      <h2>Démo dans le navigateur</h2>
+      <p class="lead">Moteur lexical (BM25 + seuil de couverture + réponse extractive) porté en JavaScript.
+        La CLI Python ajoute la recherche vectorielle, le reranking MMR, la vérification d'ancrage et un vrai LLM open source.</p>
+      <form id="ask-form" class="card">
+        <label class="grow">Question
+          <input id="question" type="text" value="Combien de jours de télétravail par semaine sont autorisés ?" autocomplete="off">
+        </label>
+        <label>Rôle
+          <select id="role">
+            <option value="public">public (client)</option>
+            <option value="employee" selected>employee</option>
+            <option value="hr">hr</option>
+            <option value="finance">finance</option>
+          </select>
+        </label>
+        <button type="submit">Demander</button>
+        <div class="toggles">
+          <label><input id="acl" type="checkbox" checked> Contrôle d'accès (F5)</label>
+          <label><input id="sanitize" type="checkbox" checked> Quarantaine des injections (F6)</label>
+          <label>Seuil d'abstention (F4) <input id="threshold" type="range" min="0" max="1" step="0.05" value="0.4">
+            <output id="threshold-value">0.40</output></label>
+        </div>
+        <div class="examples" id="examples"></div>
+      </form>
+      <div id="result" aria-live="polite"></div>
+    </section>
+
+    <section id="pipeline">
+      <h2>Comment fonctionne le pipeline</h2>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <section id="cdc">
+      <h2>Cahier des charges : KPI et cibles</h2>
+      <p class="lead">Mesures obtenues par <code>ragprod eval</code> sur le golden set (28 questions, backend extractif).
+        La commande renvoie un code d'erreur si un KPI sort de sa cible : elle sert de garde-fou en CI.</p>
+      <div class="table-wrap"><table id="kpi-table"></table></div>
+    </section>
+
+    <section id="matrix">
+      <h2>Matrice fonctionnalités × KPI</h2>
+      <p class="lead"><span class="up">▲</span> améliore, <span class="down">▼</span> dégrade. Survolez ou touchez une case pour lire pourquoi.</p>
+      <div class="table-wrap"><table id="matrix-table" class="matrix"></table></div>
+      <div id="matrix-detail" class="card detail">Sélectionnez une case de la matrice.</div>
+    </section>
+
+    <section id="ablation">
+      <h2>Ablation : chaque fonctionnalité désactivée tour à tour</h2>
+      <p class="lead">Résultats de <code>ragprod ablation</code>. Vert = meilleur que la référence, rouge = pire.
+        Une fonctionnalité qui ne bouge aucun KPI sur ce petit corpus (ex. vérification d'ancrage avec le générateur extractif)
+        prend tout son sens avec un LLM génératif.</p>
+      <div class="table-wrap"><table id="ablation-table"></table></div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p>MIT © 2026 Mathieu Ract · Code source, CLI et documentation détaillée dans le dépôt
+      (<code>docs/CDC.md</code>, <code>docs/ARCHITECTURE.md</code>).</p>
+  </footer>
+  <script type="module" src="./web/app.js"></script>
+</body>
+</html>

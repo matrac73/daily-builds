@@ -219,10 +219,10 @@ def cmd_ablation(config: RAGConfig, args: argparse.Namespace) -> int:
     baseline = rows[0].kpis
     table = Table(title="Ablation : impact de la désactivation de chaque fonctionnalité "
                         "(vert = meilleur, rouge = pire que la référence)")
-    table.add_column("Feature")
-    table.add_column("Variante")
+    table.add_column("F")
+    table.add_column("Variante", max_width=28)
     for kpi in kpis:
-        table.add_column(kpi.name, justify="right")
+        table.add_column(kpi.short, justify="right")
     for row in rows:
         cells = [Text(fmt(k, row.kpis[k.id]), style=_delta_style(k, row.kpis[k.id], baseline[k.id]))
                  for k in kpis]
