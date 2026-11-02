@@ -1,0 +1,13 @@
+{
+  "name": "jeu-quizz-ai",
+  "version": "1.0.0",
+  "description": "Quiz web app to train for AI engineering interviews: LeetCode complexities, code review, transformers internals and AI agent stack.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "author": "Mathieu Ract"
+}
