@@ -83,5 +83,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-01-projet-ai-engineer",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-01-projet-ai-engineer/"
+    },
+    {
+        "date":  "2026-11-02",
+        "title":  "Jeu Quizz AI",
+        "tagline":  "No-build quiz web app for AI engineer interviews: LeetCode complexities, code review, transformers, AI agent stack",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "ES modules",
+                      "node:test"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-02-jeu-quizz-ai",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-02-jeu-quizz-ai/"
     }
 ]
