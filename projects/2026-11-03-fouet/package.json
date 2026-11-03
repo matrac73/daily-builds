@@ -1,0 +1,16 @@
+{
+  "name": "fouet",
+  "version": "1.0.0",
+  "description": "Attach a smooth physics whip to your mouse; crack it on a text field to type FASTER, DO IT, MAKE IT.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes http-server -c-1 -p 8080 .",
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
