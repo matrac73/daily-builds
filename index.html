@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fouet — whip your cursor, motivate your text fields</title>
+  <meta name="description" content="Attach a smooth physics whip to your mouse. Crack it on a text field and it types FASTER, DO IT, MAKE IT…">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="hero">
+    <p class="kicker">🪢 Motivation, physically applied</p>
+    <h1>Fouet</h1>
+    <p class="lead">
+      Press the button in the <strong>bottom-right corner</strong> (or <kbd>Alt</kbd>+<kbd>W</kbd>),
+      a whip snaps onto your mouse. Flick it fast: when the lash <em>cracks</em> on a text zone,
+      it types <q>faster</q>, <q>do it</q>, <q>make it</q>… Chain hits to escalate.
+    </p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Prompt for your AI agent</h2>
+      <textarea id="prompt" rows="6" spellcheck="false">Refactor the billing module and write the tests.</textarea>
+    </section>
+
+    <section class="card">
+      <h2>Commit message</h2>
+      <input id="commit" type="text" value="fix: the build" spellcheck="false" aria-label="Commit message">
+      <h2 class="spaced">Team chat</h2>
+      <div class="chat" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Team chat message">Hey team, where are we on the release?</div>
+    </section>
+
+    <section class="card muted">
+      <h2>Not a target</h2>
+      <p>Cracking here only makes sparks. The whip only types into editable zones:
+        <code>&lt;textarea&gt;</code>, text <code>&lt;input&gt;</code> and <code>contenteditable</code> elements.</p>
+      <ul class="tips">
+        <li>Short, sharp flicks crack — slow waving does not.</li>
+        <li>3 hits in a row → <span class="t1">LOUDER!</span> · 6 hits → <span class="t2">MAXIMUM!!!</span></li>
+        <li><kbd>Esc</kbd> puts the whip away.</li>
+      </ul>
+    </section>
+
+    <section class="card wide">
+      <h2>Take it to any website</h2>
+      <p>Drag this bookmarklet to your bookmarks bar, then click it on any page to get the whip there
+        (pages with a strict Content-Security-Policy may block it).</p>
+      <a id="bookmarklet" class="bookmarklet" href="#">🪢 Fouet</a>
+    </section>
+  </main>
+
+  <footer>MIT licensed · no keyboards were harmed.</footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
