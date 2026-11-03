@@ -5,7 +5,7 @@
  * disarms until the tip slows below `threshold * rearmRatio`, and never fires
  * twice within `cooldownMs` — so one flick gives exactly one crack.
  */
-export function createCrackDetector({ threshold = 2800, rearmRatio = 0.45, cooldownMs = 140 } = {}) {
+export function createCrackDetector({ threshold = 2400, rearmRatio = 0.45, cooldownMs = 140 } = {}) {
   let armed = true;
   let lastCrack = -Infinity;
 

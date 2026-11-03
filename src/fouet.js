@@ -136,7 +136,7 @@ function typeInto(el, phrase) {
  * Mount the whip on the current page. Idempotent: a second call returns the
  * existing instance (handy for the bookmarklet).
  */
-export function mount({ threshold = 2800, sound = true } = {}) {
+export function mount({ threshold = 2400, sound = true } = {}) {
   if (window.__fouet) return window.__fouet;
 
   const style = document.createElement('style');
