@@ -1,7 +1,7 @@
 {
   "name": "fouet",
-  "version": "1.0.0",
-  "description": "Attach a smooth physics whip to your mouse; crack it on a text field to type FASTER, DO IT, MAKE IT.",
+  "version": "2.0.0",
+  "description": "A pixel-art whip for your mouse: swing, stop dead, CLAC - it types FASTER, DO IT, MAKE IT. Browser + desktop Python script.",
   "type": "module",
   "private": true,
   "license": "MIT",

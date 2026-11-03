@@ -1,95 +1,111 @@
-# Fouet 🪢
+# Fouet
 
-**Attach a physics whip to your mouse cursor. Crack it on a text field and it types "faster", "do it", "make it"…**
+**A pixel-art whip for your mouse. Swing, stop dead, CLAC: it types "faster", "do it", "make it"… into the text zone it hits.**
 
-Click the button in the bottom-right corner and a leather whip snaps onto your cursor. Flick your wrist: the lash
-rolls out, the tip breaks the "sound barrier" and *cracks*. If it cracks over a text zone (your AI-agent prompt,
-a commit message, a chat box), a motivational phrase gets typed right into it. Chain hits and the phrases get louder.
+Two flavours, same physics and the same 8-bit look:
 
-## Features
+- **Desktop (Windows)**: `fouet.py`, a single Python file with no dependencies. The whip works on top of *every* app: Teams, VS Code, Outlook, your browser…
+- **Browser**: try it online at <https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/>, or bring it to any site with the bookmarklet.
 
-- **Smooth whip physics**: a 24-segment Verlet rope with fixed-timestep substeps and anchor interpolation, so the
-  lash stays fluid at any frame rate and fast flicks really accelerate the tip.
-- **Real crack detection**: a crack fires when the tip speed crosses a threshold (rising edge + re-arm + cooldown).
-  Slow dragging or lazy waving never cracks; one sharp flick gives exactly one crack.
-- **Types where you whip**: works on `<textarea>`, text/search `<input>` and any `contenteditable` element. Uses
-  `insertText` so native undo and React/Vue state stay in sync, and adds spaces only where needed.
-- **Combo escalation**: `faster` → `FASTER!` → `FASTER!!!`. Every 3 consecutive hits unlock a louder tier.
-- **Stylish feedback**: wooden handle that leans with your wrist, tapered leather lash with a frayed cracker, tip
-  motion streak, shock-wave ring, sparks, popping phrase labels, a shaking target and a synthesized crack sound
-  (Web Audio, no assets).
-- **Toggle** with the bottom-right button or <kbd>Alt</kbd>+<kbd>W</kbd>; <kbd>Esc</kbd> puts the whip away. A badge
-  counts your hits.
-- **Bonus — bookmarklet**: drag it from the demo page to your bookmarks bar and use the whip on any website.
-- Respects `prefers-reduced-motion` (no shaking). Zero dependencies, zero build step.
+## How to crack
 
-## Quick start
+Speeding up never cracks. **Braking does**: swing fast, then stop dead or pull back. At that moment the lash
+snaps straight along the line of your swing and cracks at its tip, one whip-length ahead of your hand. Aim
+*past* the text zone, not at it. Chain hits within ~2 s to escalate: `faster` → `FASTER!` → `FASTER!!!`.
 
-Any static server works (ES modules don't load from `file://`):
+## Desktop quick start
+
+1. Download [`fouet.py`](https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/fouet.py)
+   (or the "Download fouet.py" button on the demo page). You need Python 3.8+ (`winget install Python.Python.3.12`).
+2. Run it:
+
+   ```powershell
+   py fouet.py                     # start (or double-click the file)
+   pyw fouet.py                    # same, without a console window
+   py fouet.py --sensitivity 1.5   # cracks with gentler flicks (0.7 = needs harder ones)
+   py fouet.py --no-sound          # silent whip
+   py fouet.py --anywhere          # type wherever it cracks, even without a text cursor
+   ```
+
+3. Click the pixel button in the bottom-right corner of your screen (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>).
+   Flick, stop dead. When the tip cracks over a zone showing a text cursor (I-beam), Fouet clicks there, jumps to
+   the end of the line and types the phrase. <kbd>Esc</kbd> puts the whip away; right-click the button to quit.
+
+The overlay is click-through and never takes focus, so your mouse and keyboard keep working normally while the
+whip is out. It covers every monitor and adapts to your display scaling (DPI).
+
+## Browser quick start
+
+Open the [online demo](https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/), press the pixel button
+bottom-right (or <kbd>Alt</kbd>+<kbd>W</kbd>), then crack on the demo text fields. To run it locally (ES modules
+don't load from `file://`):
 
 ```bash
-git clone <this-repo> fouet
-cd fouet
-npx --yes http-server -c-1 -p 8080 .    # or: python -m http.server 8080
+npx --yes http-server -c-1 -p 8080 .    # or: py -m http.server 8080
 ```
 
-Open <http://localhost:8080>, press the button in the bottom-right corner, then flick the mouse over a text field.
+**On any website**: drag the **Fouet** bookmarklet from the demo page to your bookmarks bar and click it on any page.
+Sites with a strict Content-Security-Policy may refuse to load it.
 
-## Usage
-
-### On the demo page
-
-1. Press the round button in the bottom-right corner (or <kbd>Alt</kbd>+<kbd>W</kbd>).
-2. Point at the "Prompt for your AI agent" box and do a short, sharp flick (out and back).
-3. `Refactor the billing module and write the tests.` becomes `… write the tests. faster`.
-4. Keep hitting within ~2 s: `DO IT NOW!`, then `NO EXCUSES!!`.
-
-### On any website (bookmarklet)
-
-Host the project over http(s) (e.g. GitHub Pages), open the demo page, drag the **🪢 Fouet** link to your
-bookmarks bar, then click the bookmark on any page. Click it again to toggle. Sites with a strict
-Content-Security-Policy may refuse to load external scripts.
-
-### In your own page
+**In your own page**:
 
 ```html
 <script type="module">
   import { mount } from './src/fouet.js';
-  const fouet = mount({ threshold: 2400, sound: true }); // adds the button, nothing else
+  const fouet = mount({ minSpeed: 1100, sound: true }); // adds the button, nothing else
   fouet.toggle();     // programmatic on/off
-  fouet.active;       // boolean
   fouet.destroy();    // remove everything
 </script>
 ```
 
-`threshold` is the tip speed (px/s) needed to crack: raise it for a harder whip, lower it for a lazier one.
+## Features
+
+- **Brake-to-crack rule**: a crack needs a hand-speed peak above `minSpeed`, followed within 200 ms by a stop
+  (speed under 30 % of the peak) or a pull-back. Hand speed is measured over a 35 ms window, so a frame that
+  gets no mouse update doesn't read as a stop.
+- **Lash snap**: after the brake, the lash is pulled straight along the swing line and cracks once it reaches 85 %
+  of its length, so the crack lands where you aim (±25° in every direction, checked by the tests).
+- **Stiffer, cleaner lash**: Verlet rope with an exact bend limit at every joint, 14° at the handle up to 48° at
+  the tip. It unrolls instead of folding onto itself.
+- **Pixel art**: everything is drawn on a coarse pixel grid. Bresenham lash with a tapered width, highlight core
+  and dark outline, a wrapped wooden handle, fire-palette sparks and embers, a midpoint-circle shock ring with an
+  ordered-dither dissolve, and a built-in 5×7 pixel font for the floating phrases.
+- **8-bit sound**: a sample-and-hold noise snap with a falling square chirp, quantized to 4 bits, plus a coin-style
+  arpeggio that rises with your combo tier. Synthesized in code (no audio files).
+- **Hero animation**: a scripted hand swings and stops on the demo page; the real crack rule decides when it cracks.
 
 ## Project structure
 
 ```
+fouet.py            Desktop app — physics, crack rule, pixel art, 8-bit sound, Win32 overlay (stdlib only)
 index.html          Demo page (served as-is, relative paths only)
-style.css           Demo page styles
-app.js              Demo entry: mounts the whip, builds the bookmarklet link
+style.css           Pixel-style page theme (light and dark)
+app.js              Demo entry: mounts the whip, hero animation, bookmarklet link
 src/
-  whip.js           Verlet rope simulation (pure, no DOM)
-  crack.js          Tip speed → crack events, crack intensity
+  whip.js           Verlet rope with bend limit, reach/steer (pure, no DOM)
+  crack.js          Velocity tracker, flick detector, lash snap, crack intensity
+  pixel.js          Palette, raster primitives, whip sprite, 5×7 font, button icon
+  sound.js          8-bit crack and blip synthesis
   phrases.js        Phrase tiers, combo counter, no-repeat picker
   text.js           Spacing-aware insertion, which elements are whippable
   bookmarklet.js    Builds the javascript: URL for the bookmarklet
-  fouet.js          Browser layer: overlay canvas, button, rendering, sound, typing
-tests/              node:test suites for all the pure modules
+  fouet.js          Browser layer: pixel overlay, button, sound, typing
+tests/
+  test_fouet.py     pytest suite for the desktop script
+  *.test.js         node:test suites for the browser modules
 ```
 
 ## Tests
 
-Requires Node.js ≥ 20, no install needed:
-
 ```bash
-npm test            # = node --test tests/
+npm test                 # node --test tests/   (Node.js ≥ 20)
+py -m pytest tests       # desktop script       (pip install pytest)
 ```
 
-The physics tests drive the simulated whip with synthetic wrist motions and check that a 1600 px/s flick cracks
-exactly once while slow drags and lazy waves never do, that the lash stays inextensible, and that it comes to rest.
+Both suites drive the simulated whip with synthetic hand motions. They check that accelerating or steady motion
+never cracks, that a swing followed by a stop or a pull-back cracks exactly once, that the crack lands within 25°
+of the aim in 8 directions at 3 speeds, that a stuttering mouse doesn't crack mid-swing, that the bend limit holds,
+and that the pixel sprite is fully outlined.
 
 ## License
 
