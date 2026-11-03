@@ -5,6 +5,8 @@ import sys
 import wave
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import fouet  # noqa: E402
@@ -337,6 +339,25 @@ def test_sounds_are_valid_8bit_wavs(tmp_path):
 def test_wav_bytes_clips():
     with wave.open(io.BytesIO(fouet.wav_bytes([-5, 0, 5]))) as w:
         assert list(w.readframes(3)) == [8, 128, 248]
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows registry")
+def test_autostart_toggles_the_run_value():
+    import winreg
+    key = r"Software\FouetTests\Run"  # scratch key, never the real Run key
+    try:
+        assert not fouet.get_autostart(key)
+        fouet.set_autostart(True, key)
+        assert fouet.get_autostart(key)
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key) as k:
+            value, _ = winreg.QueryValueEx(k, fouet.APP_NAME)
+        assert value == fouet.launch_command() and "fouet.py" in value
+        fouet.set_autostart(False, key)
+        fouet.set_autostart(False, key)  # idempotent
+        assert not fouet.get_autostart(key)
+    finally:
+        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, key)
+        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, r"Software\FouetTests")
 
 
 def test_cli_parses_options():

@@ -26,7 +26,7 @@ import wave
 from collections import deque
 from typing import Dict, List, Optional, Tuple
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 Cell = Tuple[int, int]
 
@@ -920,6 +920,9 @@ class App:
         self.button.bind("<Button-3>", self.menu)
         self.popup = tk.Menu(self.root, tearoff=0)
         self.popup.add_command(label="Fouet on/off   Ctrl+Alt+W", command=self.toggle)
+        self.autostart = tk.BooleanVar(value=get_autostart())
+        self.popup.add_checkbutton(label="Start with Windows", variable=self.autostart,
+                                   command=lambda: set_autostart(self.autostart.get()))
         self.popup.add_separator()
         self.popup.add_command(label="Quit Fouet", command=self.quit)
 
@@ -952,6 +955,7 @@ class App:
         self.root.destroy()
 
     def menu(self, event) -> None:
+        self.autostart.set(get_autostart())  # the installer may have changed it
         self.popup.tk_popup(event.x_root, event.y_root)
 
     def toggle(self) -> None:
@@ -1111,19 +1115,75 @@ def parse_args(argv=None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
+RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
+APP_NAME = "Fouet"
+
+
+def launch_command() -> str:
+    """Command line that starts this copy of Fouet without a console."""
+    if getattr(sys, "frozen", False):  # PyInstaller exe
+        return '"%s"' % sys.executable
+    pythonw = os.path.join(os.path.dirname(sys.executable), "pythonw.exe")
+    return '"%s" "%s"' % (pythonw if os.path.exists(pythonw) else sys.executable, os.path.abspath(__file__))
+
+
+def get_autostart(key_path: str = RUN_KEY) -> bool:
+    """True if Fouet starts with Windows (per-user Run key, shared with the installer)."""
+    import winreg
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+            winreg.QueryValueEx(key, APP_NAME)
+            return True
+    except OSError:
+        return False
+
+
+def set_autostart(on: bool, key_path: str = RUN_KEY) -> None:
+    import winreg
+    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+        if on:
+            winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, launch_command())
+        else:
+            try:
+                winreg.DeleteValue(key, APP_NAME)
+            except FileNotFoundError:
+                pass
+
+
+def message_box(text: str, error: bool = False) -> None:
+    import ctypes
+    ctypes.windll.user32.MessageBoxW(None, text, APP_NAME, 0x10 if error else 0x40)
+
+
 def main(argv=None) -> int:
+    if sys.stdout is None:  # windowed exe: there is no console to print to
+        sys.stdout = sys.stderr = open(os.devnull, "w")
     args = parse_args(argv)
     if sys.platform != "win32":
         print("Fouet desktop runs on Windows. Try the browser version: "
               "https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/")
         return 1
+    import ctypes
+    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\FouetPixelWhip")
+    if ctypes.windll.kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
+        message_box("Fouet is already running: look for the pixel button in the bottom-right corner.")
+        return 0
     print("Fouet %s - click the pixel button bottom-right or press Ctrl+Alt+W.\n"
           "Flick, then stop dead: crack on a text zone to motivate it. Esc puts the whip away,\n"
-          "right-click the button to quit." % __version__)
+          "right-click the button for options and to quit." % __version__)
     try:
         App(sound=not args.no_sound, anywhere=args.anywhere, sensitivity=args.sensitivity, cell=args.pixel).run()
     except KeyboardInterrupt:
         pass
+    except Exception:
+        import traceback
+        log = os.path.join(tempfile.gettempdir(), "fouet-error.log")
+        with open(log, "w", encoding="utf-8") as f:
+            traceback.print_exc(file=f)
+        message_box("Fouet crashed, sorry. Details: %s" % log, error=True)
+        return 1
+    finally:
+        ctypes.windll.kernel32.CloseHandle(mutex)
     return 0
 
 

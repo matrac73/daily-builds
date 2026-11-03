@@ -8,3 +8,7 @@ Thumbs.db
 .idea/
 __pycache__/
 .pytest_cache/
+build/
+dist/
+packaging/fouet.ico
+packaging/fouet.png
