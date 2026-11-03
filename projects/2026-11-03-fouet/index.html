@@ -22,8 +22,8 @@
         <q>faster</q>, <q>do it</q>, <q>make it</q>… Chain hits to escalate.
       </p>
       <div class="cta">
-        <a class="btn" href="./fouet.py" download="fouet.py">⬇ Download fouet.py</a>
-        <a class="btn ghost" href="#desktop">Desktop setup</a>
+        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.1.0/FouetSetup.exe">⬇ Install for Windows</a>
+        <a class="btn ghost" href="#desktop">Other downloads</a>
       </div>
     </div>
     <figure class="stage">
@@ -57,22 +57,23 @@
 
     <section class="card wide" id="desktop">
       <h2>On your desktop (Windows)</h2>
-      <p>The same whip, over <em>every</em> app: Teams, VS Code, Outlook, your browser… One Python file,
-        standard library only — nothing to install besides Python 3.8+.</p>
+      <p>The same whip, over <em>every</em> app: Teams, VS Code, Outlook, your browser… No Python, no admin rights needed.</p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.1.0/FouetSetup.exe">⬇ FouetSetup.exe <small>installer · 12 MB</small></a>
+        <a class="btn ghost" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.1.0/Fouet.exe">⬇ Fouet.exe <small>portable · 11 MB</small></a>
+      </div>
       <ol class="steps">
-        <li><a href="./fouet.py" download="fouet.py">Download <code>fouet.py</code></a>
-          (or <a href="https://github.com/matrac73/daily-builds/blob/main/projects/2026-11-03-fouet/fouet.py">view it on GitHub</a>).</li>
-        <li>Run it — double-click it, or from a terminal:</li>
-      </ol>
-      <pre>py fouet.py              # start (pyw fouet.py: no console window)
-py fouet.py --sensitivity 1.5   # cracks with gentler flicks
-py fouet.py --no-sound   # silent whip</pre>
-      <ol class="steps" start="3">
+        <li>Run <code>FouetSetup.exe</code>: it adds Fouet to the Start menu, can start it with Windows, and uninstalls
+          from <em>Settings › Apps</em>. Or just run the portable <code>Fouet.exe</code> from anywhere.</li>
+        <li>Windows SmartScreen may warn about an unknown publisher (the app isn't code-signed):
+          click <strong>More info › Run anyway</strong>.</li>
         <li>Click the pixel button bottom-right (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>), flick, stop dead.
           When the tip cracks on a zone showing a text cursor, Fouet clicks there and types the phrase.</li>
-        <li><kbd>Esc</kbd> puts the whip away · right-click the button to quit.</li>
+        <li><kbd>Esc</kbd> puts the whip away · right-click the button for <em>Start with Windows</em> and <em>Quit</em>.</li>
       </ol>
-      <p class="note">No Python? <code>winget install Python.Python.3.12</code>. The desktop overlay is click-through: your mouse keeps working normally while the whip is out.</p>
+      <p class="note">Prefer Python? <a href="./fouet.py" download="fouet.py">Download <code>fouet.py</code></a>
+        (single file, standard library only) and run <code>py fouet.py</code>. The overlay is click-through: your mouse
+        keeps working normally while the whip is out.</p>
     </section>
 
     <section class="card wide">

@@ -4,7 +4,9 @@
 
 Two flavours, same physics and the same 8-bit look:
 
-- **Desktop (Windows)**: `fouet.py`, a single Python file with no dependencies. The whip works on top of *every* app: Teams, VS Code, Outlook, your browser…
+- **Desktop (Windows)**: [`FouetSetup.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.1.0/FouetSetup.exe)
+  (installer) or [`Fouet.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.1.0/Fouet.exe) (portable),
+  with no Python needed. You can also run `fouet.py` (single file, standard library only). The whip works on top of *every* app: Teams, VS Code, Outlook, your browser…
 - **Browser**: try it online at <https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/>, or bring it to any site with the bookmarklet.
 
 ## How to crack
@@ -15,9 +17,11 @@ snaps straight along the line of your swing and cracks at its tip, one whip-leng
 
 ## Desktop quick start
 
-1. Download [`fouet.py`](https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/fouet.py)
-   (or the "Download fouet.py" button on the demo page). You need Python 3.8+ (`winget install Python.Python.3.12`).
-2. Run it:
+1. Click **Install for Windows** on the [demo page](https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/)
+   and run `FouetSetup.exe`. It installs per-user (no admin), adds a Start menu entry, can start Fouet with Windows,
+   and uninstalls from *Settings › Apps*. If you'd rather not install anything, run the portable `Fouet.exe`.
+   The exe isn't code-signed, so SmartScreen may show "Windows protected your PC": click **More info › Run anyway**.
+2. Or, with Python 3.8+, run the script directly:
 
    ```powershell
    py fouet.py                     # start (or double-click the file)
@@ -29,7 +33,20 @@ snaps straight along the line of your swing and cracks at its tip, one whip-leng
 
 3. Click the pixel button in the bottom-right corner of your screen (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>).
    Flick, stop dead. When the tip cracks over a zone showing a text cursor (I-beam), Fouet clicks there, jumps to
-   the end of the line and types the phrase. <kbd>Esc</kbd> puts the whip away; right-click the button to quit.
+   the end of the line and types the phrase. <kbd>Esc</kbd> puts the whip away. Right-click the button for
+   *Start with Windows* and *Quit*. Only one Fouet runs at a time.
+
+### Building the exe and the installer
+
+```powershell
+py -m pip install pyinstaller pillow        # once
+winget install JRSoftware.InnoSetup         # once
+pwsh packaging\build.ps1                    # -> dist\Fouet.exe, dist\FouetSetup.exe
+```
+
+`packaging/make_icon.py` renders the pixel button into the `.ico`. `packaging/fouet.iss` is the Inno Setup script:
+a per-user install with a Start menu shortcut, an optional autostart (the same registry value the in-app toggle
+uses) and a clean uninstall.
 
 The overlay is click-through and never takes focus, so your mouse and keyboard keep working normally while the
 whip is out. It covers every monitor and adapts to your display scaling (DPI).
@@ -78,6 +95,7 @@ Sites with a strict Content-Security-Policy may refuse to load it.
 
 ```
 fouet.py            Desktop app — physics, crack rule, pixel art, 8-bit sound, Win32 overlay (stdlib only)
+packaging/          build.ps1 (PyInstaller + Inno Setup), fouet.iss, make_icon.py
 index.html          Demo page (served as-is, relative paths only)
 style.css           Pixel-style page theme (light and dark)
 app.js              Demo entry: mounts the whip, hero animation, bookmarklet link

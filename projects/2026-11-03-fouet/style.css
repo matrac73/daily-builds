@@ -117,6 +117,7 @@ q { color: var(--accent); font-weight: 700; quotes: "«\00a0" "\00a0»"; }
   transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
 }
 
+.btn small { font: 400 0.7rem var(--mono); opacity: 0.75; }
 .btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--accent-ink); }
 .btn:active { transform: translate(3px, 3px); box-shadow: none; }
 .btn.ghost { background: var(--panel); color: var(--ink); }
