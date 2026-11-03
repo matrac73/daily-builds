@@ -97,5 +97,20 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-02-jeu-quizz-ai",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-02-jeu-quizz-ai/"
+    },
+    {
+        "date":  "2026-11-03",
+        "title":  "Fouet",
+        "tagline":  "Attach a smooth physics whip to your cursor; crack it on a text field to type FASTER, DO IT, MAKE IT.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "Canvas 2D",
+                      "Web Audio API",
+                      "node:test"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-03-fouet",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/"
     }
 ]
