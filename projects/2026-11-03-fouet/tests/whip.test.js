@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createWhip, WHIP_DEFAULTS } from '../src/whip.js';
-import { createCrackDetector } from '../src/crack.js';
+import { createFlickDetector, createLashSnap } from '../src/crack.js';
 
 const FRAME = 1 / 60;
 
@@ -11,21 +11,32 @@ function settled(x = 400, y = 300) {
   return whip;
 }
 
-/** Drive the anchor along `path(t)` for `seconds`; return per-frame peak tip speeds. */
-function drive(whip, path, seconds = 1.5) {
-  const speeds = [];
-  for (let f = 0; f * FRAME < seconds; f++) {
-    const [x, y] = path(f * FRAME);
-    speeds.push(whip.update(x, y, FRAME));
+/** Drive whip + crack rule along `path(t)`; returns the crack events. */
+function simulate(path, seconds) {
+  const [x0, y0] = path(0);
+  const whip = createWhip(x0, y0);
+  const detector = createFlickDetector();
+  const snap = createLashSnap();
+  const cracks = [];
+  let prev = [x0, y0];
+  for (let f = 1; f <= Math.round(seconds / FRAME); f++) {
+    const t = f * FRAME;
+    const [x, y] = path(t);
+    whip.update(x, y, FRAME);
+    const flick = detector.update((x - prev[0]) / FRAME, (y - prev[1]) / FRAME, t * 1000);
+    prev = [x, y];
+    if (flick) snap.start(flick, t * 1000);
+    if (snap.update(whip, t * 1000)) cracks.push({ t, hand: [x, y], tip: { ...whip.tip } });
   }
-  return speeds;
+  return cracks;
 }
 
-/** A wrist flick: quick out-and-back stroke at `v` px/s, then hold still. */
-const flick = (v) => (t) => {
-  if (t < 0.12) return [400 + v * t, 300 - (v * t) / 2];
-  if (t < 0.2) return [400 + v * 0.12 - v * (t - 0.12), 300 - v * 0.06];
-  return [400 + v * 0.04, 300 - v * 0.06];
+/** Rest, swing right at `speed` px/s for 0.22 s, then stop dead or pull back. */
+const swing = (after, speed = 2200) => (t) => {
+  if (t < 0.5) return [300, 300];
+  if (t < 0.72) return [300 + speed * (t - 0.5), 300];
+  const end = 300 + speed * 0.22;
+  return after === 'back' ? [end - 900 * Math.min(t - 0.72, 0.08), 300] : [end, 300];
 };
 
 test('a new whip hangs straight down from its anchor with the configured length', () => {
@@ -41,39 +52,80 @@ test('the head stays pinned to the anchor', () => {
   assert.deepEqual([whip.points[0].x, whip.points[0].y], [520, 210]);
 });
 
-test('segments keep their length (inextensible lash) after violent motion', () => {
+test('segments keep their exact length after violent motion', () => {
   const whip = settled();
-  drive(whip, flick(3000), 0.3);
+  for (let i = 0; i < 60; i++) whip.update(400 + 300 * Math.sin(i / 2), 300 + 200 * Math.cos(i / 3), FRAME);
   for (let i = 0; i < whip.points.length - 1; i++) {
     const a = whip.points[i];
     const b = whip.points[i + 1];
-    const d = Math.hypot(b.x - a.x, b.y - a.y);
-    assert.ok(Math.abs(d - WHIP_DEFAULTS.segmentLength) < WHIP_DEFAULTS.segmentLength * 0.25, `segment ${i}: ${d}`);
+    assert.ok(Math.abs(Math.hypot(b.x - a.x, b.y - a.y) - WHIP_DEFAULTS.segmentLength) < 1e-6);
   }
 });
 
-test('a resting whip comes to rest below its anchor', () => {
+test('the bend limit holds at every joint: the lash never folds onto itself', () => {
+  const whip = settled();
+  let seed = 3;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) * 2 - 1;
+  let x = 400;
+  let y = 300;
+  for (let i = 0; i < 400; i++) {
+    x += rand() * 60;
+    y += rand() * 60;
+    whip.update(x, y, FRAME);
+    whip.jointAngles().forEach((a, j) => assert.ok(a <= whip.maxBend[j + 1] + 0.5, `joint ${j + 1}: ${a}°`));
+  }
+});
+
+test('the root is stiffer than the tip', () => {
+  const { maxBend } = createWhip(0, 0);
+  assert.ok(maxBend[1] < maxBend[10] && maxBend[10] < maxBend[maxBend.length - 2]);
+});
+
+test('a resting whip stays at rest below its anchor', () => {
   const whip = settled(200, 100);
   assert.ok(Math.abs(whip.tip.x - 200) < 1);
   assert.ok(whip.tip.y > 100 + whip.length * 0.95);
   assert.ok(whip.update(200, 100, FRAME) < 5);
 });
 
-test('the tip amplifies hand speed: a 1600 px/s flick cracks', () => {
-  const detector = createCrackDetector();
-  const speeds = drive(settled(), flick(1600));
-  assert.ok(Math.max(...speeds) > 1600 * 1.5);
-  const cracks = speeds.filter((s, i) => detector.update(s, i * FRAME * 1000));
+test('swing then stop dead: one crack, right after the stop, lash thrown ahead', () => {
+  const cracks = simulate(swing('stop'), 1.6);
   assert.equal(cracks.length, 1);
+  const [c] = cracks;
+  assert.ok(c.t >= 0.72 && c.t <= 0.97, `crack at ${c.t}`);
+  assert.ok(c.tip.x > c.hand[0] + 60, 'tip should be past the hand');
+});
+
+test('the crack lands where you aim, in every direction and at every speed', () => {
+  for (let angle = 0; angle < 360; angle += 45) {
+    const dx = Math.cos((angle * Math.PI) / 180);
+    const dy = Math.sin((angle * Math.PI) / 180);
+    for (const speed of [1300, 2200, 3700]) {
+      const path = (t) => {
+        const k = Math.min(Math.max(t - 0.5, 0), 300 / speed); // 300 px swing, then stop dead
+        return [600 + dx * speed * k, 500 + dy * speed * k];
+      };
+      const cracks = simulate(path, 1.5);
+      assert.equal(cracks.length, 1, `${angle}° @ ${speed}`);
+      const { hand: [hx, hy], tip } = cracks[0];
+      const ex = tip.x - hx;
+      const ey = tip.y - hy;
+      const off = (Math.atan2(ey * dx - ex * dy, ex * dx + ey * dy) * 180) / Math.PI;
+      assert.ok(Math.abs(off) < 25, `${angle}° @ ${speed}: ${off.toFixed(1)}° off`);
+      assert.ok(Math.hypot(ex, ey) > 180);
+    }
+  }
+});
+
+test('swing then pull back: cracks too', () => {
+  const cracks = simulate(swing('back'), 1.6);
+  assert.equal(cracks.length, 1);
+  assert.ok(cracks[0].t >= 0.72);
 });
 
 test('slow dragging and lazy waving never crack', () => {
-  const detector = createCrackDetector();
-  const drag = drive(settled(), (t) => [400 + 300 * t, 300]);
-  const wave = drive(settled(), (t) => [400 + 100 * Math.sin(t * 6), 300], 3);
-  for (const [i, s] of [...drag, ...wave].entries()) {
-    assert.equal(detector.update(s, i * 16), false);
-  }
+  assert.deepEqual(simulate((t) => [400 + 300 * t, 300], 2), []);
+  assert.deepEqual(simulate((t) => [400 + 100 * Math.sin(t * 6), 300], 3), []);
 });
 
 test('substeps are capped when a frame is very long', () => {
@@ -84,7 +136,7 @@ test('substeps are capped when a frame is very long', () => {
 
 test('reset re-hangs the whip at a new position', () => {
   const whip = settled();
-  drive(whip, flick(2000), 0.2);
+  whip.update(900, 100, FRAME);
   whip.reset(10, 20);
   assert.deepEqual([whip.points[0].x, whip.points[0].y], [10, 20]);
   assert.deepEqual([whip.tip.x, whip.tip.y], [10, 20 + whip.length]);
