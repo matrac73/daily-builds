@@ -3,19 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fouet — whip your cursor, motivate your text fields</title>
-  <meta name="description" content="Attach a smooth physics whip to your mouse. Crack it on a text field and it types FASTER, DO IT, MAKE IT…">
+  <title>Fouet — a pixel whip for your cursor</title>
+  <meta name="description" content="A pixel-art whip for your mouse. Flick, stop dead, CLAC: it types FASTER, DO IT, MAKE IT into the text zone. In the browser or as a desktop Python script.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Silkscreen:wght@400;700&display=swap">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <header class="hero">
-    <p class="kicker">🪢 Motivation, physically applied</p>
-    <h1>Fouet</h1>
-    <p class="lead">
-      Press the button in the <strong>bottom-right corner</strong> (or <kbd>Alt</kbd>+<kbd>W</kbd>),
-      a whip snaps onto your mouse. Flick it fast: when the lash <em>cracks</em> on a text zone,
-      it types <q>faster</q>, <q>do it</q>, <q>make it</q>… Chain hits to escalate.
-    </p>
+    <div>
+      <p class="kicker">Motivation, physically applied</p>
+      <h1>FOUET</h1>
+      <p class="lead">
+        Press the pixel button in the <strong>bottom-right corner</strong> (or <kbd>Alt</kbd>+<kbd>W</kbd>):
+        a whip snaps onto your mouse. Swing, then <strong>stop dead</strong> or pull back —
+        the lash unrolls and <em>cracks</em> at its tip. Crack on a text zone and it types
+        <q>faster</q>, <q>do it</q>, <q>make it</q>… Chain hits to escalate.
+      </p>
+      <div class="cta">
+        <a class="btn" href="./fouet.py" download="fouet.py">⬇ Download fouet.py</a>
+        <a class="btn ghost" href="#desktop">Desktop setup</a>
+      </div>
+    </div>
+    <figure class="stage">
+      <canvas id="demo" width="160" height="120" aria-label="Animated pixel whip cracking on its own"></canvas>
+      <figcaption>flick → stop → CLAC</figcaption>
+    </figure>
   </header>
 
   <main class="grid">
@@ -32,21 +46,40 @@
     </section>
 
     <section class="card muted">
-      <h2>Not a target</h2>
-      <p>Cracking here only makes sparks. The whip only types into editable zones:
-        <code>&lt;textarea&gt;</code>, text <code>&lt;input&gt;</code> and <code>contenteditable</code> elements.</p>
+      <h2>How to crack</h2>
       <ul class="tips">
-        <li>Short, sharp flicks crack — slow waving does not.</li>
+        <li>Accelerating never cracks. <strong>Braking</strong> does: swing fast, then stop dead or flick back.</li>
+        <li>The crack lands where the lash is thrown — aim past the text zone, not at it.</li>
         <li>3 hits in a row → <span class="t1">LOUDER!</span> · 6 hits → <span class="t2">MAXIMUM!!!</span></li>
-        <li><kbd>Esc</kbd> puts the whip away.</li>
+        <li><kbd>Esc</kbd> puts the whip away. Cracking elsewhere only makes sparks.</li>
       </ul>
+    </section>
+
+    <section class="card wide" id="desktop">
+      <h2>On your desktop (Windows)</h2>
+      <p>The same whip, over <em>every</em> app: Teams, VS Code, Outlook, your browser… One Python file,
+        standard library only — nothing to install besides Python 3.8+.</p>
+      <ol class="steps">
+        <li><a href="./fouet.py" download="fouet.py">Download <code>fouet.py</code></a>
+          (or <a href="https://github.com/matrac73/daily-builds/blob/main/projects/2026-11-03-fouet/fouet.py">view it on GitHub</a>).</li>
+        <li>Run it — double-click it, or from a terminal:</li>
+      </ol>
+      <pre>py fouet.py              # start (pyw fouet.py: no console window)
+py fouet.py --sensitivity 1.5   # cracks with gentler flicks
+py fouet.py --no-sound   # silent whip</pre>
+      <ol class="steps" start="3">
+        <li>Click the pixel button bottom-right (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>), flick, stop dead.
+          When the tip cracks on a zone showing a text cursor, Fouet clicks there and types the phrase.</li>
+        <li><kbd>Esc</kbd> puts the whip away · right-click the button to quit.</li>
+      </ol>
+      <p class="note">No Python? <code>winget install Python.Python.3.12</code>. The desktop overlay is click-through: your mouse keeps working normally while the whip is out.</p>
     </section>
 
     <section class="card wide">
       <h2>Take it to any website</h2>
       <p>Drag this bookmarklet to your bookmarks bar, then click it on any page to get the whip there
         (pages with a strict Content-Security-Policy may block it).</p>
-      <a id="bookmarklet" class="bookmarklet" href="#">🪢 Fouet</a>
+      <a id="bookmarklet" class="btn bookmarklet" href="#">Fouet</a>
     </section>
   </main>
 
