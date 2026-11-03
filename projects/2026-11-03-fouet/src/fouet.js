@@ -4,7 +4,7 @@
 import { createWhip } from './whip.js';
 import { createFlickDetector, createLashSnap, createVelocityTracker, crackIntensity } from './crack.js';
 import { createCombo, createPhrasePicker, tierForCombo } from './phrases.js';
-import { findWhippable, insertPhrase, spacedPhrase } from './text.js';
+import { focusedWhippable, inRect, insertPhrase, spacedPhrase } from './text.js';
 import {
   N8, PALETTE, addOutline, circleCells, ditherKeep, iconCells, key, textCells, unkey, whipSprite,
 } from './pixel.js';
@@ -67,16 +67,11 @@ function createSounds() {
   };
 }
 
-/** Type `phrase` into an input, textarea or contenteditable element. */
+/** Type `phrase` at the text cursor of the focused field `el`. */
 function typeInto(el, phrase) {
   const isField = el.tagName === 'INPUT' || el.tagName === 'TEXTAREA';
-  const wasFocused = document.activeElement === el;
-  el.focus({ preventScroll: true });
   const selection = getSelection();
-
-  if (isField) {
-    if (!wasFocused) el.setSelectionRange(el.value.length, el.value.length);
-  } else if (!wasFocused || !selection.rangeCount || !el.contains(selection.anchorNode)) {
+  if (!isField && (!selection.rangeCount || !el.contains(selection.anchorNode))) {
     selection.selectAllChildren(el);
     selection.collapseToEnd();
   }
@@ -204,7 +199,26 @@ export function createEffects() {
  * Mount the whip on the current page. Idempotent: a second call returns the
  * existing instance (handy for the bookmarklet).
  */
-export function mount({ minSpeed = 1100, sound = true } = {}) {
+/** Pixel corner brackets around the focused text field (cells of CELL px). */
+function zoneCells(rect, now) {
+  const left = Math.floor(rect.left / CELL) - 1;
+  const top = Math.floor(rect.top / CELL) - 1;
+  const right = Math.floor(rect.right / CELL);
+  const bottom = Math.floor(rect.bottom / CELL);
+  const arm = Math.max(2, Math.min(5, Math.floor((right - left) / 4), Math.floor((bottom - top) / 2)));
+  const color = Math.floor(now / 333) % 2 === 0 ? PALETTE.lash[2] : PALETTE.lash[4];
+  const cells = new Map();
+  for (const [cx, cy, sx, sy] of [[left, top, 1, 1], [right, top, -1, 1], [left, bottom, 1, -1], [right, bottom, -1, -1]]) {
+    for (let d = 0; d < arm; d++) {
+      cells.set(key(cx + sx * d, cy), color);
+      cells.set(key(cx, cy + sy * d), color);
+    }
+  }
+  addOutline(cells, PALETTE.outline);
+  return cells;
+}
+
+export function mount({ minSpeed = 1500, sound = true } = {}) {
   if (window.__fouet) return window.__fouet;
 
   const style = document.createElement('style');
@@ -303,8 +317,9 @@ export function mount({ minSpeed = 1100, sound = true } = {}) {
   function crack(flick, now) {
     const tip = whip.tip;
     effects.burst(tip.x, tip.y, crackIntensity(flick.speed, minSpeed));
-    const target = findWhippable(document.elementFromPoint(tip.x, tip.y));
-    if (!target) {
+    // Only the field holding your text cursor, and only if the tip cracked on it.
+    const target = focusedWhippable(document);
+    if (!target || !inRect(tip.x, tip.y, target.getBoundingClientRect(), 6)) {
       effects.label('CLAC!', tip.x, tip.y, PALETTE.miss, 1, 0.45);
       if (sound) audio.play('miss');
       return;
@@ -341,7 +356,7 @@ export function mount({ minSpeed = 1100, sound = true } = {}) {
     ({ vx: hand.vx, vy: hand.vy } = velocity.update(mouse.x, mouse.y, now));
     // The handle leans with horizontal motion, like a real wrist flick.
     const lean = Math.max(-0.9, Math.min(0.9, hand.vx * 0.0006));
-    hand.angle += (HANDLE_ANGLE + lean - hand.angle) * Math.min(1, dt * 14);
+    hand.angle += (HANDLE_ANGLE + lean - hand.angle) * Math.min(1, dt * 8);
 
     const h = hilt();
     const tipSpeed = whip.update(h.x, h.y, dt);
@@ -352,7 +367,9 @@ export function mount({ minSpeed = 1100, sound = true } = {}) {
     if (tipSpeed > minSpeed * 1.5 && !reducedMotion) effects.ember(whip.tip.x, whip.tip.y);
     effects.step(dt);
 
-    const cells = whipSprite(whip.points, mouse, h, CELL);
+    const zone = focusedWhippable(document);
+    const cells = zone ? zoneCells(zone.getBoundingClientRect(), now) : new Map();
+    for (const [k, c] of whipSprite(whip.points, mouse, h, CELL)) cells.set(k, c);
     effects.draw(cells);
     drawCells(g, cells);
   }
@@ -393,6 +410,9 @@ export function mount({ minSpeed = 1100, sound = true } = {}) {
   const onClick = () => setActive(!active);
 
   button.addEventListener('click', onClick);
+  // Clicking the button must not steal focus from the field you want to whip.
+  const keepFocus = (e) => e.preventDefault();
+  button.addEventListener('mousedown', keepFocus);
   window.addEventListener('pointermove', onPointerMove, { passive: true, capture: true });
   window.addEventListener('keydown', onKeyDown, true);
   window.addEventListener('resize', resize);
@@ -408,6 +428,7 @@ export function mount({ minSpeed = 1100, sound = true } = {}) {
     destroy() {
       setActive(false);
       button.removeEventListener('click', onClick);
+      button.removeEventListener('mousedown', keepFocus);
       window.removeEventListener('pointermove', onPointerMove, { capture: true });
       window.removeEventListener('keydown', onKeyDown, true);
       window.removeEventListener('resize', resize);

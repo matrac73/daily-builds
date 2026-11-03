@@ -31,7 +31,20 @@ export function isWhippable(el) {
   return false;
 }
 
-/** Walk up from the element under the lash tip to the closest whippable zone. */
+/** True if (x, y) lies inside `rect` (a DOMRect-like box), grown by `margin`. */
+export function inRect(x, y, rect, margin = 0) {
+  if (!rect) return false;
+  return x >= rect.left - margin && x <= rect.right + margin && y >= rect.top - margin && y <= rect.bottom + margin;
+}
+
+/** The focused text field (where your text cursor is), or null. */
+export function focusedWhippable(doc) {
+  let el = doc.activeElement;
+  while (el?.shadowRoot?.activeElement) el = el.shadowRoot.activeElement;
+  return isWhippable(el) ? el : null;
+}
+
+/** Walk up from an element to the closest whippable zone. */
 export function findWhippable(el) {
   for (let node = el; node; node = node.parentElement) {
     if (isWhippable(node)) return node;

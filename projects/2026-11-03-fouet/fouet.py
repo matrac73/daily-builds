@@ -3,9 +3,9 @@
 
 Click the pixel button in the bottom-right corner of your screen (or press
 Ctrl+Alt+W): a whip snaps onto your mouse. Flick, then stop dead (or pull back):
-the lash cracks at its tip. If it cracks on a text zone of any application,
-Fouet clicks there and types "faster", "do it", "make it"... Chain hits to
-escalate to ALL CAPS.
+the lash cracks at its tip. If the tip cracks inside the text field where
+your text cursor is, Fouet types "faster", "do it", "make it"... right at your
+cursor. Chain hits to escalate to ALL CAPS.
 
 Single file, Python 3.8+ standard library only. Desktop mode runs on Windows.
 
@@ -26,7 +26,7 @@ import wave
 from collections import deque
 from typing import Dict, List, Optional, Tuple
 
-__version__ = "2.1.0"
+__version__ = "2.2.0"
 
 Cell = Tuple[int, int]
 
@@ -101,7 +101,7 @@ class Whip:
     """
 
     def __init__(self, x: float, y: float, segments: int = 20, segment_length: float = 13.0,
-                 gravity: float = 1500.0, damping: float = 0.993, iterations: int = 12,
+                 gravity: float = 1500.0, damping: float = 0.985, iterations: int = 12,
                  step: float = 1 / 120, max_substeps: int = 8,
                  bend_root: float = 14.0, bend_tip: float = 48.0):
         self.segments = segments
@@ -274,8 +274,8 @@ class FlickDetector:
     -`reverse_ratio` x peak).
     """
 
-    def __init__(self, min_speed: float = 1100.0, stop_ratio: float = 0.3,
-                 reverse_ratio: float = 0.12, window: float = 0.2, cooldown: float = 0.22):
+    def __init__(self, min_speed: float = 1500.0, stop_ratio: float = 0.2,
+                 reverse_ratio: float = 0.2, window: float = 0.2, cooldown: float = 0.6):
         self.min_speed = min_speed
         self.stop_ratio = stop_ratio
         self.reverse_ratio = reverse_ratio
@@ -309,36 +309,44 @@ class FlickDetector:
 
 class LashSnap:
     """After a flick, snaps the lash straight along the swing direction and
-    cracks once it is extended (`reach` x its length) or after `max_delay` s.
+    cracks once it is extended (`reach` x its length). If it is not extended
+    after `max_delay` s the flick fizzles: no crack without a real tip snap.
 
     This is the "crack where I aim" part: a real whip thrown by a sharp brake
     unrolls along the line of the swing; the snap makes that reliable instead
     of leaving it to a pendulum that can swing the tip anywhere.
     """
 
-    def __init__(self, pull: float = 0.4, reach: float = 0.85, max_delay: float = 0.15):
+    def __init__(self, pull: float = 0.25, reach: float = 0.9, max_delay: float = 0.4):
         self.pull = pull
         self.reach = reach
         self.max_delay = max_delay
         self.flick: Optional[Flick] = None
         self.started = 0.0
+        self.last = 0.0
 
     @property
     def pending(self) -> bool:
         return self.flick is not None
 
     def start(self, flick: Flick, now: float) -> None:
-        self.flick, self.started = flick, now
+        self.flick, self.started, self.last = flick, now, now
 
     def update(self, whip: "Whip", now: float) -> Optional[Flick]:
         """Call after `whip.update` each frame; returns the flick when it cracks."""
         flick = self.flick
         if flick is None:
             return None
-        whip.steer(flick.dx, flick.dy, self.pull)
-        if whip.reach(flick.dx, flick.dy) >= self.reach * whip.length or now - self.started >= self.max_delay:
+        # `pull` is per 60 fps frame; scaled by the real frame time so the lash
+        # unrolls at the same speed whatever the frame rate.
+        frames = max(0.0, min(0.1, now - self.last)) * 60
+        self.last = now
+        whip.steer(flick.dx, flick.dy, 1 - (1 - self.pull) ** max(frames, 0.25))
+        if whip.reach(flick.dx, flick.dy) >= self.reach * whip.length:
             self.flick = None
             return flick
+        if now - self.started >= self.max_delay:
+            self.flick = None  # fizzled: the tip never snapped
         return None
 
 
@@ -729,6 +737,174 @@ class Effects:
             cells.update(lit)
 
 
+# --------------------------------------------------------------------------- text zone
+
+Rect = Tuple[int, int, int, int]  # left, top, right, bottom (screen px)
+
+UIA_EDIT, UIA_DOCUMENT, UIA_GROUP, UIA_CUSTOM = 50004, 50030, 50026, 50025
+RICH_TEXT_TYPES = (UIA_EDIT, UIA_DOCUMENT, UIA_GROUP, UIA_CUSTOM)  # contenteditable shows up as a group
+
+
+class FocusInfo:
+    """What UI Automation says about the element that has the keyboard focus."""
+    __slots__ = ("rect", "control_type", "value_pattern", "read_only", "text_pattern", "password", "pid")
+
+    def __init__(self, rect: Rect, control_type: int = 0, value_pattern: bool = False, read_only: bool = False,
+                 text_pattern: bool = False, password: bool = False, pid: int = 0):
+        self.rect, self.control_type = rect, control_type
+        self.value_pattern, self.read_only, self.text_pattern = value_pattern, read_only, text_pattern
+        self.password, self.pid = password, pid
+
+
+def is_text_zone(info: Optional[FocusInfo], own_pid: int = -1) -> bool:
+    """True if the focused element is somewhere the whip may type: an editable
+    text field or document, not a password box, not a read-only page."""
+    if info is None or info.password or info.pid == own_pid:
+        return False
+    left, top, right, bottom = info.rect
+    if right - left < 4 or bottom - top < 4:
+        return False
+    if info.read_only:
+        return False
+    if info.value_pattern:  # plain fields: an editable value
+        return True
+    # Rich editors (Word, contenteditable...) have no value pattern: they must
+    # expose text, be a text-like control and not be flagged read-only.
+    return info.text_pattern and info.control_type in RICH_TEXT_TYPES
+
+
+def in_zone(x: float, y: float, rect: Optional[Rect], margin: float = 0.0) -> bool:
+    if rect is None:
+        return False
+    left, top, right, bottom = rect
+    return left - margin <= x <= right + margin and top - margin <= y <= bottom + margin
+
+
+class FocusProbe:
+    """Reads the focused element through UI Automation (raw COM via ctypes, so
+    no extra package). Create and use it on one thread only."""
+
+    # vtable slots (UIAutomationClient.h)
+    _GET_FOCUSED = 8  # IUIAutomation::GetFocusedElement
+    _GET_PROPERTY = 10  # IUIAutomationElement::GetCurrentPropertyValue
+    _GET_RECT = 43  # IUIAutomationElement::get_CurrentBoundingRectangle
+    _RELEASE = 2
+    # property ids
+    P_CONTROL_TYPE, P_PID, P_PASSWORD = 30003, 30002, 30019
+    P_HAS_VALUE, P_VALUE_READONLY, P_HAS_TEXT, P_LEGACY_STATE = 30043, 30046, 30040, 30096
+    STATE_READONLY = 0x40
+
+    def __init__(self):
+        import ctypes
+        from ctypes import wintypes
+
+        self.ctypes, self.wintypes = ctypes, wintypes
+        ole32 = ctypes.windll.ole32
+        ole32.CoInitializeEx(None, 0x2)  # apartment-threaded; S_FALSE if already done
+
+        class GUID(ctypes.Structure):
+            _fields_ = [("a", ctypes.c_ulong), ("b", ctypes.c_ushort), ("c", ctypes.c_ushort),
+                        ("d", ctypes.c_ubyte * 8)]
+
+        class VARIANT(ctypes.Structure):
+            _fields_ = [("vt", ctypes.c_ushort), ("r1", ctypes.c_ushort), ("r2", ctypes.c_ushort),
+                        ("r3", ctypes.c_ushort), ("val", ctypes.c_longlong), ("pad", ctypes.c_longlong)]
+
+        def guid(text: str) -> GUID:
+            g = GUID()
+            ole32.CLSIDFromString(ctypes.c_wchar_p("{%s}" % text), ctypes.byref(g))
+            return g
+
+        self.VARIANT = VARIANT
+        self.oleaut32 = ctypes.windll.oleaut32
+        self.uia = ctypes.c_void_p()
+        hr = ole32.CoCreateInstance(ctypes.byref(guid("ff48dba4-60ef-4201-aa87-54103eef594e")), None, 1,
+                                    ctypes.byref(guid("30cbe57d-d9d0-452a-ab13-7ac5ac4825ee")),
+                                    ctypes.byref(self.uia))
+        if hr != 0 or not self.uia:
+            raise OSError("UI Automation unavailable (0x%08x)" % (hr & 0xFFFFFFFF))
+
+    def _call(self, obj, slot: int, *args):
+        ctypes = self.ctypes
+        vtbl = ctypes.cast(obj, ctypes.POINTER(ctypes.POINTER(ctypes.c_void_p))).contents
+        proto = ctypes.WINFUNCTYPE(ctypes.c_long, ctypes.c_void_p, *[type(a) for a in args])
+        return proto(vtbl[slot])(obj, *args)
+
+    def _prop(self, el, pid: int) -> int:
+        v = self.VARIANT()
+        if self._call(el, self._GET_PROPERTY, self.ctypes.c_int(pid), self.ctypes.pointer(v)) != 0:
+            return 0
+        if v.vt in (3, 11):  # VT_I4, VT_BOOL
+            out = v.val & 0xFFFFFFFF if v.vt == 3 else (1 if v.val & 0xFFFF else 0)
+        else:
+            out = 0
+        self.oleaut32.VariantClear(self.ctypes.byref(v))
+        return out
+
+    def focused(self) -> Optional[FocusInfo]:
+        ctypes = self.ctypes
+        el = ctypes.c_void_p()
+        if self._call(self.uia, self._GET_FOCUSED, ctypes.pointer(el)) != 0 or not el:
+            return None
+        try:
+            r = self.wintypes.RECT()
+            if self._call(el, self._GET_RECT, ctypes.pointer(r)) != 0:
+                return None
+            p = self._prop
+            has_value = bool(p(el, self.P_HAS_VALUE))
+            # Read-only: from the value pattern when there is one, else from the
+            # MSAA state (a web page is a read-only document, a contenteditable is not).
+            read_only = bool(p(el, self.P_VALUE_READONLY)) if has_value else \
+                bool(p(el, self.P_LEGACY_STATE) & self.STATE_READONLY)
+            return FocusInfo((r.left, r.top, r.right, r.bottom), p(el, self.P_CONTROL_TYPE), has_value, read_only,
+                             bool(p(el, self.P_HAS_TEXT)), bool(p(el, self.P_PASSWORD)), p(el, self.P_PID))
+        finally:
+            self._call(el, self._RELEASE)
+
+
+class ZoneWatcher:
+    """Background thread that keeps `zone` = the screen rect of the focused
+    text field (or None), refreshed every `period` s while `running` is set."""
+
+    def __init__(self, period: float = 0.15):
+        import threading
+        self.period = period
+        self.zone: Optional[Rect] = None
+        self.running = threading.Event()
+        self.thread = threading.Thread(target=self._loop, name="fouet-zone", daemon=True)
+        self.thread.start()
+
+    def _loop(self) -> None:
+        try:
+            probe = FocusProbe()
+        except Exception:
+            return  # no UI Automation: zone stays None (only --anywhere types)
+        own = os.getpid()
+        while True:
+            self.running.wait()
+            try:
+                info = probe.focused()
+                self.zone = info.rect if is_text_zone(info, own) else None
+            except Exception:
+                self.zone = None
+            time.sleep(self.period)
+
+
+def zone_cells(rect: Rect, cell: float, ox: float, oy: float, now: float) -> Dict[Cell, str]:
+    """Pixel corner brackets around the target text zone, gently pulsing."""
+    left, top = int((rect[0] - ox) // cell) - 1, int((rect[1] - oy) // cell) - 1
+    right, bottom = int((rect[2] - ox) // cell), int((rect[3] - oy) // cell)
+    arm = max(2, min(5, (right - left) // 4, (bottom - top) // 2))
+    color = LASH[2] if int(now * 3) % 2 == 0 else LASH[4]
+    cells: Dict[Cell, str] = {}
+    for cx, cy, sx, sy in ((left, top, 1, 1), (right, top, -1, 1), (left, bottom, 1, -1), (right, bottom, -1, -1)):
+        for d in range(arm):
+            cells[(cx + sx * d, cy)] = color
+            cells[(cx, cy + sy * d)] = color
+    add_outline(cells, OUTLINE)
+    return cells
+
+
 # --------------------------------------------------------------------------- Windows desktop app
 
 HANDLE_ANGLE = -math.pi / 3  # resting handle points up-right
@@ -764,17 +940,10 @@ class Win32:
             _anonymous_ = ("u",)
             _fields_ = [("type", wintypes.DWORD), ("u", _UNION)]
 
-        class CURSORINFO(ctypes.Structure):
-            _fields_ = [("cbSize", wintypes.DWORD), ("flags", wintypes.DWORD),
-                        ("hCursor", wintypes.HANDLE), ("ptScreenPos", wintypes.POINT)]
-
-        self.INPUT, self.CURSORINFO, self.POINT, self.RECT = INPUT, CURSORINFO, wintypes.POINT, wintypes.RECT
-        u.SendInput.argtypes = (wintypes.UINT, ctypes.POINTER(INPUT), ctypes.c_int)
-        u.LoadCursorW.restype = wintypes.HANDLE
-        u.LoadCursorW.argtypes = (wintypes.HINSTANCE, ctypes.c_void_p)
+        self.INPUT, self.POINT, self.RECT = INPUT, wintypes.POINT, wintypes.RECT
+        u.SendInput.argtypes = (wintypes.UINT, ctypes.c_void_p, ctypes.c_int)
         u.GetWindowLongW.restype = ctypes.c_long
         u.SetWindowLongW.argtypes = (wintypes.HWND, ctypes.c_int, ctypes.c_long)
-        self.ibeam = u.LoadCursorW(None, ctypes.c_void_p(32513))  # IDC_IBEAM
         try:  # 1 ms timer resolution, or Tk's after() rounds frames up to 15.6 ms
             ctypes.windll.winmm.timeBeginPeriod(1)
         except Exception:
@@ -811,31 +980,12 @@ class Win32:
         self.user32.GetCursorPos(self.ctypes.byref(p))
         return p.x, p.y
 
-    def set_cursor(self, x: int, y: int) -> None:
-        self.user32.SetCursorPos(int(x), int(y))
-
-    def cursor_is_ibeam(self) -> bool:
-        info = self.CURSORINFO()
-        info.cbSize = self.ctypes.sizeof(self.CURSORINFO)
-        return bool(self.user32.GetCursorInfo(self.ctypes.byref(info))) and info.hCursor == self.ibeam
-
     def key_down(self, vk: int) -> bool:
         return bool(self.user32.GetAsyncKeyState(vk) & 0x8000)
 
     def _send(self, inputs) -> None:
         arr = (self.INPUT * len(inputs))(*inputs)
-        self.user32.SendInput(len(inputs), arr, self.ctypes.sizeof(self.INPUT))
-
-    def click(self) -> None:
-        down, up = self.INPUT(type=0), self.INPUT(type=0)
-        down.mi.dwFlags, up.mi.dwFlags = 0x0002, 0x0004  # LEFTDOWN, LEFTUP
-        self._send([down, up])
-
-    def press(self, vk: int) -> None:
-        down, up = self.INPUT(type=1), self.INPUT(type=1)
-        down.ki.wVk = up.ki.wVk = vk
-        up.ki.dwFlags = 0x0002  # KEYUP
-        self._send([down, up])
+        self.user32.SendInput(len(inputs), self.ctypes.cast(arr, self.ctypes.c_void_p), self.ctypes.sizeof(self.INPUT))
 
     def type_text(self, text: str) -> None:
         inputs = []
@@ -858,7 +1008,7 @@ class Win32:
 
 
 class App:
-    VK_CONTROL, VK_MENU, VK_W, VK_ESCAPE, VK_END = 0x11, 0x12, 0x57, 0x1B, 0x23
+    VK_CONTROL, VK_MENU, VK_W, VK_ESCAPE = 0x11, 0x12, 0x57, 0x1B
 
     def __init__(self, sound: bool = True, anywhere: bool = False, sensitivity: float = 1.0,
                  cell: Optional[int] = None, typing: bool = True):
@@ -871,7 +1021,7 @@ class App:
         self.cell = cell or max(3, round(4 * self.scale))
         self.anywhere = anywhere
         self.typing = typing
-        self.min_speed = 1100 * self.scale / max(0.2, sensitivity)
+        self.min_speed = 1500 * self.scale / max(0.2, sensitivity)
 
         self.sounds: Dict[str, str] = {}
         if sound:
@@ -900,6 +1050,7 @@ class App:
         s = self.scale
         self.handle_length = 44 * s
         self.whip = Whip(*self.mouse, segment_length=13 * s, gravity=1500 * s)
+        self.zones = ZoneWatcher()
 
         # Toggle button: the root window, bottom-right of the primary work area.
         self.root = tk.Tk()
@@ -972,10 +1123,13 @@ class App:
             self.whip.reset(hx, hy)
             self.detector.reset()
             self.velocity.reset()
+            self.zones.running.set()
             self.overlay.deiconify()
             self.overlay.attributes("-topmost", True)
             self.root.lift()
         else:
+            self.zones.running.clear()
+            self.zones.zone = None
             self.effects.clear()
             self.canvas.delete("all")
             self.overlay.withdraw()
@@ -1013,7 +1167,7 @@ class App:
         self.vel = self.velocity.update(x, y, now)
         self.mouse = (x, y)
         lean = max(-0.9, min(0.9, self.vel[0] * 0.0006 / self.scale))
-        self.angle += (HANDLE_ANGLE + lean - self.angle) * min(1.0, dt * 14)
+        self.angle += (HANDLE_ANGLE + lean - self.angle) * min(1.0, dt * 8)
 
         hilt = self.hilt()
         tip_speed = self.whip.update(hilt[0], hilt[1], dt)
@@ -1026,7 +1180,7 @@ class App:
         if tip_speed > self.min_speed * 1.5:
             self.effects.ember(*self.whip.tip, self.scale)
         self.effects.step(dt)
-        self.render(hilt)
+        self.render(hilt, now)
 
     def crack(self, flick: Flick, now: float) -> None:
         tx, ty = self.whip.tip
@@ -1034,7 +1188,7 @@ class App:
         self.effects.burst(tx, ty, intensity, self.scale)
         tier = tier_for_combo(self.combo.count + 1) if now - self.combo.last_hit <= self.combo.window else 0
         phrase = self.picker.pick(tier)
-        if self.typing and self.type_at(int(tx), int(ty), phrase):
+        if self.typing and self.type_here(tx, ty, phrase):
             tier = tier_for_combo(self.combo.hit(now))
             self.hits += 1
             self.effects.label(phrase, tx, ty, TIER_COLORS[tier], 2 if tier == 2 else 1)
@@ -1043,23 +1197,13 @@ class App:
             self.effects.label("CLAC!", tx, ty, MISS_COLOR, 1, life=0.45)
             self.play("miss")
 
-    def type_at(self, x: int, y: int, phrase: str) -> bool:
-        """Click the text zone under the tip and type there; False if it is not text."""
-        home = self.win.cursor()
-        self.win.set_cursor(x, y)
-        if not self.anywhere:
-            time.sleep(0.03)  # let the app under the tip set its cursor
-            if not self.win.cursor_is_ibeam():
-                self.win.set_cursor(*home)
-                return False
-        self.win.click()
-        time.sleep(0.015)
-        self.win.press(self.VK_END)
+    def type_here(self, x: float, y: float, phrase: str) -> bool:
+        """Type at your text cursor, but only if the tip cracked inside the
+        focused text field. Nothing is clicked: the caret stays where you put it."""
+        zone = self.zones.zone
+        if zone is None or not (self.anywhere or in_zone(x, y, zone, margin=6 * self.scale)):
+            return False
         self.win.type_text(" " + phrase)
-        self.win.set_cursor(*home)
-        self.mouse = home
-        self.detector.reset()
-        self.velocity.reset()
         return True
 
     def play(self, name: str) -> None:
@@ -1069,11 +1213,13 @@ class App:
             w.PlaySound(path, w.SND_FILENAME | w.SND_ASYNC | w.SND_NODEFAULT)
 
     # -- drawing
-    def render(self, hilt: Tuple[float, float]) -> None:
+    def render(self, hilt: Tuple[float, float], now: float) -> None:
         cell = self.cell
         ox, oy = self.vx, self.vy
         pts = [(p[0] - ox, p[1] - oy) for p in self.whip.points]
-        cells = whip_sprite(pts, (self.mouse[0] - ox, self.mouse[1] - oy), (hilt[0] - ox, hilt[1] - oy), cell)
+        zone = self.zones.zone
+        cells = zone_cells(zone, cell, ox, oy, now) if zone else {}
+        cells.update(whip_sprite(pts, (self.mouse[0] - ox, self.mouse[1] - oy), (hilt[0] - ox, hilt[1] - oy), cell))
         self.effects.draw(cells, cell, ox, oy)
         c = self.canvas
         c.delete("all")
@@ -1104,10 +1250,10 @@ class App:
 
 def parse_args(argv=None) -> argparse.Namespace:
     p = argparse.ArgumentParser(prog="fouet", description="A pixel-art whip for your desktop. "
-                                "Flick, then stop dead: the lash cracks and types into the text zone under its tip.")
+                                "Flick, then stop dead: crack inside your text field to type at your cursor.")
     p.add_argument("--no-sound", action="store_true", help="mute the 8-bit crack")
     p.add_argument("--anywhere", action="store_true",
-                   help="type wherever the tip cracks, even if the zone does not show a text cursor")
+                   help="type at your text cursor wherever the tip cracks, not only inside its field")
     p.add_argument("--sensitivity", type=float, default=1.0,
                    help="above 1 = cracks with slower flicks, below 1 = needs faster flicks (default 1)")
     p.add_argument("--pixel", type=int, default=None, help="size of one pixel-art pixel in screen pixels")
@@ -1169,7 +1315,7 @@ def main(argv=None) -> int:
         message_box("Fouet is already running: look for the pixel button in the bottom-right corner.")
         return 0
     print("Fouet %s - click the pixel button bottom-right or press Ctrl+Alt+W.\n"
-          "Flick, then stop dead: crack on a text zone to motivate it. Esc puts the whip away,\n"
+          "Click in a text field, flick, stop dead: crack inside it to type. Esc puts the whip away,\n"
           "right-click the button for options and to quit." % __version__)
     try:
         App(sound=not args.no_sound, anywhere=args.anywhere, sensitivity=args.sensitivity, cell=args.pixel).run()

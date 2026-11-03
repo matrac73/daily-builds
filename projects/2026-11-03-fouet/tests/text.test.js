@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { findWhippable, insertPhrase, isWhippable, spacedPhrase } from '../src/text.js';
+import { findWhippable, focusedWhippable, inRect, insertPhrase, isWhippable, spacedPhrase } from '../src/text.js';
 import { bookmarkletHref } from '../src/bookmarklet.js';
 
 /** Minimal stand-in for a DOM element. */
@@ -61,4 +61,24 @@ test('bookmarklet embeds the absolute module URL and toggles an existing whip', 
 
 test('bookmarklet refuses non-http module URLs', () => {
   assert.throws(() => bookmarkletHref('file:///C:/fouet/src/fouet.js'), /http\(s\)/);
+});
+
+test('inRect: only cracks on the field (plus a small margin) count', () => {
+  const rect = { left: 100, top: 100, right: 500, bottom: 200 };
+  assert.ok(inRect(300, 150, rect));
+  assert.ok(inRect(503, 150, rect, 6));
+  assert.ok(!inRect(520, 150, rect, 6));
+  assert.ok(!inRect(300, 90, rect));
+  assert.ok(!inRect(300, 150, null));
+});
+
+test('focusedWhippable: the field holding the text cursor, through shadow roots', () => {
+  const area = el('TEXTAREA');
+  assert.equal(focusedWhippable({ activeElement: area }), area);
+  assert.equal(focusedWhippable({ activeElement: el('BODY') }), null);
+  assert.equal(focusedWhippable({ activeElement: el('BUTTON') }), null);
+  const inner = el('INPUT', { type: 'text' });
+  const host = el('DIV', { shadowRoot: { activeElement: inner } });
+  assert.equal(focusedWhippable({ activeElement: host }), inner);
+  assert.equal(focusedWhippable({ activeElement: null }), null);
 });

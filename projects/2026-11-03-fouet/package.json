@@ -1,6 +1,6 @@
 {
   "name": "fouet",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "A pixel-art whip for your mouse: swing, stop dead, CLAC - it types FASTER, DO IT, MAKE IT. Browser + desktop Python script.",
   "type": "module",
   "private": true,

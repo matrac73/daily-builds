@@ -29,7 +29,7 @@ export function createVelocityTracker({ spanMs = 35 } = {}) {
  * peak direction below −`reverseRatio` × peak). Speeding up never fires.
  */
 export function createFlickDetector({
-  minSpeed = 1100, stopRatio = 0.3, reverseRatio = 0.12, windowMs = 200, cooldownMs = 220,
+  minSpeed = 1500, stopRatio = 0.2, reverseRatio = 0.2, windowMs = 200, cooldownMs = 600,
 } = {}) {
   let history = [];
   let lastFire = -Infinity;
@@ -65,13 +65,15 @@ export function createFlickDetector({
 
 /**
  * After a flick, snap the lash straight along the swing direction and crack
- * once it is extended (`reach` × its length) or after `maxDelayMs`. This is the
+ * once it is extended (`reach` × its length). If it is not extended after
+ * `maxDelayMs` the flick fizzles: no crack without a real tip snap. This is the
  * "crack where I aim" part: a sharp brake throws the lash along the swing
  * line, instead of leaving the tip to a pendulum that can swing anywhere.
  */
-export function createLashSnap({ pull = 0.4, reach = 0.85, maxDelayMs = 150 } = {}) {
+export function createLashSnap({ pull = 0.25, reach = 0.9, maxDelayMs = 400 } = {}) {
   let flick = null;
   let started = 0;
+  let last = 0;
   return {
     get pending() {
       return flick !== null;
@@ -79,16 +81,22 @@ export function createLashSnap({ pull = 0.4, reach = 0.85, maxDelayMs = 150 } = 
     start(f, now) {
       flick = f;
       started = now;
+      last = now;
     },
     /** Call after `whip.update` each frame; returns the flick when it cracks. */
     update(whip, now) {
       if (!flick) return null;
-      whip.steer(flick.dx, flick.dy, pull);
-      if (whip.reach(flick.dx, flick.dy) >= reach * whip.length || now - started >= maxDelayMs) {
+      // `pull` is per 60 fps frame, scaled by the real frame time so the lash
+      // unrolls at the same speed whatever the frame rate.
+      const frames = Math.max(0, Math.min(100, now - last)) * 0.06;
+      last = now;
+      whip.steer(flick.dx, flick.dy, 1 - (1 - pull) ** Math.max(frames, 0.25));
+      if (whip.reach(flick.dx, flick.dy) >= reach * whip.length) {
         const done = flick;
         flick = null;
         return done;
       }
+      if (now - started >= maxDelayMs) flick = null; // fizzled: the tip never snapped
       return null;
     },
   };

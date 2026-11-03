@@ -97,19 +97,34 @@ test('the snap straightens the lash along the swing, then cracks', () => {
   }
   assert.equal(fired, flick);
   assert.equal(snap.pending, false);
-  assert.ok(whip.reach(1, 0) >= 0.85 * whip.length);
-  assert.ok(frames <= 10);
+  assert.ok(whip.reach(1, 0) >= 0.9 * whip.length);
+  assert.ok(frames <= 20);
 });
 
-test('the snap times out, and does nothing when idle', () => {
+test('the snap unrolls as fast at 30 fps as at 60', () => {
+  const timeToCrack = (fps) => {
+    const whip = createWhip(0, 0);
+    const snap = createLashSnap({ maxDelayMs: 10000 });
+    snap.start({ speed: 2000, dx: 1, dy: 0 }, 0);
+    for (let f = 1; f < 200; f++) {
+      whip.update(0, 0, 1 / fps);
+      if (snap.update(whip, (f * 1000) / fps)) return f / fps;
+    }
+    return Infinity;
+  };
+  const [t60, t30] = [timeToCrack(60), timeToCrack(30)];
+  assert.ok(t60 < 0.4 && t30 < 0.4 && Math.abs(t60 - t30) < 0.07, `${t60} vs ${t30}`);
+});
+test('a snap that never extends fizzles without cracking, and an idle snap does nothing', () => {
   const whip = createWhip(0, 0);
   const before = JSON.stringify(whip.points);
   assert.equal(createLashSnap().update(whip, 1000), null);
   assert.equal(JSON.stringify(whip.points), before);
   const snap = createLashSnap({ pull: 0, maxDelayMs: 100 });
   snap.start({ speed: 2000, dx: 1, dy: 0 }, 0);
-  const fired = Array.from({ length: 10 }, (_, i) => snap.update(whip, (i + 1) * MS));
-  assert.ok(fired.some(Boolean));
+  const fired = Array.from({ length: 30 }, (_, i) => snap.update(whip, (i + 1) * MS));
+  assert.ok(!fired.some(Boolean));
+  assert.equal(snap.pending, false);
 });
 
 test('crack intensity is 0 at min speed and saturates at 1', () => {
