@@ -31,12 +31,6 @@ export function isWhippable(el) {
   return false;
 }
 
-/** True if (x, y) lies inside `rect` (a DOMRect-like box), grown by `margin`. */
-export function inRect(x, y, rect, margin = 0) {
-  if (!rect) return false;
-  return x >= rect.left - margin && x <= rect.right + margin && y >= rect.top - margin && y <= rect.bottom + margin;
-}
-
 /** The focused text field (where your text cursor is), or null. */
 export function focusedWhippable(doc) {
   let el = doc.activeElement;

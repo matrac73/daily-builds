@@ -29,7 +29,7 @@ export function createVelocityTracker({ spanMs = 35 } = {}) {
  * peak direction below −`reverseRatio` × peak). Speeding up never fires.
  */
 export function createFlickDetector({
-  minSpeed = 1500, stopRatio = 0.2, reverseRatio = 0.2, windowMs = 200, cooldownMs = 600,
+  minSpeed = 2200, stopRatio = 0.15, reverseRatio = 0.25, windowMs = 200, cooldownMs = 800,
 } = {}) {
   let history = [];
   let lastFire = -Infinity;
@@ -70,7 +70,7 @@ export function createFlickDetector({
  * "crack where I aim" part: a sharp brake throws the lash along the swing
  * line, instead of leaving the tip to a pendulum that can swing anywhere.
  */
-export function createLashSnap({ pull = 0.25, reach = 0.9, maxDelayMs = 400 } = {}) {
+export function createLashSnap({ pull = 0.18, reach = 0.92, maxDelayMs = 450 } = {}) {
   let flick = null;
   let started = 0;
   let last = 0;

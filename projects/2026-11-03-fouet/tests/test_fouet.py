@@ -1,6 +1,7 @@
 import io
 import math
 import random
+import struct
 import sys
 import wave
 from pathlib import Path
@@ -36,7 +37,7 @@ def simulate(path, seconds):
     return cracks
 
 
-def flick_then(after, speed=2600.0, start=0.5, duration=0.22):
+def flick_then(after, speed=3200.0, start=0.5, duration=0.22):
     """Hand rests, moves right at `speed`, then does `after` ('stop' or 'back')."""
     def path(t):
         if t < start:
@@ -46,7 +47,7 @@ def flick_then(after, speed=2600.0, start=0.5, duration=0.22):
         end = 300.0 + speed * duration
         if after == "back":
             back = min(t - start - duration, 0.08)
-            return (end - 1200.0 * back, 300.0)
+            return (end - 1500.0 * back, 300.0)
         return (end, 300.0)
     return path
 
@@ -123,8 +124,8 @@ def test_snap_straightens_the_lash_along_the_swing_then_cracks():
         whip.update(0, 0, DT)
         fired = snap.update(whip, frames * DT)
     assert fired is not None and not snap.pending
-    assert whip.reach(1, 0) >= 0.9 * whip.length
-    assert frames <= 20
+    assert whip.reach(1, 0) >= 0.92 * whip.length
+    assert frames <= 27
 
 
 def test_snap_that_never_extends_fizzles_without_cracking():
@@ -144,7 +145,7 @@ def test_snap_unrolls_as_fast_at_30_fps_as_at_60():
             if snap.update(whip, frame / fps):
                 return frame / fps
     t60, t30 = time_to_crack(60), time_to_crack(30)
-    assert t60 < 0.4 and t30 < 0.4 and abs(t60 - t30) < 0.07
+    assert t60 < 0.45 and t30 < 0.45 and abs(t60 - t30) < 0.07
 
 def test_idle_snap_does_nothing():
     whip = fouet.Whip(0, 0)
@@ -173,7 +174,7 @@ def test_flick_and_stop_cracks_once_after_the_stop_ahead_of_the_hand():
 def test_the_crack_lands_where_you_aim_in_every_direction():
     for angle in range(0, 360, 45):
         dx, dy = math.cos(math.radians(angle)), math.sin(math.radians(angle))
-        for speed in (1800, 2600, 3700):
+        for speed in (2400, 3000, 4000):
             def path(t, dx=dx, dy=dy, speed=speed):
                 k = min(max(t - 0.5, 0.0), 300 / speed)  # 300 px swing, then stop dead
                 return (600 + dx * speed * k, 500 + dy * speed * k)
@@ -222,8 +223,8 @@ def test_whip_at_rest_never_cracks():
 
 def test_a_moderate_swing_no_longer_cracks():
     def path(t):
-        k = min(max(t - 0.5, 0.0), 300 / 1200)
-        return (600 + 1200 * k, 500.0)
+        k = min(max(t - 0.5, 0.0), 300 / 2000)
+        return (600 + 2000 * k, 500.0)
     assert simulate(path, 1.5) == []
 
 
@@ -234,48 +235,6 @@ def test_shaking_the_mouse_cracks_rarely():
     assert 1 <= len(cracks) <= 5
     gaps = [b["t"] - a["t"] for a, b in zip(cracks, cracks[1:])]
     assert all(g >= 0.6 for g in gaps)
-
-
-# ------------------------------------------------------------------ text zone
-
-def info(**kw):
-    base = dict(rect=(100, 100, 500, 200), control_type=fouet.UIA_EDIT, value_pattern=True,
-                read_only=False, text_pattern=True, password=False, pid=42)
-    base.update(kw)
-    return fouet.FocusInfo(**base)
-
-
-def test_editable_fields_are_text_zones():
-    assert fouet.is_text_zone(info())  # textarea, Notepad
-    assert fouet.is_text_zone(info(control_type=fouet.UIA_GROUP, value_pattern=False))  # contenteditable
-    assert fouet.is_text_zone(info(control_type=fouet.UIA_DOCUMENT, value_pattern=False))  # Word
-
-
-def test_pages_buttons_and_passwords_are_not_text_zones():
-    assert not fouet.is_text_zone(None)
-    assert not fouet.is_text_zone(info(control_type=fouet.UIA_DOCUMENT, read_only=True))  # a web page
-    assert not fouet.is_text_zone(info(control_type=50000, value_pattern=False))  # a button
-    assert not fouet.is_text_zone(info(control_type=fouet.UIA_GROUP, value_pattern=False, text_pattern=False))
-    assert not fouet.is_text_zone(info(password=True))
-    assert not fouet.is_text_zone(info(pid=7), own_pid=7)  # never Fouet itself
-    assert not fouet.is_text_zone(info(rect=(0, 0, 0, 0)))
-
-
-def test_only_cracks_inside_the_zone_count():
-    rect = (100, 100, 500, 200)
-    assert fouet.in_zone(300, 150, rect)
-    assert fouet.in_zone(503, 150, rect, margin=6)
-    assert not fouet.in_zone(520, 150, rect, margin=6)
-    assert not fouet.in_zone(300, 90, rect)
-    assert not fouet.in_zone(300, 150, None)
-
-
-def test_zone_brackets_mark_the_four_corners():
-    cells = fouet.zone_cells((100, 100, 500, 200), 4, 0, 0, 0.0)
-    xs = [x for x, _ in cells]
-    ys = [y for _, y in cells]
-    assert min(xs) <= 24 and max(xs) >= 125 and min(ys) <= 24 and max(ys) >= 50
-    assert (75, 37) not in cells  # nothing in the middle of the field
 
 
 # ------------------------------------------------------------------ physics
@@ -373,6 +332,17 @@ def test_dither_dissolves_progressively():
     assert alive == [16, 8, 0]
 
 
+def test_tray_icon_file_is_a_valid_multi_size_ico():
+    data = fouet.ico_bytes(fouet.icon_cells(True), sizes=(16, 32))
+    reserved, kind, count = struct.unpack_from("<HHH", data)
+    assert (reserved, kind, count) == (0, 1, 2)
+    for i, size in enumerate((16, 32)):
+        w, h, _, _, planes, bpp, length, offset = struct.unpack_from("<BBBBHHII", data, 6 + 16 * i)
+        assert (w, h, bpp) == (size, size, 32) and offset + length <= len(data)
+        assert struct.unpack_from("<Iii", data, offset) == (40, size, size * 2)
+    assert fouet.hex_rgb("#ff5a0a") == (255, 90, 10)
+
+
 def test_icon_is_16x16_and_differs_when_on():
     off, on = fouet.icon_cells(False), fouet.icon_cells(True)
     assert all(0 <= x < 16 and 0 <= y < 16 for x, y in off)
@@ -430,5 +400,5 @@ def test_autostart_toggles_the_run_value():
 
 
 def test_cli_parses_options():
-    args = fouet.parse_args(["--no-sound", "--sensitivity", "1.5", "--anywhere"])
-    assert args.no_sound and args.anywhere and args.sensitivity == 1.5
+    args = fouet.parse_args(["--no-sound", "--sensitivity", "1.5"])
+    assert args.no_sound and args.sensitivity == 1.5

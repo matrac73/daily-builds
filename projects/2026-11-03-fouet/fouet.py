@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Fouet - a pixel-art whip for your desktop.
 
-Click the pixel button in the bottom-right corner of your screen (or press
-Ctrl+Alt+W): a whip snaps onto your mouse. Flick, then stop dead (or pull back):
-the lash cracks at its tip. If the tip cracks inside the text field where
-your text cursor is, Fouet types "faster", "do it", "make it"... right at your
-cursor. Chain hits to escalate to ALL CAPS.
+Click Fouet's icon in the notification area (the ^ next to the clock) or press
+Ctrl+Alt+W: a whip snaps onto your mouse. Flick, then stop dead (or pull back):
+the lash cracks at its tip and Fouet types "faster", "do it", "make it"...
+right where your text cursor is, in any app, wherever the crack lands. Chain
+hits to escalate to ALL CAPS.
 
 Single file, Python 3.8+ standard library only. Desktop mode runs on Windows.
 
@@ -26,7 +26,7 @@ import wave
 from collections import deque
 from typing import Dict, List, Optional, Tuple
 
-__version__ = "2.2.0"
+__version__ = "2.3.0"
 
 Cell = Tuple[int, int]
 
@@ -101,9 +101,9 @@ class Whip:
     """
 
     def __init__(self, x: float, y: float, segments: int = 20, segment_length: float = 13.0,
-                 gravity: float = 1500.0, damping: float = 0.985, iterations: int = 12,
+                 gravity: float = 1500.0, damping: float = 0.975, iterations: int = 12,
                  step: float = 1 / 120, max_substeps: int = 8,
-                 bend_root: float = 14.0, bend_tip: float = 48.0):
+                 bend_root: float = 14.0, bend_tip: float = 38.0):
         self.segments = segments
         self.segment_length = segment_length
         self.gravity = gravity
@@ -274,8 +274,8 @@ class FlickDetector:
     -`reverse_ratio` x peak).
     """
 
-    def __init__(self, min_speed: float = 1500.0, stop_ratio: float = 0.2,
-                 reverse_ratio: float = 0.2, window: float = 0.2, cooldown: float = 0.6):
+    def __init__(self, min_speed: float = 2200.0, stop_ratio: float = 0.15,
+                 reverse_ratio: float = 0.25, window: float = 0.2, cooldown: float = 0.8):
         self.min_speed = min_speed
         self.stop_ratio = stop_ratio
         self.reverse_ratio = reverse_ratio
@@ -317,7 +317,7 @@ class LashSnap:
     of leaving it to a pendulum that can swing the tip anywhere.
     """
 
-    def __init__(self, pull: float = 0.25, reach: float = 0.9, max_delay: float = 0.4):
+    def __init__(self, pull: float = 0.18, reach: float = 0.92, max_delay: float = 0.45):
         self.pull = pull
         self.reach = reach
         self.max_delay = max_delay
@@ -737,174 +737,6 @@ class Effects:
             cells.update(lit)
 
 
-# --------------------------------------------------------------------------- text zone
-
-Rect = Tuple[int, int, int, int]  # left, top, right, bottom (screen px)
-
-UIA_EDIT, UIA_DOCUMENT, UIA_GROUP, UIA_CUSTOM = 50004, 50030, 50026, 50025
-RICH_TEXT_TYPES = (UIA_EDIT, UIA_DOCUMENT, UIA_GROUP, UIA_CUSTOM)  # contenteditable shows up as a group
-
-
-class FocusInfo:
-    """What UI Automation says about the element that has the keyboard focus."""
-    __slots__ = ("rect", "control_type", "value_pattern", "read_only", "text_pattern", "password", "pid")
-
-    def __init__(self, rect: Rect, control_type: int = 0, value_pattern: bool = False, read_only: bool = False,
-                 text_pattern: bool = False, password: bool = False, pid: int = 0):
-        self.rect, self.control_type = rect, control_type
-        self.value_pattern, self.read_only, self.text_pattern = value_pattern, read_only, text_pattern
-        self.password, self.pid = password, pid
-
-
-def is_text_zone(info: Optional[FocusInfo], own_pid: int = -1) -> bool:
-    """True if the focused element is somewhere the whip may type: an editable
-    text field or document, not a password box, not a read-only page."""
-    if info is None or info.password or info.pid == own_pid:
-        return False
-    left, top, right, bottom = info.rect
-    if right - left < 4 or bottom - top < 4:
-        return False
-    if info.read_only:
-        return False
-    if info.value_pattern:  # plain fields: an editable value
-        return True
-    # Rich editors (Word, contenteditable...) have no value pattern: they must
-    # expose text, be a text-like control and not be flagged read-only.
-    return info.text_pattern and info.control_type in RICH_TEXT_TYPES
-
-
-def in_zone(x: float, y: float, rect: Optional[Rect], margin: float = 0.0) -> bool:
-    if rect is None:
-        return False
-    left, top, right, bottom = rect
-    return left - margin <= x <= right + margin and top - margin <= y <= bottom + margin
-
-
-class FocusProbe:
-    """Reads the focused element through UI Automation (raw COM via ctypes, so
-    no extra package). Create and use it on one thread only."""
-
-    # vtable slots (UIAutomationClient.h)
-    _GET_FOCUSED = 8  # IUIAutomation::GetFocusedElement
-    _GET_PROPERTY = 10  # IUIAutomationElement::GetCurrentPropertyValue
-    _GET_RECT = 43  # IUIAutomationElement::get_CurrentBoundingRectangle
-    _RELEASE = 2
-    # property ids
-    P_CONTROL_TYPE, P_PID, P_PASSWORD = 30003, 30002, 30019
-    P_HAS_VALUE, P_VALUE_READONLY, P_HAS_TEXT, P_LEGACY_STATE = 30043, 30046, 30040, 30096
-    STATE_READONLY = 0x40
-
-    def __init__(self):
-        import ctypes
-        from ctypes import wintypes
-
-        self.ctypes, self.wintypes = ctypes, wintypes
-        ole32 = ctypes.windll.ole32
-        ole32.CoInitializeEx(None, 0x2)  # apartment-threaded; S_FALSE if already done
-
-        class GUID(ctypes.Structure):
-            _fields_ = [("a", ctypes.c_ulong), ("b", ctypes.c_ushort), ("c", ctypes.c_ushort),
-                        ("d", ctypes.c_ubyte * 8)]
-
-        class VARIANT(ctypes.Structure):
-            _fields_ = [("vt", ctypes.c_ushort), ("r1", ctypes.c_ushort), ("r2", ctypes.c_ushort),
-                        ("r3", ctypes.c_ushort), ("val", ctypes.c_longlong), ("pad", ctypes.c_longlong)]
-
-        def guid(text: str) -> GUID:
-            g = GUID()
-            ole32.CLSIDFromString(ctypes.c_wchar_p("{%s}" % text), ctypes.byref(g))
-            return g
-
-        self.VARIANT = VARIANT
-        self.oleaut32 = ctypes.windll.oleaut32
-        self.uia = ctypes.c_void_p()
-        hr = ole32.CoCreateInstance(ctypes.byref(guid("ff48dba4-60ef-4201-aa87-54103eef594e")), None, 1,
-                                    ctypes.byref(guid("30cbe57d-d9d0-452a-ab13-7ac5ac4825ee")),
-                                    ctypes.byref(self.uia))
-        if hr != 0 or not self.uia:
-            raise OSError("UI Automation unavailable (0x%08x)" % (hr & 0xFFFFFFFF))
-
-    def _call(self, obj, slot: int, *args):
-        ctypes = self.ctypes
-        vtbl = ctypes.cast(obj, ctypes.POINTER(ctypes.POINTER(ctypes.c_void_p))).contents
-        proto = ctypes.WINFUNCTYPE(ctypes.c_long, ctypes.c_void_p, *[type(a) for a in args])
-        return proto(vtbl[slot])(obj, *args)
-
-    def _prop(self, el, pid: int) -> int:
-        v = self.VARIANT()
-        if self._call(el, self._GET_PROPERTY, self.ctypes.c_int(pid), self.ctypes.pointer(v)) != 0:
-            return 0
-        if v.vt in (3, 11):  # VT_I4, VT_BOOL
-            out = v.val & 0xFFFFFFFF if v.vt == 3 else (1 if v.val & 0xFFFF else 0)
-        else:
-            out = 0
-        self.oleaut32.VariantClear(self.ctypes.byref(v))
-        return out
-
-    def focused(self) -> Optional[FocusInfo]:
-        ctypes = self.ctypes
-        el = ctypes.c_void_p()
-        if self._call(self.uia, self._GET_FOCUSED, ctypes.pointer(el)) != 0 or not el:
-            return None
-        try:
-            r = self.wintypes.RECT()
-            if self._call(el, self._GET_RECT, ctypes.pointer(r)) != 0:
-                return None
-            p = self._prop
-            has_value = bool(p(el, self.P_HAS_VALUE))
-            # Read-only: from the value pattern when there is one, else from the
-            # MSAA state (a web page is a read-only document, a contenteditable is not).
-            read_only = bool(p(el, self.P_VALUE_READONLY)) if has_value else \
-                bool(p(el, self.P_LEGACY_STATE) & self.STATE_READONLY)
-            return FocusInfo((r.left, r.top, r.right, r.bottom), p(el, self.P_CONTROL_TYPE), has_value, read_only,
-                             bool(p(el, self.P_HAS_TEXT)), bool(p(el, self.P_PASSWORD)), p(el, self.P_PID))
-        finally:
-            self._call(el, self._RELEASE)
-
-
-class ZoneWatcher:
-    """Background thread that keeps `zone` = the screen rect of the focused
-    text field (or None), refreshed every `period` s while `running` is set."""
-
-    def __init__(self, period: float = 0.15):
-        import threading
-        self.period = period
-        self.zone: Optional[Rect] = None
-        self.running = threading.Event()
-        self.thread = threading.Thread(target=self._loop, name="fouet-zone", daemon=True)
-        self.thread.start()
-
-    def _loop(self) -> None:
-        try:
-            probe = FocusProbe()
-        except Exception:
-            return  # no UI Automation: zone stays None (only --anywhere types)
-        own = os.getpid()
-        while True:
-            self.running.wait()
-            try:
-                info = probe.focused()
-                self.zone = info.rect if is_text_zone(info, own) else None
-            except Exception:
-                self.zone = None
-            time.sleep(self.period)
-
-
-def zone_cells(rect: Rect, cell: float, ox: float, oy: float, now: float) -> Dict[Cell, str]:
-    """Pixel corner brackets around the target text zone, gently pulsing."""
-    left, top = int((rect[0] - ox) // cell) - 1, int((rect[1] - oy) // cell) - 1
-    right, bottom = int((rect[2] - ox) // cell), int((rect[3] - oy) // cell)
-    arm = max(2, min(5, (right - left) // 4, (bottom - top) // 2))
-    color = LASH[2] if int(now * 3) % 2 == 0 else LASH[4]
-    cells: Dict[Cell, str] = {}
-    for cx, cy, sx, sy in ((left, top, 1, 1), (right, top, -1, 1), (left, bottom, 1, -1), (right, bottom, -1, -1)):
-        for d in range(arm):
-            cells[(cx + sx * d, cy)] = color
-            cells[(cx, cy + sy * d)] = color
-    add_outline(cells, OUTLINE)
-    return cells
-
-
 # --------------------------------------------------------------------------- Windows desktop app
 
 HANDLE_ANGLE = -math.pi / 3  # resting handle points up-right
@@ -1007,10 +839,186 @@ class Win32:
         self.user32.SetWindowLongW(hwnd, -20, ex | 0x80 | 0x08000000)
 
 
+def hex_rgb(color: str) -> Tuple[int, int, int]:
+    return int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+
+
+def ico_bytes(cells: Dict[Cell, str], sizes=(16, 20, 24, 32, 40, 48)) -> bytes:
+    """A multi-size .ico (32-bit BMP entries) of a 16x16 pixel-art sprite,
+    scaled nearest-neighbour. Cells outside the sprite are transparent."""
+    images = []
+    for size in sizes:
+        rows = []
+        for y in range(size - 1, -1, -1):  # BMP rows go bottom-up
+            row = bytearray()
+            for x in range(size):
+                color = cells.get((x * 16 // size, y * 16 // size))
+                if color:
+                    r, g, b = hex_rgb(color)
+                    row += bytes((b, g, r, 255))
+                else:
+                    row += b"\0\0\0\0"
+            rows.append(bytes(row))
+        mask = b"\0" * (((size + 31) // 32) * 4 * size)  # AND mask unused: alpha does the job
+        header = struct.pack("<IiiHHIIiiII", 40, size, size * 2, 1, 32, 0, 0, 0, 0, 0, 0)
+        images.append(header + b"".join(rows) + mask)
+    out = struct.pack("<HHH", 0, 1, len(images))
+    offset = 6 + 16 * len(images)
+    for size, data in zip(sizes, images):
+        out += struct.pack("<BBBBHHII", size % 256, size % 256, 0, 0, 1, 32, len(data), offset)
+        offset += len(data)
+    return out + b"".join(images)
+
+
+class Tray:
+    """Fouet's icon in the notification area (the ^ menu next to OneDrive).
+
+    Runs its own hidden window and message loop on a background thread;
+    clicks are handed to the Tk thread through `events` ("toggle", "quit",
+    "autostart"). Left click toggles the whip, right click opens the menu.
+    """
+
+    WM_TRAY = 0x8001  # WM_APP + 1
+    ID_TOGGLE, ID_AUTOSTART, ID_QUIT = 1, 2, 3
+
+    def __init__(self, icon_paths: Dict[bool, str], tip: str = "Fouet"):
+        import queue
+        import threading
+        self.events: "queue.Queue[str]" = queue.Queue()
+        self.icon_paths = icon_paths
+        self.tip = tip
+        self.active = False
+        self.added = False
+        self.hwnd = None
+        self.ready = threading.Event()
+        self.thread = threading.Thread(target=self._run, name="fouet-tray", daemon=True)
+        self.thread.start()
+        self.ready.wait(5)
+
+    # -- thread side
+    def _run(self) -> None:
+        import ctypes
+        from ctypes import wintypes
+        self.ctypes, self.wintypes = ctypes, wintypes
+        u, shell, k32 = ctypes.windll.user32, ctypes.windll.shell32, ctypes.windll.kernel32
+        self.u, self.shell = u, shell
+        LRESULT = ctypes.c_ssize_t
+        WNDPROC = ctypes.WINFUNCTYPE(LRESULT, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)
+        u.DefWindowProcW.argtypes = (wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)
+        u.DefWindowProcW.restype = LRESULT
+        u.CreateWindowExW.restype = wintypes.HWND
+        u.CreateWindowExW.argtypes = (wintypes.DWORD, wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.DWORD,
+                                      ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                                      wintypes.HWND, wintypes.HMENU, wintypes.HINSTANCE, wintypes.LPVOID)
+        u.LoadImageW.restype = wintypes.HANDLE
+        u.LoadImageW.argtypes = (wintypes.HINSTANCE, wintypes.LPCWSTR, wintypes.UINT, ctypes.c_int, ctypes.c_int,
+                                 wintypes.UINT)
+        u.CreatePopupMenu.restype = wintypes.HMENU
+        u.AppendMenuW.argtypes = (wintypes.HMENU, wintypes.UINT, ctypes.c_size_t, wintypes.LPCWSTR)
+        u.TrackPopupMenu.argtypes = (wintypes.HMENU, wintypes.UINT, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                                     wintypes.HWND, wintypes.LPVOID)
+        u.DestroyMenu.argtypes = (wintypes.HMENU,)
+        u.PostMessageW.argtypes = (wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)
+        k32.GetModuleHandleW.restype = wintypes.HMODULE
+
+        class WNDCLASSW(ctypes.Structure):
+            _fields_ = [("style", wintypes.UINT), ("lpfnWndProc", WNDPROC), ("cbClsExtra", ctypes.c_int),
+                        ("cbWndExtra", ctypes.c_int), ("hInstance", wintypes.HINSTANCE), ("hIcon", wintypes.HICON),
+                        ("hCursor", wintypes.HANDLE), ("hbrBackground", wintypes.HBRUSH),
+                        ("lpszMenuName", wintypes.LPCWSTR), ("lpszClassName", wintypes.LPCWSTR)]
+
+        class NOTIFYICONDATAW(ctypes.Structure):
+            _fields_ = [("cbSize", wintypes.DWORD), ("hWnd", wintypes.HWND), ("uID", wintypes.UINT),
+                        ("uFlags", wintypes.UINT), ("uCallbackMessage", wintypes.UINT), ("hIcon", wintypes.HICON),
+                        ("szTip", wintypes.WCHAR * 128), ("dwState", wintypes.DWORD),
+                        ("dwStateMask", wintypes.DWORD), ("szInfo", wintypes.WCHAR * 256),
+                        ("uVersion", wintypes.UINT), ("szInfoTitle", wintypes.WCHAR * 64),
+                        ("dwInfoFlags", wintypes.DWORD), ("guidItem", ctypes.c_byte * 16),
+                        ("hBalloonIcon", wintypes.HICON)]
+
+        self.NID = NOTIFYICONDATAW
+        size = u.GetSystemMetrics(49)  # SM_CXSMICON, DPI-aware
+        self.icons = {on: u.LoadImageW(None, path, 1, size, size, 0x10) for on, path in self.icon_paths.items()}
+        self.taskbar_created = u.RegisterWindowMessageW("TaskbarCreated")
+
+        def wndproc(hwnd, msg, wparam, lparam):
+            if msg == self.WM_TRAY:
+                event = lparam & 0xFFFF
+                if event == 0x0202:  # WM_LBUTTONUP
+                    self.events.put("toggle")
+                elif event == 0x0205:  # WM_RBUTTONUP
+                    self._menu(hwnd)
+                return 0
+            if msg == self.taskbar_created:  # Explorer restarted: put the icon back
+                self._notify(0)
+                return 0
+            if msg == 0x0010:  # WM_CLOSE
+                self._notify(2)
+                u.DestroyWindow(hwnd)
+                return 0
+            if msg == 0x0002:  # WM_DESTROY
+                u.PostQuitMessage(0)
+                return 0
+            return u.DefWindowProcW(hwnd, msg, wparam, lparam)
+
+        self._wndproc = WNDPROC(wndproc)  # keep a reference: ctypes callbacks die with it
+        hinst = k32.GetModuleHandleW(None)
+        wc = WNDCLASSW(lpfnWndProc=self._wndproc, hInstance=hinst, lpszClassName="FouetTrayWindow")
+        u.RegisterClassW(ctypes.byref(wc))
+        self.hwnd = u.CreateWindowExW(0, "FouetTrayWindow", "Fouet", 0, 0, 0, 0, 0, None, None, hinst, None)
+        self._notify(0)
+        self.ready.set()
+        msg = wintypes.MSG()
+        while u.GetMessageW(ctypes.byref(msg), None, 0, 0) > 0:
+            u.TranslateMessage(ctypes.byref(msg))
+            u.DispatchMessageW(ctypes.byref(msg))
+
+    def _notify(self, action: int) -> None:
+        nid = self.NID()
+        nid.cbSize = self.ctypes.sizeof(self.NID)
+        nid.hWnd, nid.uID = self.hwnd, 1
+        nid.uFlags = 0x1 | 0x2 | 0x4  # NIF_MESSAGE | NIF_ICON | NIF_TIP
+        nid.uCallbackMessage = self.WM_TRAY
+        nid.hIcon = self.icons[self.active]
+        nid.szTip = self.tip[:127]
+        ok = bool(self.shell.Shell_NotifyIconW(action, self.ctypes.byref(nid)))  # NIM_ADD 0, MODIFY 1, DELETE 2
+        if action == 0:
+            self.added = ok
+
+    def _menu(self, hwnd) -> None:
+        u = self.u
+        menu = u.CreatePopupMenu()
+        u.AppendMenuW(menu, 0, self.ID_TOGGLE, ("Put the whip away" if self.active else "Take the whip out")
+                      + "\tCtrl+Alt+W")
+        u.AppendMenuW(menu, 0x8 if get_autostart() else 0, self.ID_AUTOSTART, "Start with Windows")
+        u.AppendMenuW(menu, 0x800, 0, None)  # separator
+        u.AppendMenuW(menu, 0, self.ID_QUIT, "Quit Fouet")
+        pt = self.wintypes.POINT()
+        u.GetCursorPos(self.ctypes.byref(pt))
+        u.SetForegroundWindow(hwnd)  # or the menu never closes when you click elsewhere
+        choice = u.TrackPopupMenu(menu, 0x100 | 0x2, pt.x, pt.y, 0, hwnd, None)  # RETURNCMD | RIGHTBUTTON
+        u.PostMessageW(hwnd, 0, 0, 0)
+        u.DestroyMenu(menu)
+        if choice:
+            self.events.put({self.ID_TOGGLE: "toggle", self.ID_AUTOSTART: "autostart", self.ID_QUIT: "quit"}[choice])
+
+    # -- Tk side
+    def update(self, active: bool, tip: str) -> None:
+        if (active, tip) != (self.active, self.tip) and self.hwnd:
+            self.active, self.tip = active, tip
+            self._notify(1)
+
+    def close(self) -> None:
+        if self.hwnd:
+            self.u.PostMessageW(self.hwnd, 0x0010, 0, 0)
+            self.thread.join(2)
+            self.hwnd = None
+
+
 class App:
     VK_CONTROL, VK_MENU, VK_W, VK_ESCAPE = 0x11, 0x12, 0x57, 0x1B
 
-    def __init__(self, sound: bool = True, anywhere: bool = False, sensitivity: float = 1.0,
+    def __init__(self, sound: bool = True, sensitivity: float = 1.0,
                  cell: Optional[int] = None, typing: bool = True):
         import tkinter as tk
 
@@ -1019,9 +1027,8 @@ class App:
         self.tk = tk
         self.scale = self.win.dpi_scale()
         self.cell = cell or max(3, round(4 * self.scale))
-        self.anywhere = anywhere
         self.typing = typing
-        self.min_speed = 1500 * self.scale / max(0.2, sensitivity)
+        self.min_speed = 2200 * self.scale / max(0.2, sensitivity)
 
         self.sounds: Dict[str, str] = {}
         if sound:
@@ -1046,36 +1053,22 @@ class App:
         self.last = time.perf_counter()
         self.next_frame = self.last
         self.prev_hotkey = False
-        self.button_state = None
         s = self.scale
         self.handle_length = 44 * s
         self.whip = Whip(*self.mouse, segment_length=13 * s, gravity=1500 * s)
-        self.zones = ZoneWatcher()
 
-        # Toggle button: the root window, bottom-right of the primary work area.
+        # No window of its own: the root stays hidden, Fouet lives in the tray.
         self.root = tk.Tk()
         self.root.title("Fouet")
-        self.root.overrideredirect(True)
-        self.root.attributes("-topmost", True)
-        self.root.configure(bg=TRANSPARENT)
-        self.root.attributes("-transparentcolor", TRANSPARENT)
-        self.bcell = max(3, round(4 * s))
-        size = 16 * self.bcell
-        left, top, right, bottom = self.win.work_area()
-        margin = int(16 * s)
-        self.root.geometry("%dx%d+%d+%d" % (size, size, right - size - margin, bottom - size - margin))
-        self.button = tk.Canvas(self.root, width=size, height=size, bg=TRANSPARENT,
-                                highlightthickness=0, cursor="hand2")
-        self.button.pack()
-        self.button.bind("<Button-1>", lambda e: self.toggle())
-        self.button.bind("<Button-3>", self.menu)
-        self.popup = tk.Menu(self.root, tearoff=0)
-        self.popup.add_command(label="Fouet on/off   Ctrl+Alt+W", command=self.toggle)
-        self.autostart = tk.BooleanVar(value=get_autostart())
-        self.popup.add_checkbutton(label="Start with Windows", variable=self.autostart,
-                                   command=lambda: set_autostart(self.autostart.get()))
-        self.popup.add_separator()
-        self.popup.add_command(label="Quit Fouet", command=self.quit)
+        self.root.withdraw()
+        icon_dir = os.path.join(tempfile.gettempdir(), "fouet-icons-" + __version__)
+        os.makedirs(icon_dir, exist_ok=True)
+        icons = {}
+        for on in (False, True):
+            icons[on] = os.path.join(icon_dir, "on.ico" if on else "off.ico")
+            with open(icons[on], "wb") as f:
+                f.write(ico_bytes(icon_cells(on)))
+        self.tray = Tray(icons, self.tray_tip())
 
         # Full virtual-screen overlay, click-through.
         self.vx, self.vy, vw, vh = self.win.virtual_screen()
@@ -1089,9 +1082,7 @@ class App:
         self.canvas.pack()
         self.root.update_idletasks()
         self.win.make_overlay(self._hwnd(self.overlay))
-        self.win.make_tool(self._hwnd(self.root))
         self.overlay.withdraw()
-        self.draw_button(0.0)
 
     @staticmethod
     def _hwnd(window) -> int:
@@ -1103,11 +1094,26 @@ class App:
         self.root.mainloop()
 
     def quit(self) -> None:
+        self.tray.close()
         self.root.destroy()
 
-    def menu(self, event) -> None:
-        self.autostart.set(get_autostart())  # the installer may have changed it
-        self.popup.tk_popup(event.x_root, event.y_root)
+    def tray_tip(self) -> str:
+        state = "whip out, Esc to put it away" if self.active else "click to take the whip out"
+        hits = " - %d hit%s" % (self.hits, "" if self.hits == 1 else "s") if self.hits else ""
+        return "Fouet: %s (Ctrl+Alt+W)%s" % (state, hits)
+
+    def poll_tray(self) -> bool:
+        """Run the tray clicks on the Tk thread; False once Fouet is quitting."""
+        while not self.tray.events.empty():
+            event = self.tray.events.get_nowait()
+            if event == "toggle":
+                self.toggle()
+            elif event == "autostart":
+                set_autostart(not get_autostart())
+            elif event == "quit":
+                self.quit()
+                return False
+        return True
 
     def toggle(self) -> None:
         self.set_active(not self.active)
@@ -1123,27 +1129,24 @@ class App:
             self.whip.reset(hx, hy)
             self.detector.reset()
             self.velocity.reset()
-            self.zones.running.set()
             self.overlay.deiconify()
             self.overlay.attributes("-topmost", True)
-            self.root.lift()
         else:
-            self.zones.running.clear()
-            self.zones.zone = None
             self.effects.clear()
             self.canvas.delete("all")
             self.overlay.withdraw()
-        self.draw_button(time.perf_counter())
+        self.tray.update(self.active, self.tray_tip())
 
     # -- loop
     def frame(self) -> None:
         start = time.perf_counter()
         dt = min(0.05, start - self.last)
         self.last = start
+        if not self.poll_tray():
+            return
         self.poll_keys()
         if self.active:
             self.step(dt, start)
-        self.draw_button(start)
         self.root.update_idletasks()  # redraw now, so the frame budget below includes it
         period = 1 / 60 if self.active else 0.04
         self.next_frame = max(self.next_frame, start - period) + period
@@ -1180,7 +1183,7 @@ class App:
         if tip_speed > self.min_speed * 1.5:
             self.effects.ember(*self.whip.tip, self.scale)
         self.effects.step(dt)
-        self.render(hilt, now)
+        self.render(hilt)
 
     def crack(self, flick: Flick, now: float) -> None:
         tx, ty = self.whip.tip
@@ -1188,23 +1191,16 @@ class App:
         self.effects.burst(tx, ty, intensity, self.scale)
         tier = tier_for_combo(self.combo.count + 1) if now - self.combo.last_hit <= self.combo.window else 0
         phrase = self.picker.pick(tier)
-        if self.typing and self.type_here(tx, ty, phrase):
+        if self.typing:
+            self.win.type_text(" " + phrase)
             tier = tier_for_combo(self.combo.hit(now))
             self.hits += 1
+            self.tray.update(self.active, self.tray_tip())
             self.effects.label(phrase, tx, ty, TIER_COLORS[tier], 2 if tier == 2 else 1)
             self.play("hit%d" % tier)
         else:
             self.effects.label("CLAC!", tx, ty, MISS_COLOR, 1, life=0.45)
             self.play("miss")
-
-    def type_here(self, x: float, y: float, phrase: str) -> bool:
-        """Type at your text cursor, but only if the tip cracked inside the
-        focused text field. Nothing is clicked: the caret stays where you put it."""
-        zone = self.zones.zone
-        if zone is None or not (self.anywhere or in_zone(x, y, zone, margin=6 * self.scale)):
-            return False
-        self.win.type_text(" " + phrase)
-        return True
 
     def play(self, name: str) -> None:
         path = self.sounds.get(name)
@@ -1213,36 +1209,16 @@ class App:
             w.PlaySound(path, w.SND_FILENAME | w.SND_ASYNC | w.SND_NODEFAULT)
 
     # -- drawing
-    def render(self, hilt: Tuple[float, float], now: float) -> None:
+    def render(self, hilt: Tuple[float, float]) -> None:
         cell = self.cell
         ox, oy = self.vx, self.vy
         pts = [(p[0] - ox, p[1] - oy) for p in self.whip.points]
-        zone = self.zones.zone
-        cells = zone_cells(zone, cell, ox, oy, now) if zone else {}
-        cells.update(whip_sprite(pts, (self.mouse[0] - ox, self.mouse[1] - oy), (hilt[0] - ox, hilt[1] - oy), cell))
+        cells = whip_sprite(pts, (self.mouse[0] - ox, self.mouse[1] - oy), (hilt[0] - ox, hilt[1] - oy), cell)
         self.effects.draw(cells, cell, ox, oy)
         c = self.canvas
         c.delete("all")
         for y, x0, x1, color in color_runs(cells):
             c.create_rectangle(x0 * cell, y * cell, (x1 + 1) * cell, (y + 1) * cell, fill=color, width=0)
-
-    def draw_button(self, now: float) -> None:
-        spark = not self.active or int(now * 8) % 2 == 0
-        state = (self.active, spark, self.hits)
-        if state == self.button_state:
-            return
-        self.button_state = state
-        cells = icon_cells(self.active, spark)
-        if self.hits:
-            digits, w, h = text_cells(str(min(self.hits, 99)))
-            badge = {(15 - w + gx, 15 - h + gy): "#fff4dc" for gx, gy in digits}
-            add_outline(badge, OUTLINE)
-            cells.update(badge)
-        b, c = self.bcell, self.button
-        c.delete("all")
-        for y, x0, x1, color in color_runs(cells):
-            if 0 <= y < 16:
-                c.create_rectangle(max(0, x0) * b, y * b, (min(15, x1) + 1) * b, (y + 1) * b, fill=color, width=0)
 
 
 # --------------------------------------------------------------------------- entry point
@@ -1250,10 +1226,8 @@ class App:
 
 def parse_args(argv=None) -> argparse.Namespace:
     p = argparse.ArgumentParser(prog="fouet", description="A pixel-art whip for your desktop. "
-                                "Flick, then stop dead: crack inside your text field to type at your cursor.")
+                                "Flick, then stop dead: every crack types at your text cursor.")
     p.add_argument("--no-sound", action="store_true", help="mute the 8-bit crack")
-    p.add_argument("--anywhere", action="store_true",
-                   help="type at your text cursor wherever the tip cracks, not only inside its field")
     p.add_argument("--sensitivity", type=float, default=1.0,
                    help="above 1 = cracks with slower flicks, below 1 = needs faster flicks (default 1)")
     p.add_argument("--pixel", type=int, default=None, help="size of one pixel-art pixel in screen pixels")
@@ -1312,13 +1286,14 @@ def main(argv=None) -> int:
     import ctypes
     mutex = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\FouetPixelWhip")
     if ctypes.windll.kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
-        message_box("Fouet is already running: look for the pixel button in the bottom-right corner.")
+        message_box("Fouet is already running: look for its whip icon in the notification area "
+                    "(the ^ arrow next to the clock).")
         return 0
-    print("Fouet %s - click the pixel button bottom-right or press Ctrl+Alt+W.\n"
-          "Click in a text field, flick, stop dead: crack inside it to type. Esc puts the whip away,\n"
-          "right-click the button for options and to quit." % __version__)
+    print("Fouet %s - click its icon in the notification area (^ next to the clock) or press Ctrl+Alt+W.\n"
+          "Flick, stop dead: every crack types at your text cursor. Esc puts the whip away,\n"
+          "right-click the icon for options and to quit." % __version__)
     try:
-        App(sound=not args.no_sound, anywhere=args.anywhere, sensitivity=args.sensitivity, cell=args.pixel).run()
+        App(sound=not args.no_sound, sensitivity=args.sensitivity, cell=args.pixel).run()
     except KeyboardInterrupt:
         pass
     except Exception:

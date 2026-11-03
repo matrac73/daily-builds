@@ -5,12 +5,12 @@ export const WHIP_DEFAULTS = Object.freeze({
   segments: 20,
   segmentLength: 13,
   gravity: 1500, // px/s²
-  damping: 0.985, // velocity kept per substep
+  damping: 0.975, // velocity kept per substep
   iterations: 12, // distance relaxation passes per substep
   step: 1 / 120, // fixed physics timestep (s)
   maxSubsteps: 8, // cap per frame so a stalled tab does not spiral
   bendRoot: 14, // max bend (degrees) at the joint next to the handle…
-  bendTip: 48, // …growing to this at the tip: stiff root, supple tip
+  bendTip: 38, // …growing to this at the tip: stiff root, supple tip
 });
 
 /**

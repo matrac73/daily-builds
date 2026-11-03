@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fouet — a pixel whip for your cursor</title>
-  <meta name="description" content="A pixel-art whip for your mouse. Flick, stop dead, CLAC: it types FASTER, DO IT, MAKE IT into the text zone. In the browser or as a desktop Python script.">
+  <meta name="description" content="A pixel-art whip for your mouse. Flick, stop dead, CLAC: it types FASTER, DO IT, MAKE IT right at your text cursor. In the browser or as a Windows app.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Silkscreen:wght@400;700&display=swap">
@@ -18,11 +18,11 @@
       <p class="lead">
         Press the pixel button in the <strong>bottom-right corner</strong> (or <kbd>Alt</kbd>+<kbd>W</kbd>):
         a whip snaps onto your mouse. Click in a text field, swing hard, then <strong>stop dead</strong>
-        or pull back — the lash unrolls and <em>cracks</em> at its tip. Crack on the field where your
-        text cursor is and it types <q>faster</q>, <q>do it</q>, <q>make it</q>… right at the cursor.
+        or pull back — the lash unrolls and <em>cracks</em>. Wherever it cracks, it types
+        <q>faster</q>, <q>do it</q>, <q>make it</q>… right at your text cursor.
       </p>
       <div class="cta">
-        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.2.0/FouetSetup.exe">⬇ Install for Windows</a>
+        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.3.0/FouetSetup.exe">⬇ Install for Windows</a>
         <a class="btn ghost" href="#desktop">Other downloads</a>
       </div>
     </div>
@@ -48,11 +48,10 @@
     <section class="card muted">
       <h2>How to crack</h2>
       <ul class="tips">
-        <li>Click in a field first: orange pixel corners mark it. Only that field gets typed into, at your cursor.</li>
+        <li>Click in a field first: every crack types into it, at your cursor, wherever the lash lands.</li>
         <li>Accelerating never cracks. <strong>Braking</strong> does: swing hard, then stop dead or flick back.</li>
-        <li>The crack lands one whip-length ahead, where the lash is thrown — aim it onto the marked field.</li>
         <li>3 hits in a row → <span class="t1">LOUDER!</span> · 6 hits → <span class="t2">MAXIMUM!!!</span></li>
-        <li><kbd>Esc</kbd> puts the whip away. Cracking anywhere else only makes sparks.</li>
+        <li><kbd>Esc</kbd> puts the whip away. No field focused? The crack only makes sparks.</li>
       </ul>
     </section>
 
@@ -60,18 +59,18 @@
       <h2>On your desktop (Windows)</h2>
       <p>The same whip, over <em>every</em> app: Teams, VS Code, Outlook, your browser… No Python, no admin rights needed.</p>
       <div class="cta">
-        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.2.0/FouetSetup.exe">⬇ FouetSetup.exe <small>installer · 12 MB</small></a>
-        <a class="btn ghost" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.2.0/Fouet.exe">⬇ Fouet.exe <small>portable · 11 MB</small></a>
+        <a class="btn" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.3.0/FouetSetup.exe">⬇ FouetSetup.exe <small>installer · 12 MB</small></a>
+        <a class="btn ghost" href="https://github.com/matrac73/daily-builds/releases/download/fouet-v2.3.0/Fouet.exe">⬇ Fouet.exe <small>portable · 11 MB</small></a>
       </div>
       <ol class="steps">
         <li>Run <code>FouetSetup.exe</code>: it adds Fouet to the Start menu, can start it with Windows, and uninstalls
           from <em>Settings › Apps</em>. Or just run the portable <code>Fouet.exe</code> from anywhere.</li>
         <li>Windows SmartScreen may warn about an unknown publisher (the app isn't code-signed):
           click <strong>More info › Run anyway</strong>.</li>
-        <li>Click in a text field of any app (orange pixel corners appear around it), then click the pixel button
-          bottom-right (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>). Swing hard, stop dead: if the tip cracks
-          on that field, Fouet types the phrase at your text cursor. It never clicks anywhere.</li>
-        <li><kbd>Esc</kbd> puts the whip away · right-click the button for <em>Start with Windows</em> and <em>Quit</em>.</li>
+        <li>Click in a text field of any app (Teams, Outlook, a terminal, Claude Code…), then click Fouet's whip icon
+          in the notification area, the <strong>^</strong> next to the clock (or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>). Swing hard, stop dead: every crack
+          types the phrase at your text cursor, wherever it lands. Fouet never clicks anywhere.</li>
+        <li><kbd>Esc</kbd> puts the whip away · right-click the tray icon for <em>Start with Windows</em> and <em>Quit</em>.</li>
       </ol>
       <p class="note">Prefer Python? <a href="./fouet.py" download="fouet.py">Download <code>fouet.py</code></a>
         (single file, standard library only) and run <code>py fouet.py</code>. The overlay is click-through: your mouse

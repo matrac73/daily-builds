@@ -32,11 +32,11 @@ function simulate(path, seconds) {
 }
 
 /** Rest, swing right at `speed` px/s for 0.22 s, then stop dead or pull back. */
-const swing = (after, speed = 2600) => (t) => {
+const swing = (after, speed = 3200) => (t) => {
   if (t < 0.5) return [300, 300];
   if (t < 0.72) return [300 + speed * (t - 0.5), 300];
   const end = 300 + speed * 0.22;
-  return after === 'back' ? [end - 1200 * Math.min(t - 0.72, 0.08), 300] : [end, 300];
+  return after === 'back' ? [end - 1500 * Math.min(t - 0.72, 0.08), 300] : [end, 300];
 };
 
 test('a new whip hangs straight down from its anchor with the configured length', () => {
@@ -100,7 +100,7 @@ test('the crack lands where you aim, in every direction and at every speed', () 
   for (let angle = 0; angle < 360; angle += 45) {
     const dx = Math.cos((angle * Math.PI) / 180);
     const dy = Math.sin((angle * Math.PI) / 180);
-    for (const speed of [1800, 2600, 3700]) {
+    for (const speed of [2400, 3000, 4000]) {
       const path = (t) => {
         const k = Math.min(Math.max(t - 0.5, 0), 300 / speed); // 300 px swing, then stop dead
         return [600 + dx * speed * k, 500 + dy * speed * k];
@@ -126,7 +126,7 @@ test('swing then pull back: cracks too', () => {
 test('slow dragging, lazy waving and moderate swings never crack', () => {
   assert.deepEqual(simulate((t) => [400 + 300 * t, 300], 2), []);
   assert.deepEqual(simulate((t) => [400 + 100 * Math.sin(t * 6), 300], 3), []);
-  assert.deepEqual(simulate((t) => [600 + 1200 * Math.min(Math.max(t - 0.5, 0), 0.25), 500], 1.5), []);
+  assert.deepEqual(simulate((t) => [600 + 2000 * Math.min(Math.max(t - 0.5, 0), 0.15), 500], 1.5), []);
 });
 
 test('shaking the mouse frantically cracks rarely, never twice within 0.6 s', () => {

@@ -4,7 +4,7 @@
 import { createWhip } from './whip.js';
 import { createFlickDetector, createLashSnap, createVelocityTracker, crackIntensity } from './crack.js';
 import { createCombo, createPhrasePicker, tierForCombo } from './phrases.js';
-import { focusedWhippable, inRect, insertPhrase, spacedPhrase } from './text.js';
+import { focusedWhippable, insertPhrase, spacedPhrase } from './text.js';
 import {
   N8, PALETTE, addOutline, circleCells, ditherKeep, iconCells, key, textCells, unkey, whipSprite,
 } from './pixel.js';
@@ -199,26 +199,7 @@ export function createEffects() {
  * Mount the whip on the current page. Idempotent: a second call returns the
  * existing instance (handy for the bookmarklet).
  */
-/** Pixel corner brackets around the focused text field (cells of CELL px). */
-function zoneCells(rect, now) {
-  const left = Math.floor(rect.left / CELL) - 1;
-  const top = Math.floor(rect.top / CELL) - 1;
-  const right = Math.floor(rect.right / CELL);
-  const bottom = Math.floor(rect.bottom / CELL);
-  const arm = Math.max(2, Math.min(5, Math.floor((right - left) / 4), Math.floor((bottom - top) / 2)));
-  const color = Math.floor(now / 333) % 2 === 0 ? PALETTE.lash[2] : PALETTE.lash[4];
-  const cells = new Map();
-  for (const [cx, cy, sx, sy] of [[left, top, 1, 1], [right, top, -1, 1], [left, bottom, 1, -1], [right, bottom, -1, -1]]) {
-    for (let d = 0; d < arm; d++) {
-      cells.set(key(cx + sx * d, cy), color);
-      cells.set(key(cx, cy + sy * d), color);
-    }
-  }
-  addOutline(cells, PALETTE.outline);
-  return cells;
-}
-
-export function mount({ minSpeed = 1500, sound = true } = {}) {
+export function mount({ minSpeed = 2200, sound = true } = {}) {
   if (window.__fouet) return window.__fouet;
 
   const style = document.createElement('style');
@@ -317,9 +298,9 @@ export function mount({ minSpeed = 1500, sound = true } = {}) {
   function crack(flick, now) {
     const tip = whip.tip;
     effects.burst(tip.x, tip.y, crackIntensity(flick.speed, minSpeed));
-    // Only the field holding your text cursor, and only if the tip cracked on it.
+    // Wherever the crack lands, the phrase goes to the field holding your text cursor.
     const target = focusedWhippable(document);
-    if (!target || !inRect(tip.x, tip.y, target.getBoundingClientRect(), 6)) {
+    if (!target) {
       effects.label('CLAC!', tip.x, tip.y, PALETTE.miss, 1, 0.45);
       if (sound) audio.play('miss');
       return;
@@ -367,9 +348,7 @@ export function mount({ minSpeed = 1500, sound = true } = {}) {
     if (tipSpeed > minSpeed * 1.5 && !reducedMotion) effects.ember(whip.tip.x, whip.tip.y);
     effects.step(dt);
 
-    const zone = focusedWhippable(document);
-    const cells = zone ? zoneCells(zone.getBoundingClientRect(), now) : new Map();
-    for (const [k, c] of whipSprite(whip.points, mouse, h, CELL)) cells.set(k, c);
+    const cells = whipSprite(whip.points, mouse, h, CELL);
     effects.draw(cells);
     drawCells(g, cells);
   }

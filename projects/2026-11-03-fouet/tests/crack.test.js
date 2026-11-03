@@ -97,8 +97,8 @@ test('the snap straightens the lash along the swing, then cracks', () => {
   }
   assert.equal(fired, flick);
   assert.equal(snap.pending, false);
-  assert.ok(whip.reach(1, 0) >= 0.9 * whip.length);
-  assert.ok(frames <= 20);
+  assert.ok(whip.reach(1, 0) >= 0.92 * whip.length);
+  assert.ok(frames <= 27);
 });
 
 test('the snap unrolls as fast at 30 fps as at 60', () => {
@@ -113,7 +113,7 @@ test('the snap unrolls as fast at 30 fps as at 60', () => {
     return Infinity;
   };
   const [t60, t30] = [timeToCrack(60), timeToCrack(30)];
-  assert.ok(t60 < 0.4 && t30 < 0.4 && Math.abs(t60 - t30) < 0.07, `${t60} vs ${t30}`);
+  assert.ok(t60 < 0.45 && t30 < 0.45 && Math.abs(t60 - t30) < 0.07, `${t60} vs ${t30}`);
 });
 test('a snap that never extends fizzles without cracking, and an idle snap does nothing', () => {
   const whip = createWhip(0, 0);

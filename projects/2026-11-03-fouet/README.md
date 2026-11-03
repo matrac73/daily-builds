@@ -1,21 +1,21 @@
 # Fouet
 
-**A pixel-art whip for your mouse. Swing, stop dead, CLAC: crack on the field where your text cursor is and it types "faster", "do it", "make it"… right there.**
+**A pixel-art whip for your mouse. Swing, stop dead, CLAC: it types "faster", "do it", "make it"… right at your text cursor, in any app.**
 
 Two flavours, same physics and the same 8-bit look:
 
-- **Desktop (Windows)**: [`FouetSetup.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.2.0/FouetSetup.exe)
-  (installer) or [`Fouet.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.2.0/Fouet.exe) (portable),
+- **Desktop (Windows)**: [`FouetSetup.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.3.0/FouetSetup.exe)
+  (installer) or [`Fouet.exe`](https://github.com/matrac73/daily-builds/releases/download/fouet-v2.3.0/Fouet.exe) (portable),
   with no Python needed. You can also run `fouet.py` (single file, standard library only). The whip works on top of *every* app: Teams, VS Code, Outlook, your browser…
 - **Browser**: try it online at <https://matrac73.github.io/daily-builds/projects/2026-11-03-fouet/>, or bring it to any site with the bookmarklet.
 
 ## How to crack
 
-Click in a text field first: orange pixel corners mark it. Speeding up never cracks. **Braking does**: swing
-hard, then stop dead or pull back. The lash then unrolls along the line of your swing and cracks at its tip, one
-whip-length ahead of your hand. If the tip cracks on the marked field, the phrase is typed **at your text
-cursor**. Fouet never clicks, so it can't move your cursor or type anywhere else. A half-hearted flick whose tip
-never snaps doesn't crack at all, and there is at most one crack every 0.6 s. Chain hits within ~2 s to
+Click in a text field first. Speeding up never cracks. **Braking does**: swing hard, then stop dead or pull
+back. The lash then unrolls along the line of your swing and cracks at its tip. Wherever it cracks, the phrase
+is typed **at your text cursor**, in whatever app has the focus (terminals included). Fouet never clicks, so it
+can't move your cursor. A half-hearted flick whose tip
+never snaps doesn't crack at all, and there is at most one crack every 0.8 s. Chain hits within ~2 s to
 escalate: `faster` → `FASTER!` → `FASTER!!!`.
 
 ## Desktop quick start
@@ -31,14 +31,12 @@ escalate: `faster` → `FASTER!` → `FASTER!!!`.
    pyw fouet.py                    # same, without a console window
    py fouet.py --sensitivity 1.5   # cracks with gentler flicks (0.7 = needs harder ones)
    py fouet.py --no-sound          # silent whip
-   py fouet.py --anywhere          # type at your text cursor wherever the tip cracks
    ```
 
-3. Click in a text field of any app, then click the pixel button in the bottom-right corner of your screen (or
-   <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>). Orange pixel corners mark the field that has your text cursor
-   (found through Windows UI Automation: text boxes, documents, browser fields; never password boxes or plain web
-   pages). Swing hard, stop dead: if the tip cracks on that field, Fouet types the phrase at your cursor.
-   <kbd>Esc</kbd> puts the whip away. Right-click the button for *Start with Windows* and *Quit*. Only one Fouet
+3. Click in a text field of any app (Teams, Outlook, a terminal, Claude Code…), then click Fouet's whip icon in the
+   notification area (the ^ arrow next to the clock, with OneDrive & co.) or press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>W</kbd>. Swing hard, stop dead:
+   every crack types the phrase at your text cursor, wherever it lands.
+   <kbd>Esc</kbd> puts the whip away. Right-click the tray icon for *Start with Windows* and *Quit*. Only one Fouet
    runs at a time.
 
 ### Building the exe and the installer
@@ -74,7 +72,7 @@ Sites with a strict Content-Security-Policy may refuse to load it.
 ```html
 <script type="module">
   import { mount } from './src/fouet.js';
-  const fouet = mount({ minSpeed: 1100, sound: true }); // adds the button, nothing else
+  const fouet = mount({ minSpeed: 2200, sound: true }); // adds the button, nothing else
   fouet.toggle();     // programmatic on/off
   fouet.destroy();    // remove everything
 </script>
@@ -82,16 +80,16 @@ Sites with a strict Content-Security-Policy may refuse to load it.
 
 ## Features
 
-- **Brake-to-crack rule**: a crack needs a hand-speed peak above `minSpeed` (1500 px/s), followed within 200 ms
-  by a dead stop (speed under 20 % of the peak) or a real pull-back, and at most one crack every 0.6 s. Hand speed
+- **Brake-to-crack rule**: a crack needs a hand-speed peak above `minSpeed` (2200 px/s), followed within 200 ms
+  by a dead stop (speed under 15 % of the peak) or a real pull-back, and at most one crack every 0.8 s. Hand speed
   is measured over a 35 ms window, so a frame that gets no mouse update doesn't read as a stop.
-- **Lash snap**: after the brake, the lash unrolls along the swing line and cracks only once its tip reaches 90 %
-  of its length. If it never gets there within 0.3 s, the flick fizzles. The crack lands where you aim (±25° in
+- **Lash snap**: after the brake, the lash unrolls along the swing line and cracks only once its tip reaches 92 %
+  of its length. If it never gets there within 0.45 s, the flick fizzles. The crack lands where you aim (±25° in
   every direction, checked by the tests).
-- **Types only where your cursor is**: the phrase goes to the focused text field, at the text cursor, and only
-  when the tip cracks on that field. Nothing is ever clicked.
+- **Types where your cursor is**: every crack sends the phrase as keystrokes to the app that has the focus, at
+  its text cursor, wherever the lash lands. Nothing is ever clicked.
 - **Calmer, cleaner lash**: Verlet rope with more air drag and an exact bend limit at every joint, 14° at the
-  handle up to 48° at the tip. It swings less nervously and unrolls instead of folding onto itself.
+  handle up to 38° at the tip, so the tip moves slower. It swings less nervously and unrolls instead of folding onto itself.
 - **Pixel art**: everything is drawn on a coarse pixel grid. Bresenham lash with a tapered width, highlight core
   and dark outline, a wrapped wooden handle, fire-palette sparks and embers, a midpoint-circle shock ring with an
   ordered-dither dissolve, and a built-in 5×7 pixel font for the floating phrases.
@@ -131,7 +129,7 @@ py -m pytest tests       # desktop script       (pip install pytest)
 Both suites drive the simulated whip with synthetic hand motions. They check that accelerating, steady or
 moderate motion never cracks, that a swing followed by a stop or a pull-back cracks exactly once, that frantic
 shaking cracks at most a few times, that the crack lands within 25° of the aim in 8 directions at 3 speeds, that a
-stuttering mouse doesn't crack mid-swing, which focused elements count as text fields, that the bend limit holds,
+stuttering mouse doesn't crack mid-swing, that the bend limit holds,
 and that the pixel sprite is fully outlined.
 
 ## License
