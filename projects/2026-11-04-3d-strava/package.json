@@ -1,0 +1,16 @@
+{
+  "name": "3d-strava",
+  "version": "1.0.0",
+  "description": "Turn a Strava activity into a smooth 60-second 3D fly-over with seasonal map styles.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes serve -l 5173 .",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

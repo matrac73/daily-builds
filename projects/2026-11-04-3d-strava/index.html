@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Strava — ta course en survol 3D</title>
+    <meta name="description" content="Colle ton lien Strava, dépose le GPX et regarde ta course en 3D : survol fluide d'une minute, styles été, hiver, automne, nuit, export vidéo." />
+    <meta name="theme-color" content="#fc4c02" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9B%B0%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js" defer></script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <div id="map" aria-label="Carte 3D du parcours"></div>
+
+    <aside class="panel" id="panel">
+      <header class="brand">
+        <span class="logo" aria-hidden="true">⛰️</span>
+        <div>
+          <h1>3D Strava</h1>
+          <p>Ta sortie en survol 3D, en une minute.</p>
+        </div>
+        <button class="icon-btn collapse" id="collapse" type="button" aria-label="Replier le panneau" aria-expanded="true">⌄</button>
+      </header>
+
+      <div class="panel-body">
+        <section class="step">
+          <h2><span>1</span> Lien de l'activité Strava</h2>
+          <form id="link-form" class="row">
+            <input id="link-input" type="text" inputmode="url" autocomplete="off"
+              placeholder="https://www.strava.com/activities/…" aria-label="Lien Strava" />
+            <button class="btn" type="submit">OK</button>
+          </form>
+          <div id="link-result" class="hint" hidden></div>
+        </section>
+
+        <section class="step">
+          <h2><span>2</span> Fichier GPX / TCX</h2>
+          <label class="dropzone" id="dropzone">
+            <input id="file-input" type="file" accept=".gpx,.tcx,application/gpx+xml" hidden />
+            <strong>Dépose ton fichier ici</strong>
+            <small>ou clique pour le choisir — rien n'est envoyé sur un serveur</small>
+          </label>
+          <button class="link-btn" id="demo-btn" type="button">Pas de fichier ? Essayer la démo (Chamonix → Lac Blanc)</button>
+        </section>
+
+        <section class="step">
+          <h2><span>3</span> Style de carte</h2>
+          <div class="chips" id="themes" role="radiogroup" aria-label="Style de carte"></div>
+          <label class="field">
+            Durée du survol
+            <select id="duration">
+              <option value="30000">30 s</option>
+              <option value="60000" selected>1 min</option>
+              <option value="90000">1 min 30</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="actions">
+          <button class="btn primary" id="play-btn" type="button" disabled>▶ Lancer le survol</button>
+          <button class="btn" id="record-btn" type="button" disabled>⏺ Exporter la vidéo</button>
+        </section>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </div>
+    </aside>
+
+    <section class="hud" id="hud" hidden>
+      <div class="hud-title" id="hud-title"></div>
+      <div class="hud-stats">
+        <div><small>Distance</small><strong id="hud-distance">–</strong></div>
+        <div><small>Altitude</small><strong id="hud-ele">–</strong></div>
+        <div><small>Temps</small><strong id="hud-time">–</strong></div>
+        <div><small>D+ total</small><strong id="hud-gain">–</strong></div>
+      </div>
+      <input id="scrubber" class="scrubber" type="range" min="0" max="1000" value="0" aria-label="Position dans l'animation" />
+    </section>
+  </body>
+</html>
