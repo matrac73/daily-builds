@@ -10,7 +10,7 @@ test('every theme builds a valid 3D style with terrain and sky', () => {
     assert.equal(style.terrain.source, 'dem');
     assert.equal(style.sources.dem.type, 'raster-dem');
     assert.notEqual(style.sources.dem, style.sources.hillshadeDem, 'terrain and hillshade use separate sources');
-    assert.deepEqual(style.layers.map((l) => l.id), ['imagery', 'hillshade']);
+    assert.deepEqual(style.layers.map((l) => l.id), [`imagery-${key}`, `hillshade-${key}`]);
     assert.match(style.sky['sky-color'], /^#/);
   }
 });

@@ -33,7 +33,7 @@ export const THEMES = {
   autumn: {
     label: 'Automne',
     icon: '🍂',
-    raster: { 'raster-hue-rotate': -28, 'raster-saturation': 0.35, 'raster-contrast': 0.1 },
+    raster: { 'raster-hue-rotate': -24, 'raster-saturation': 0.45, 'raster-contrast': 0.12 },
     hillshade: { shadow: '#3b1f0e', highlight: '#ffe2b8', accent: '#5a2d10', exaggeration: 0.3 },
     sky: { sky: '#f2a65a', horizon: '#ffe0b5', fog: '#fbe7cf' },
     route: { done: '#ffffff', head: '#ffe66d', rest: 'rgba(255,255,255,0.4)' },
@@ -55,9 +55,14 @@ export const THEMES = {
 
 export const DEFAULT_THEME = 'summer';
 
-/** Build a complete MapLibre style document for a theme. */
+/**
+ * Build a complete MapLibre style document for a theme.
+ * Layer ids embed the theme key: with 3D terrain, MapLibre caches layers rendered to
+ * texture and ignores plain paint changes, so a theme switch must swap the layers.
+ */
 export function buildStyle(themeKey) {
-  const theme = THEMES[themeKey] ?? THEMES[DEFAULT_THEME];
+  const key = THEMES[themeKey] ? themeKey : DEFAULT_THEME;
+  const theme = THEMES[key];
   const h = theme.hillshade;
   return {
     version: 8,
@@ -73,9 +78,9 @@ export function buildStyle(themeKey) {
       hillshadeDem: demSource(),
     },
     layers: [
-      { id: 'imagery', type: 'raster', source: 'imagery', paint: { 'raster-fade-duration': 150, ...theme.raster } },
+      { id: `imagery-${key}`, type: 'raster', source: 'imagery', paint: { 'raster-fade-duration': 150, ...theme.raster } },
       {
-        id: 'hillshade',
+        id: `hillshade-${key}`,
         type: 'hillshade',
         source: 'hillshadeDem',
         paint: {
