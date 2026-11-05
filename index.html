@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Christmas Lights</title>
+  <meta name="description" content="A rippling string of Christmas lights built with vanilla Web Components.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%84%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Christmas Lights</h1>
+    <p>A string of rippling lights. Press <kbd>Space</kbd> or the button to start and stop.</p>
+  </header>
+
+  <main>
+    <section class="stage" aria-label="Light display">
+      <light-display></light-display>
+    </section>
+
+    <section class="panel" aria-labelledby="controls-title">
+      <h2 id="controls-title">Controls</h2>
+      <div class="controls">
+        <button id="toggle" type="button" class="primary" aria-pressed="false">Start</button>
+
+        <label for="interval">Interval
+          <output for="interval"></output>
+        </label>
+        <input id="interval" type="range" min="50" max="2000" step="10" value="300">
+
+        <label for="intensity">Intensity
+          <output for="intensity"></output>
+        </label>
+        <input id="intensity" type="range" min="0" max="100" value="80">
+
+        <label for="rows">Rows
+          <output for="rows"></output>
+        </label>
+        <input id="rows" type="range" min="1" max="7" value="1">
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="bulbs-title">
+      <div class="panel-head">
+        <h2 id="bulbs-title">Bulbs</h2>
+        <button id="reset" type="button">Reset colours &amp; sizes</button>
+      </div>
+      <bulb-editor></bulb-editor>
+    </section>
+  </main>
+
+  <footer>
+    Idea from <a href="https://github.com/florinpop17/app-ideas/blob/master/Projects/1-Beginner/Christmas-Lights-App.md">florinpop17/app-ideas</a>
+  </footer>
+</body>
+</html>
