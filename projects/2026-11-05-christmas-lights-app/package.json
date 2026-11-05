@@ -1,0 +1,13 @@
+{
+  "name": "christmas-lights",
+  "version": "1.0.0",
+  "description": "A rippling string of Christmas lights built with vanilla Web Components.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  }
+}

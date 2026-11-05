@@ -1,0 +1,100 @@
+:root {
+  --bg: #0b1320;
+  --panel: #131f33;
+  --panel-alt: #ffffff0d;
+  --text: #eef2f8;
+  --muted: #9aa8bd;
+  --accent: #3ddc63;
+  --danger: #ff3b3b;
+  --wire-color: #2f5a40;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at top, #1b2b4a 0%, transparent 60%),
+    var(--bg);
+}
+
+header, main, footer {
+  width: min(100% - 2rem, 60rem);
+  margin-inline: auto;
+}
+
+header { padding-top: 2rem; text-align: center; }
+h1 { margin: 0 0 0.25rem; font-size: clamp(1.8rem, 5vw, 2.6rem); letter-spacing: 0.02em; }
+h2 { margin: 0; font-size: 1.1rem; }
+header p { margin: 0; color: var(--muted); }
+
+kbd {
+  padding: 0.1em 0.4em;
+  border: 1px solid #fff3;
+  border-radius: 0.3em;
+  font-size: 0.85em;
+}
+
+main { display: grid; gap: 1.25rem; padding-block: 1.5rem; flex: 1; }
+
+.stage {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: #050a12;
+  box-shadow: inset 0 0 40px #000a;
+}
+
+.panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: var(--panel);
+}
+
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+.controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem 1rem;
+  align-items: center;
+}
+.controls .primary { grid-column: 1 / -1; justify-self: start; }
+.controls label { display: flex; justify-content: space-between; gap: 1rem; min-width: 9rem; }
+.controls output { color: var(--muted); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+button {
+  padding: 0.55rem 1.1rem;
+  border: 1px solid #fff3;
+  border-radius: 999px;
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-alt);
+  cursor: pointer;
+}
+button:hover { border-color: #fff8; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+button.primary {
+  min-width: 7rem;
+  font-weight: 600;
+  border: none;
+  color: #06120a;
+  background: var(--accent);
+}
+button.primary[aria-pressed="true"] { color: #fff; background: var(--danger); }
+
+footer { padding-bottom: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--muted); }
+footer a { color: inherit; }
+
+@media (max-width: 30rem) {
+  .controls { grid-template-columns: 1fr; }
+}
