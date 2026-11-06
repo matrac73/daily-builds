@@ -57,7 +57,7 @@ function requireText(text) {
 // Splits `/kudo` text into a structured command, validating arguments.
 export function parseCommand(input) {
   const text = (input ?? '').trim();
-  const [rawAction = 'help', ...rest] = text.split(/\s+/);
+  const [rawAction, ...rest] = text ? text.split(/\s+/) : ['help'];
   const action = rawAction.toLowerCase();
   const restText = text.slice(rawAction.length).trim();
   const firstSpace = restText.search(/\s/);
