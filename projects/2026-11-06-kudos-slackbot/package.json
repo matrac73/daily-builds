@@ -1,0 +1,16 @@
+{
+  "name": "kudos-slackbot",
+  "version": "1.0.0",
+  "description": "A dependency-free Slack slash-command bot that keeps your team's kudos from getting lost.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "author": "Mathieu Ract"
+}

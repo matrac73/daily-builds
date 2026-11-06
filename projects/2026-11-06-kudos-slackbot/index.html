@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kudos Slackbot · Playground</title>
+    <meta name="description" content="Try the /kudo Slack command in your browser: add, replace, delete, list and rank kudos." />
+    <link rel="stylesheet" href="./playground/style.css" />
+  </head>
+  <body>
+    <div class="workspace">
+      <aside class="sidebar">
+        <h1 class="workspace-name">Acme Inc.</h1>
+        <p class="section-label">Channels</p>
+        <p class="channel active"># kudos</p>
+        <p class="section-label">Signed in as</p>
+        <div id="users" class="users" role="radiogroup" aria-label="Current user"></div>
+        <button id="reset" class="reset" type="button">Reset demo data</button>
+      </aside>
+
+      <main class="channel-view">
+        <header class="channel-header">
+          <h2># kudos</h2>
+          <p>Playground for the Kudos Slackbot. Same command engine as the real bot, stored in your browser.</p>
+        </header>
+
+        <ol id="feed" class="feed" aria-live="polite"></ol>
+
+        <div class="suggestions" id="suggestions" aria-label="Example commands"></div>
+
+        <form id="composer" class="composer" autocomplete="off">
+          <label for="input" class="sr-only">Message</label>
+          <input id="input" type="text" placeholder="/kudo add @bob thanks for the review!" />
+          <button type="submit">Send</button>
+        </form>
+      </main>
+    </div>
+
+    <script type="module" src="./playground/app.js"></script>
+  </body>
+</html>
