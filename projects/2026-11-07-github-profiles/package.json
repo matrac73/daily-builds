@@ -1,0 +1,13 @@
+{
+  "name": "github-profiles",
+  "version": "1.0.0",
+  "description": "Search any GitHub user and see their avatar, stats and top repositories.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 8080 .",
+    "test": "node --test tests/"
+  },
+  "license": "MIT",
+  "author": "Mathieu Ract"
+}
