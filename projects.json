@@ -154,5 +154,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-06-kudos-slackbot",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-06-kudos-slackbot/"
+    },
+    {
+        "date":  "2026-11-07",
+        "title":  "GitHub Profiles",
+        "tagline":  "Search any GitHub user to see their avatar, stats and top 4 repositories, with persistent dark mode.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "GitHub REST API",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-07-github-profiles",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-07-github-profiles/"
     }
 ]
