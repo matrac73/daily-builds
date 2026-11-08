@@ -168,5 +168,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-07-github-profiles",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-07-github-profiles/"
+    },
+    {
+        "date":  "2026-11-08",
+        "title":  "Shell Game",
+        "tagline":  "An honest, animated shell game in vanilla JavaScript: hide the pea, watch a 5-second shuffle, find it.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "Web Animations API",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-08-shell-game",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-08-shell-game/"
     }
 ]
