@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An honest shell game: hide the pea, watch the shuffle, find it.">
+  <title>Shell Game — an honest one</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🥜%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <!-- Shared shell artwork, reused by each <use> below. -->
+  <svg class="sprites" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="shell-fill" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#d9a066"/>
+        <stop offset="0.55" stop-color="#a8683a"/>
+        <stop offset="1" stop-color="#6e3f1f"/>
+      </linearGradient>
+      <symbol id="shell-art" viewBox="0 0 120 110">
+        <path d="M8 100C8 45 30 8 60 8s52 37 52 92Z" fill="url(#shell-fill)"/>
+        <g fill="none" stroke="rgba(60,30,10,.35)" stroke-width="3" stroke-linecap="round">
+          <path d="M60 12c-9 30-11 58-9 88"/>
+          <path d="M60 12c9 30 11 58 9 88"/>
+          <path d="M40 19c-11 26-15 54-12 81"/>
+          <path d="M80 19c11 26 15 54 12 81"/>
+        </g>
+        <path d="M30 42c4-12 13-21 24-25" fill="none" stroke="rgba(255,240,220,.45)" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="60" cy="100" rx="53" ry="8" fill="#5a3218"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="app">
+    <header class="header">
+      <h1>Shell Game</h1>
+      <p class="tagline">The classic street hustle — minus the hustle. The pea is always where it should be.</p>
+    </header>
+
+    <section class="scoreboard" aria-label="Score">
+      <div class="stat"><span class="stat-value" id="played">0</span><span class="stat-label">Games played</span></div>
+      <div class="stat"><span class="stat-value" id="wins">0</span><span class="stat-label">First-guess wins</span></div>
+      <div class="stat"><span class="stat-value" id="rate">–</span><span class="stat-label">Win rate</span></div>
+    </section>
+
+    <section class="stage" id="stage" data-phase="hiding" aria-label="Table">
+      <div class="cups">
+        <button class="cup" type="button" data-shell="0"><span class="pea-spot"></span><svg class="shell" aria-hidden="true"><use href="#shell-art"/></svg></button>
+        <button class="cup" type="button" data-shell="1"><span class="pea-spot"></span><svg class="shell" aria-hidden="true"><use href="#shell-art"/></svg></button>
+        <button class="cup" type="button" data-shell="2"><span class="pea-spot"></span><svg class="shell" aria-hidden="true"><use href="#shell-art"/></svg></button>
+      </div>
+      <div class="tray" id="tray"><span class="pea" id="pea" aria-hidden="true"></span></div>
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+    </section>
+
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+
+    <section class="controls" aria-label="Controls">
+      <button class="btn btn-primary" id="shuffle" type="button" disabled>Shuffle <kbd>S</kbd></button>
+      <label class="speed">
+        Speed
+        <select id="speed">
+          <option value="relaxed">Relaxed</option>
+          <option value="classic" selected>Classic</option>
+          <option value="hustler">Hustler</option>
+        </select>
+      </label>
+      <button class="btn btn-ghost" id="reset" type="button">Reset score</button>
+    </section>
+
+    <details class="help">
+      <summary>How to play</summary>
+      <ol>
+        <li>Click a shell to hide the pea under it — that starts a new game.</li>
+        <li>Press <strong>Shuffle</strong>: the shells swap places for 5 seconds.</li>
+        <li>Click the shell you think hides the pea. Keep guessing until you find it.</li>
+        <li>Only a find on the <em>first</em> guess counts as a win.</li>
+      </ol>
+      <p>Keyboard: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> pick the left, middle and right shell, <kbd>S</kbd> shuffles.</p>
+    </details>
+  </main>
+</body>
+</html>
