@@ -1,0 +1,15 @@
+{
+  "name": "shell-game",
+  "version": "1.0.0",
+  "description": "An honest, animated shell game in vanilla JavaScript: hide the pea, watch the shuffle, find it.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
