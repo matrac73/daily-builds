@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Build a table in your browser and get a clean GitHub Flavored Markdown table, with live preview."
+    />
+    <title>Markdown Table Generator</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%234f46e5'/%3E%3Cpath d='M3 5.5h10M3 10.5h10M8 3v10' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E"
+    />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Markdown Table Generator</h1>
+      <p>Type your data in the grid, get a clean GitHub&nbsp;Flavored&nbsp;Markdown table.</p>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="editor-title">
+        <div class="panel-head">
+          <h2 id="editor-title">Table</h2>
+          <form id="size-form" class="size-form">
+            <label>Rows <input id="rows-input" type="number" min="1" max="50" required /></label>
+            <span aria-hidden="true">×</span>
+            <label>Columns <input id="cols-input" type="number" min="1" max="50" required /></label>
+            <button type="submit">Apply size</button>
+            <button type="button" id="clear-btn" class="ghost">Clear</button>
+          </form>
+        </div>
+
+        <div class="toolbar" id="structure-toolbar" role="toolbar" aria-label="Edit the selected cell">
+          <span class="selection" id="selection-label" aria-live="polite"></span>
+          <div class="group" aria-label="Rows">
+            <button type="button" data-action="row-above" title="Insert row above">+ Row above</button>
+            <button type="button" data-action="row-below" title="Insert row below">+ Row below</button>
+            <button type="button" data-action="row-delete" class="danger" title="Delete row">Delete row</button>
+          </div>
+          <div class="group" aria-label="Columns">
+            <button type="button" data-action="col-left" title="Insert column to the left">+ Col left</button>
+            <button type="button" data-action="col-right" title="Insert column to the right">+ Col right</button>
+            <button type="button" data-action="col-delete" class="danger" title="Delete column">Delete col</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group align-group" data-scope="column" aria-label="Align selected column">
+            <span class="group-label">Column</span>
+          </div>
+          <div class="group align-group" data-scope="table" aria-label="Align whole table">
+            <span class="group-label">Table</span>
+          </div>
+        </div>
+
+        <div class="grid-wrap">
+          <table id="grid" class="grid"></table>
+        </div>
+        <p class="hint">
+          The first row is the header. <kbd>Enter</kbd>/<kbd>↓</kbd> moves down, <kbd>Shift</kbd>+<kbd>Enter</kbd>/<kbd>↑</kbd>
+          moves up, <kbd>Tab</kbd> moves right.
+        </p>
+
+        <details class="import">
+          <summary>Import an existing Markdown table</summary>
+          <form id="import-form">
+            <textarea
+              id="import-input"
+              rows="5"
+              spellcheck="false"
+              placeholder="| Name | Age |&#10;| ---- | --: |&#10;| Ada  |  36 |"
+            ></textarea>
+            <div class="row">
+              <button type="submit">Import</button>
+              <span id="import-error" class="error" role="alert"></span>
+            </div>
+          </form>
+        </details>
+      </section>
+
+      <div class="outputs">
+        <section class="panel" aria-labelledby="markdown-title">
+          <div class="panel-head">
+            <h2 id="markdown-title">Markdown</h2>
+            <label class="check"><input id="pretty-input" type="checkbox" /> Align source</label>
+            <button type="button" id="copy-btn">Copy</button>
+          </div>
+          <textarea id="markdown-output" class="code" readonly spellcheck="false" aria-labelledby="markdown-title"></textarea>
+          <p class="sr-only" id="copy-status" aria-live="polite"></p>
+        </section>
+
+        <section class="panel" aria-labelledby="preview-title">
+          <div class="panel-head">
+            <h2 id="preview-title">Preview</h2>
+          </div>
+          <div id="preview" class="preview"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <a href="https://github.com/florinpop17/app-ideas/blob/master/Projects/2-Intermediate/Markdown-Table-Generator.md"
+        >Idea from app-ideas</a
+      >
+      · MIT License
+    </footer>
+  </body>
+</html>
