@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nixie Countdown</title>
+    <meta name="description" content="Count down the days, hours, minutes and seconds to the events that matter." />
+    <meta name="theme-color" content="#0d0b0a" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%8F%B3%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <main class="app">
+      <header class="masthead">
+        <h1>Nixie Countdown</h1>
+        <p class="tagline">Glowing tubes counting down to the moments that matter.</p>
+      </header>
+
+      <form id="event-form" class="panel" novalidate>
+        <div class="field field-name">
+          <label for="event-name">Event name</label>
+          <input id="event-name" name="name" type="text" maxlength="60" autocomplete="off"
+                 placeholder="e.g. Sam's birthday" aria-describedby="name-error" />
+          <p class="error" id="name-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="event-date">Date</label>
+          <input id="event-date" name="date" type="date" aria-describedby="date-error" />
+          <p class="error" id="date-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="event-time">Time <span class="optional">(optional)</span></label>
+          <input id="event-time" name="time" type="time" step="1" aria-describedby="time-hint time-error" />
+          <p class="hint" id="time-hint">Leave empty for midnight, local time.</p>
+          <p class="error" id="time-error" hidden></p>
+        </div>
+        <button type="submit" class="start">Start</button>
+      </form>
+
+      <section class="countdowns" aria-labelledby="countdowns-title">
+        <h2 id="countdowns-title">Your countdowns</h2>
+        <p id="empty-state" class="empty">No countdowns yet. Add an event above to light up the tubes.</p>
+        <ul id="event-list" class="event-list"></ul>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <template id="event-template">
+      <li class="event-card">
+        <div class="event-head">
+          <h3 class="event-name"></h3>
+          <button type="button" class="remove" title="Remove countdown">✕</button>
+        </div>
+        <p class="event-when"></p>
+        <div class="tubes" role="timer">
+          <div class="unit"><span class="digits" data-unit="days"></span><span class="label">Days</span></div>
+          <div class="unit"><span class="digits" data-unit="hours"></span><span class="label">Hours</span></div>
+          <div class="unit"><span class="digits" data-unit="minutes"></span><span class="label">Minutes</span></div>
+          <div class="unit"><span class="digits" data-unit="seconds"></span><span class="label">Seconds</span></div>
+        </div>
+        <p class="event-done">🎉 It's happening!</p>
+      </li>
+    </template>
+  </body>
+</html>
