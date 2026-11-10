@@ -1,0 +1,16 @@
+{
+  "name": "nixie-countdown",
+  "version": "1.0.0",
+  "description": "A dependency-free countdown timer for the events that matter, styled after glowing nixie tubes.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes http-server . -p 8080 -c-1",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
