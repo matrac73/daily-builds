@@ -209,5 +209,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-10-countdown-timer-app",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-10-countdown-timer-app/"
+    },
+    {
+        "date":  "2026-11-11",
+        "title":  "Currency Converter",
+        "tagline":  "No-build currency converter Web Component with live ECB rates, instant conversion and an offline fallback.",
+        "stack":  [
+                      "JavaScript",
+                      "Web Components",
+                      "HTML",
+                      "CSS",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-11-currency-converter",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-11-currency-converter/"
     }
 ]
