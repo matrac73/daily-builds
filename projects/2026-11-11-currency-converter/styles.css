@@ -1,0 +1,89 @@
+/* Design tokens: custom properties inherit into the component's shadow DOM. */
+:root {
+  --bg: #f3f5fb;
+  --bg-glow: #dfe6ff;
+  --surface: #ffffff;
+  --field: #f8f9fd;
+  --border: #d9deec;
+  --text: #171c2f;
+  --muted: #5d6580;
+  --accent: #3b5bdb;
+  --accent-soft: #e7ecff;
+  --danger: #c92a2a;
+  --danger-soft: #ffe3e3;
+  --ok: #2f9e44;
+  --warn: #e67700;
+  --shadow: 0 20px 45px -25px rgb(30 45 110 / 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1220;
+    --bg-glow: #1b2550;
+    --surface: #171c2f;
+    --field: #1e2540;
+    --border: #2d3557;
+    --text: #eef1fb;
+    --muted: #9aa3c2;
+    --accent: #91a7ff;
+    --accent-soft: #232c55;
+    --danger: #ff8787;
+    --danger-soft: #4a1f26;
+    --ok: #69db7c;
+    --warn: #ffa94d;
+    --shadow: 0 20px 45px -25px rgb(0 0 0 / 0.8);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(1.5rem, 6vw, 4rem) 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: radial-gradient(circle at 50% 0%, var(--bg-glow), var(--bg) 60%) fixed;
+}
+
+main {
+  width: min(100%, 30rem);
+  display: grid;
+  gap: 1.5rem;
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.7rem, 6vw, 2.2rem);
+  letter-spacing: -0.02em;
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+footer {
+  margin-top: auto;
+  max-width: 30rem;
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+a {
+  color: var(--accent);
+}

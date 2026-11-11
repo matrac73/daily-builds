@@ -1,0 +1,12 @@
+{
+  "name": "currency-converter",
+  "version": "1.0.0",
+  "description": "A no-build currency converter Web Component with live ECB rates and an offline fallback.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "start": "npx --yes serve ."
+  }
+}
