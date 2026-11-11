@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Convert between 30 currencies with live ECB reference rates." />
+    <meta name="color-scheme" content="light dark" />
+    <title>Currency Converter</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💱</text></svg>" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/components/currency-converter.js"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Currency Converter</h1>
+        <p>Type an amount, pick two currencies — the result updates instantly.</p>
+      </header>
+
+      <currency-converter amount="100" from="USD" to="EUR"></currency-converter>
+
+      <noscript>This converter needs JavaScript to run.</noscript>
+    </main>
+
+    <footer>
+      Rates published by the European Central Bank, served by
+      <a href="https://frankfurter.dev/">Frankfurter</a>. For information only.
+    </footer>
+  </body>
+</html>
