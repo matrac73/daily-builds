@@ -73,6 +73,17 @@ export function formatAmount(value, locale = 'en-US') {
 }
 
 /**
+ * Formats a unit exchange rate with six significant digits, so both
+ * 0.00554 (JPY → EUR) and 18,063.4 (EUR → IDR) stay readable.
+ *
+ * @param {number} rate
+ * @param {string} [locale]
+ */
+export function formatRate(rate, locale = 'en-US') {
+  return new Intl.NumberFormat(locale, { maximumSignificantDigits: 6 }).format(rate);
+}
+
+/**
  * Builds the alphabetically sorted list of currencies shown in the drop-downs.
  *
  * @param {Record<string, number>} rates

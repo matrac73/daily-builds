@@ -5,6 +5,7 @@ import {
   AmountError,
   convert,
   formatAmount,
+  formatRate,
   listCurrencies,
   parseAmount,
   roundToCents,
@@ -72,6 +73,14 @@ test('formatAmount always shows two decimals with grouping', () => {
   assert.equal(formatAmount(0), '0.00');
   assert.equal(formatAmount(1.005), '1.01');
   assert.equal(formatAmount(1234.5, 'de-DE'), '1.234,50');
+});
+
+test('formatRate keeps six significant digits at any magnitude', () => {
+  assert.equal(formatRate(1), '1');
+  assert.equal(formatRate(0.891742134), '0.891742');
+  assert.equal(formatRate(0.00563761), '0.00563761');
+  assert.equal(formatRate(18063.44), '18,063.4');
+  assert.equal(formatRate(1500), '1,500');
 });
 
 test('listCurrencies returns codes sorted alphabetically with readable names', () => {
