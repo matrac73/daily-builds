@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Convert CSV to JSON and JSON to CSV, right in your browser." />
+    <title>CSV2JSON — two-way CSV and JSON converter</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>CSV<span class="accent">2</span>JSON</h1>
+      <p>Convert CSV to JSON and back. Everything runs in your browser — nothing is uploaded.</p>
+    </header>
+
+    <main>
+      <form class="options" id="options">
+        <label>
+          Delimiter
+          <select id="delimiter">
+            <option value="," selected>Comma ( , )</option>
+            <option value=";">Semicolon ( ; )</option>
+            <option value="&#9;">Tab</option>
+            <option value="|">Pipe ( | )</option>
+          </select>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="infer-types" checked />
+          Detect numbers, booleans and empty values
+        </label>
+      </form>
+
+      <p id="status" class="status" role="status" aria-live="polite" hidden></p>
+
+      <div class="panes">
+        <section class="pane" aria-labelledby="csv-title">
+          <h2 id="csv-title">CSV</h2>
+          <div class="file-row">
+            <label class="visually-hidden" for="csv-file-name">CSV file name</label>
+            <input type="text" id="csv-file-name" value="data.csv" spellcheck="false" autocomplete="off" />
+            <button type="button" id="csv-open">Open CSV</button>
+            <button type="button" id="csv-save">Save CSV</button>
+            <input type="file" id="csv-file-input" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden />
+          </div>
+          <label class="visually-hidden" for="csv-text">CSV text</label>
+          <textarea
+            id="csv-text"
+            spellcheck="false"
+            placeholder="name,age,city&#10;Ada,36,London&#10;&quot;Torvalds, Linus&quot;,28,Helsinki"
+          ></textarea>
+          <button type="button" id="to-json" class="primary">Convert to JSON →</button>
+        </section>
+
+        <section class="pane" aria-labelledby="json-title">
+          <h2 id="json-title">JSON</h2>
+          <div class="file-row">
+            <label class="visually-hidden" for="json-file-name">JSON file name</label>
+            <input type="text" id="json-file-name" value="data.json" spellcheck="false" autocomplete="off" />
+            <button type="button" id="json-open">Open JSON</button>
+            <button type="button" id="json-save">Save JSON</button>
+            <input type="file" id="json-file-input" accept=".json,application/json,text/plain" hidden />
+          </div>
+          <label class="visually-hidden" for="json-text">JSON text</label>
+          <textarea
+            id="json-text"
+            spellcheck="false"
+            placeholder="[&#10;  { &quot;name&quot;: &quot;Ada&quot;, &quot;age&quot;: 36, &quot;city&quot;: &quot;London&quot; }&#10;]"
+          ></textarea>
+          <button type="button" id="to-csv" class="primary">← Convert to CSV</button>
+        </section>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="clear">Clear</button>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        The first CSV line is the header. Nested JSON is not supported. Quoted CSV values such as
+        <code>"42"</code> always stay strings.
+      </p>
+    </footer>
+  </body>
+</html>
