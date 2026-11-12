@@ -1,0 +1,11 @@
+{
+  "name": "csv2json",
+  "version": "1.0.0",
+  "description": "Two-way CSV and JSON converter that runs entirely in the browser, with a hand-written RFC 4180 parser.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}
