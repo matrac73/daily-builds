@@ -236,5 +236,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-12-csv2json-app",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-12-csv2json-app/"
+    },
+    {
+        "date":  "2026-11-13",
+        "title":  "GitTweet",
+        "tagline":  "Terminal app that tweets when a pull request is opened on your GitHub repos, never the same PR twice.",
+        "stack":  [
+                      "Python",
+                      "rich",
+                      "pytest",
+                      "GitHub REST API",
+                      "X/Twitter API v2"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-13-gittweet-app",
+        "demo":  null
     }
 ]
