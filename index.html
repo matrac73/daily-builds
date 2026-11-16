@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A sign-up form validated entirely with regular expressions." />
+    <title>Regex Form Validation</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <main class="card">
+      <header>
+        <h1>Create your account</h1>
+        <p class="lead">Every field is checked by a regular expression as you type.</p>
+      </header>
+
+      <form id="signup-form" novalidate>
+        <div class="field" data-field="username">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            aria-describedby="username-hint username-error"
+          />
+          <p class="hint" id="username-hint">Letters only, no spaces.</p>
+          <p class="error" id="username-error" aria-live="polite"></p>
+        </div>
+
+        <div class="field" data-field="email">
+          <label for="email">Gmail address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="name@gmail.com"
+            aria-describedby="email-hint email-error"
+          />
+          <p class="hint" id="email-hint">Only <code>@gmail.com</code> addresses are accepted.</p>
+          <p class="error" id="email-error" aria-live="polite"></p>
+        </div>
+
+        <div class="field" data-field="password">
+          <label for="password">Password</label>
+          <div class="input-row">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              autocapitalize="none"
+              spellcheck="false"
+              aria-describedby="password-rules password-error"
+            />
+            <button type="button" class="ghost" id="toggle-password" aria-pressed="false" aria-controls="password">
+              Show
+            </button>
+            <button type="button" class="ghost" id="generate-password">Generate</button>
+          </div>
+          <ul class="rules" id="password-rules" aria-label="Password rules">
+            <li data-check="capitals"><span class="count">0/5</span> capital letters (A–Z)</li>
+            <li data-check="symbols"><span class="count">0/6</span> symbols (such as ! @ # $ % ^)</li>
+            <li data-check="hyphens"><span class="count">0/2</span> hyphens (-)</li>
+            <li data-check="others"><span class="count">0</span> other characters</li>
+          </ul>
+          <p class="error" id="password-error" aria-live="polite"></p>
+        </div>
+
+        <button type="submit" id="submit" disabled>Create account</button>
+        <p class="status" id="form-status" aria-live="polite"></p>
+      </form>
+
+      <section id="success" class="success" tabindex="-1" hidden>
+        <h2>Welcome, <span id="success-name"></span>!</h2>
+        <p>All three fields passed validation. Nothing was sent anywhere: this demo runs entirely in your browser.</p>
+        <button type="button" id="restart">Start over</button>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Patterns live in <code>validators.js</code> and are unit-tested with <code>node --test</code>.
+    </footer>
+  </body>
+</html>
