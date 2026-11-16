@@ -1,0 +1,16 @@
+{
+  "name": "regex-form-validation",
+  "version": "1.0.0",
+  "description": "A no-build sign-up form validated entirely with regular expressions.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "npx --yes serve ."
+  }
+}
