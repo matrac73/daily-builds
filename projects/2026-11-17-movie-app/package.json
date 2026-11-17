@@ -1,0 +1,15 @@
+{
+  "name": "marquee",
+  "version": "1.0.0",
+  "description": "A no-build movie database app made of vanilla Web Components.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

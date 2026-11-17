@@ -1,0 +1,568 @@
+[
+  {
+    "id": "oppenheimer",
+    "title": "Oppenheimer",
+    "releaseDate": "2023-07-21",
+    "runtime": 180,
+    "rating": 8.1,
+    "genres": ["Drama", "History"],
+    "directors": ["Christopher Nolan"],
+    "overview": "The story of J. Robert Oppenheimer, the physicist who led the Manhattan Project, from the race to build the first atomic bomb to the security hearing that later tried to undo him.",
+    "cast": [
+      { "name": "Cillian Murphy", "character": "J. Robert Oppenheimer" },
+      { "name": "Emily Blunt", "character": "Kitty Oppenheimer" },
+      { "name": "Robert Downey Jr.", "character": "Lewis Strauss" },
+      { "name": "Matt Damon", "character": "Leslie Groves" },
+      { "name": "Florence Pugh", "character": "Jean Tatlock" }
+    ]
+  },
+  {
+    "id": "barbie",
+    "title": "Barbie",
+    "releaseDate": "2023-07-21",
+    "runtime": 114,
+    "rating": 7.0,
+    "genres": ["Comedy", "Fantasy"],
+    "directors": ["Greta Gerwig"],
+    "overview": "When her perfect days in Barbieland start to go wrong, Barbie travels to the real world with Ken in tow and discovers that being human is messier, and richer, than plastic.",
+    "cast": [
+      { "name": "Margot Robbie", "character": "Barbie" },
+      { "name": "Ryan Gosling", "character": "Ken" },
+      { "name": "America Ferrera", "character": "Gloria" },
+      { "name": "Kate McKinnon", "character": "Weird Barbie" }
+    ]
+  },
+  {
+    "id": "dune-part-two",
+    "title": "Dune: Part Two",
+    "releaseDate": "2024-03-01",
+    "runtime": 166,
+    "rating": 8.1,
+    "genres": ["Science Fiction", "Adventure"],
+    "directors": ["Denis Villeneuve"],
+    "overview": "Paul Atreides joins the Fremen of Arrakis and wages war on the house that destroyed his family, while trying to avert the terrible future his visions keep showing him.",
+    "cast": [
+      { "name": "Timothée Chalamet", "character": "Paul Atreides" },
+      { "name": "Zendaya", "character": "Chani" },
+      { "name": "Rebecca Ferguson", "character": "Lady Jessica" },
+      { "name": "Austin Butler", "character": "Feyd-Rautha" },
+      { "name": "Javier Bardem", "character": "Stilgar" }
+    ]
+  },
+  {
+    "id": "poor-things",
+    "title": "Poor Things",
+    "releaseDate": "2023-12-08",
+    "runtime": 141,
+    "rating": 7.7,
+    "genres": ["Comedy", "Science Fiction", "Romance"],
+    "directors": ["Yorgos Lanthimos"],
+    "overview": "Brought back to life by an eccentric surgeon, Bella Baxter runs off across continents with a rakish lawyer, hungry to learn everything about a world she is seeing for the first time.",
+    "cast": [
+      { "name": "Emma Stone", "character": "Bella Baxter" },
+      { "name": "Mark Ruffalo", "character": "Duncan Wedderburn" },
+      { "name": "Willem Dafoe", "character": "Godwin Baxter" },
+      { "name": "Ramy Youssef", "character": "Max McCandles" }
+    ]
+  },
+  {
+    "id": "spider-man-across-the-spider-verse",
+    "title": "Spider-Man: Across the Spider-Verse",
+    "releaseDate": "2023-06-02",
+    "runtime": 140,
+    "rating": 8.3,
+    "genres": ["Animation", "Action", "Adventure"],
+    "directors": ["Joaquim Dos Santos", "Kemp Powers", "Justin K. Thompson"],
+    "overview": "Miles Morales is pulled across the multiverse, where a society of Spider-People is sworn to protect it. When they clash over how to handle a new threat, Miles has to redefine what being a hero means.",
+    "cast": [
+      { "name": "Shameik Moore", "character": "Miles Morales (voice)" },
+      { "name": "Hailee Steinfeld", "character": "Gwen Stacy (voice)" },
+      { "name": "Oscar Isaac", "character": "Miguel O'Hara (voice)" },
+      { "name": "Jake Johnson", "character": "Peter B. Parker (voice)" }
+    ]
+  },
+  {
+    "id": "killers-of-the-flower-moon",
+    "title": "Killers of the Flower Moon",
+    "releaseDate": "2023-10-20",
+    "runtime": 206,
+    "rating": 7.5,
+    "genres": ["Crime", "Drama", "History"],
+    "directors": ["Martin Scorsese"],
+    "overview": "In 1920s Oklahoma, members of the oil-rich Osage Nation are murdered one after another. A marriage sits at the centre of the conspiracy that the newly formed FBI comes to investigate.",
+    "cast": [
+      { "name": "Leonardo DiCaprio", "character": "Ernest Burkhart" },
+      { "name": "Lily Gladstone", "character": "Mollie Burkhart" },
+      { "name": "Robert De Niro", "character": "William Hale" }
+    ]
+  },
+  {
+    "id": "the-holdovers",
+    "title": "The Holdovers",
+    "releaseDate": "2023-10-27",
+    "runtime": 133,
+    "rating": 7.7,
+    "genres": ["Comedy", "Drama"],
+    "directors": ["Alexander Payne"],
+    "overview": "Over the Christmas break of 1970, a curmudgeonly teacher at a New England boarding school is stuck on campus with a troubled student and the school's grieving head cook.",
+    "cast": [
+      { "name": "Paul Giamatti", "character": "Paul Hunham" },
+      { "name": "Da'Vine Joy Randolph", "character": "Mary Lamb" },
+      { "name": "Dominic Sessa", "character": "Angus Tully" }
+    ]
+  },
+  {
+    "id": "past-lives",
+    "title": "Past Lives",
+    "releaseDate": "2023-06-02",
+    "runtime": 106,
+    "rating": 7.8,
+    "genres": ["Drama", "Romance"],
+    "directors": ["Celine Song"],
+    "overview": "Two childhood friends from Seoul are separated when one family emigrates. Decades later they meet again for one week in New York and face the lives they did not live.",
+    "cast": [
+      { "name": "Greta Lee", "character": "Nora" },
+      { "name": "Teo Yoo", "character": "Hae Sung" },
+      { "name": "John Magaro", "character": "Arthur" }
+    ]
+  },
+  {
+    "id": "godzilla-minus-one",
+    "title": "Godzilla Minus One",
+    "releaseDate": "2023-11-03",
+    "runtime": 125,
+    "rating": 7.6,
+    "genres": ["Science Fiction", "Action", "Drama"],
+    "directors": ["Takashi Yamazaki"],
+    "overview": "Japan is still on its knees after the war when a gigantic creature rises from the sea. A guilt-ridden former pilot and a band of civilians have to find a way to stop it.",
+    "cast": [
+      { "name": "Ryunosuke Kamiki", "character": "Koichi Shikishima" },
+      { "name": "Minami Hamabe", "character": "Noriko Oishi" }
+    ]
+  },
+  {
+    "id": "the-boy-and-the-heron",
+    "title": "The Boy and the Heron",
+    "releaseDate": "2023-07-14",
+    "runtime": 124,
+    "rating": 7.4,
+    "genres": ["Animation", "Fantasy", "Adventure"],
+    "directors": ["Hayao Miyazaki"],
+    "overview": "Mourning his mother, young Mahito moves to the countryside, where a talking grey heron lures him into a tower that opens onto a world shared by the living and the dead.",
+    "cast": [
+      { "name": "Soma Santoki", "character": "Mahito Maki (voice)" },
+      { "name": "Masaki Suda", "character": "The Grey Heron (voice)" }
+    ]
+  },
+  {
+    "id": "anatomy-of-a-fall",
+    "title": "Anatomy of a Fall",
+    "releaseDate": "2023-08-23",
+    "runtime": 151,
+    "rating": 7.6,
+    "genres": ["Drama", "Thriller", "Mystery"],
+    "directors": ["Justine Triet"],
+    "overview": "A writer is tried for the death of her husband, found below the window of their chalet in the French Alps. Their visually impaired son is the only witness, and the trial dissects the whole marriage.",
+    "cast": [
+      { "name": "Sandra Hüller", "character": "Sandra Voyter" },
+      { "name": "Swann Arlaud", "character": "Vincent Renzi" },
+      { "name": "Milo Machado-Graner", "character": "Daniel" }
+    ]
+  },
+  {
+    "id": "the-zone-of-interest",
+    "title": "The Zone of Interest",
+    "releaseDate": "2023-12-15",
+    "runtime": 105,
+    "rating": 7.0,
+    "genres": ["Drama", "History", "War"],
+    "directors": ["Jonathan Glazer"],
+    "overview": "The commandant of Auschwitz and his wife build an idyllic family life in a house and garden that share a wall with the camp.",
+    "cast": [
+      { "name": "Christian Friedel", "character": "Rudolf Höss" },
+      { "name": "Sandra Hüller", "character": "Hedwig Höss" }
+    ]
+  },
+  {
+    "id": "civil-war",
+    "title": "Civil War",
+    "releaseDate": "2024-04-12",
+    "runtime": 109,
+    "rating": 7.0,
+    "genres": ["War", "Action", "Drama"],
+    "directors": ["Alex Garland"],
+    "overview": "In a near-future United States torn apart by armed conflict, a team of journalists drives to Washington, D.C. hoping to reach the president before the capital falls.",
+    "cast": [
+      { "name": "Kirsten Dunst", "character": "Lee Smith" },
+      { "name": "Wagner Moura", "character": "Joel" },
+      { "name": "Cailee Spaeny", "character": "Jessie" },
+      { "name": "Stephen McKinley Henderson", "character": "Sammy" }
+    ]
+  },
+  {
+    "id": "challengers",
+    "title": "Challengers",
+    "releaseDate": "2024-04-26",
+    "runtime": 131,
+    "rating": 7.1,
+    "genres": ["Drama", "Romance"],
+    "directors": ["Luca Guadagnino"],
+    "overview": "A former tennis prodigy turned coach enters her struggling champion husband in a low-level tournament, where he must face her ex-boyfriend, who was once his best friend.",
+    "cast": [
+      { "name": "Zendaya", "character": "Tashi Duncan" },
+      { "name": "Josh O'Connor", "character": "Patrick Zweig" },
+      { "name": "Mike Faist", "character": "Art Donaldson" }
+    ]
+  },
+  {
+    "id": "furiosa-a-mad-max-saga",
+    "title": "Furiosa: A Mad Max Saga",
+    "releaseDate": "2024-05-24",
+    "runtime": 148,
+    "rating": 7.5,
+    "genres": ["Action", "Adventure", "Science Fiction"],
+    "directors": ["George Miller"],
+    "overview": "Snatched from the Green Place as a child, Furiosa grows up between two warlords fighting over the Wasteland and spends years plotting her way back home.",
+    "cast": [
+      { "name": "Anya Taylor-Joy", "character": "Furiosa" },
+      { "name": "Chris Hemsworth", "character": "Dementus" },
+      { "name": "Tom Burke", "character": "Praetorian Jack" }
+    ]
+  },
+  {
+    "id": "inside-out-2",
+    "title": "Inside Out 2",
+    "releaseDate": "2024-06-14",
+    "runtime": 96,
+    "rating": 7.6,
+    "genres": ["Animation", "Family", "Comedy"],
+    "directors": ["Kelsey Mann"],
+    "overview": "Riley turns thirteen and headquarters gets a sudden renovation: Anxiety and other new emotions move in, and Joy's team has to fight for its place in Riley's mind.",
+    "cast": [
+      { "name": "Amy Poehler", "character": "Joy (voice)" },
+      { "name": "Maya Hawke", "character": "Anxiety (voice)" },
+      { "name": "Phyllis Smith", "character": "Sadness (voice)" },
+      { "name": "Lewis Black", "character": "Anger (voice)" }
+    ]
+  },
+  {
+    "id": "deadpool-and-wolverine",
+    "title": "Deadpool & Wolverine",
+    "releaseDate": "2024-07-26",
+    "runtime": 128,
+    "rating": 7.6,
+    "genres": ["Action", "Comedy", "Science Fiction"],
+    "directors": ["Shawn Levy"],
+    "overview": "Recruited against his will by the Time Variance Authority, Deadpool drags a reluctant Wolverine from another universe into a mission to save his own timeline.",
+    "cast": [
+      { "name": "Ryan Reynolds", "character": "Wade Wilson / Deadpool" },
+      { "name": "Hugh Jackman", "character": "Logan / Wolverine" },
+      { "name": "Emma Corrin", "character": "Cassandra Nova" },
+      { "name": "Matthew Macfadyen", "character": "Mr. Paradox" }
+    ]
+  },
+  {
+    "id": "alien-romulus",
+    "title": "Alien: Romulus",
+    "releaseDate": "2024-08-16",
+    "runtime": 119,
+    "rating": 7.2,
+    "genres": ["Horror", "Science Fiction"],
+    "directors": ["Fede Álvarez"],
+    "overview": "A group of young colonists scavenging a derelict space station in search of a way off their mining world come face to face with the most terrifying life form in the universe.",
+    "cast": [
+      { "name": "Cailee Spaeny", "character": "Rain" },
+      { "name": "David Jonsson", "character": "Andy" },
+      { "name": "Archie Renaux", "character": "Tyler" },
+      { "name": "Isabela Merced", "character": "Kay" }
+    ]
+  },
+  {
+    "id": "the-substance",
+    "title": "The Substance",
+    "releaseDate": "2024-09-20",
+    "runtime": 141,
+    "rating": 7.1,
+    "genres": ["Horror", "Science Fiction"],
+    "directors": ["Coralie Fargeat"],
+    "overview": "Dropped by her network at fifty, a fading star tries a black-market drug that creates a younger, flawless version of herself. The two must share one life, on a strict schedule.",
+    "cast": [
+      { "name": "Demi Moore", "character": "Elisabeth Sparkle" },
+      { "name": "Margaret Qualley", "character": "Sue" },
+      { "name": "Dennis Quaid", "character": "Harvey" }
+    ]
+  },
+  {
+    "id": "the-wild-robot",
+    "title": "The Wild Robot",
+    "releaseDate": "2024-09-27",
+    "runtime": 102,
+    "rating": 8.3,
+    "genres": ["Animation", "Family", "Science Fiction"],
+    "directors": ["Chris Sanders"],
+    "overview": "Shipwrecked on an uninhabited island, a service robot learns to survive among the animals and becomes the unlikely parent of an orphaned gosling.",
+    "cast": [
+      { "name": "Lupita Nyong'o", "character": "Roz (voice)" },
+      { "name": "Pedro Pascal", "character": "Fink (voice)" },
+      { "name": "Kit Connor", "character": "Brightbill (voice)" }
+    ]
+  },
+  {
+    "id": "anora",
+    "title": "Anora",
+    "releaseDate": "2024-10-18",
+    "runtime": 139,
+    "rating": 7.1,
+    "genres": ["Comedy", "Drama", "Romance"],
+    "directors": ["Sean Baker"],
+    "overview": "A young dancer from Brooklyn impulsively marries the son of a Russian oligarch. Her fairy tale is threatened as soon as his parents hear the news and send people to have it annulled.",
+    "cast": [
+      { "name": "Mikey Madison", "character": "Ani" },
+      { "name": "Mark Eydelshteyn", "character": "Vanya" },
+      { "name": "Yura Borisov", "character": "Igor" }
+    ]
+  },
+  {
+    "id": "conclave",
+    "title": "Conclave",
+    "releaseDate": "2024-10-25",
+    "runtime": 120,
+    "rating": 7.2,
+    "genres": ["Drama", "Thriller", "Mystery"],
+    "directors": ["Edward Berger"],
+    "overview": "After the pope dies, Cardinal Lawrence must run the secretive election of his successor, and uncovers ambitions and secrets that could shake the foundations of the Church.",
+    "cast": [
+      { "name": "Ralph Fiennes", "character": "Cardinal Lawrence" },
+      { "name": "Stanley Tucci", "character": "Cardinal Bellini" },
+      { "name": "John Lithgow", "character": "Cardinal Tremblay" },
+      { "name": "Isabella Rossellini", "character": "Sister Agnes" }
+    ]
+  },
+  {
+    "id": "wicked",
+    "title": "Wicked",
+    "releaseDate": "2024-11-22",
+    "runtime": 160,
+    "rating": 7.0,
+    "genres": ["Fantasy", "Music", "Romance"],
+    "directors": ["Jon M. Chu"],
+    "overview": "Long before Dorothy arrives in Oz, misunderstood Elphaba and popular Glinda become unlikely friends at Shiz University, until an encounter with the Wizard sends them down opposite paths.",
+    "cast": [
+      { "name": "Cynthia Erivo", "character": "Elphaba" },
+      { "name": "Ariana Grande", "character": "Glinda" },
+      { "name": "Jonathan Bailey", "character": "Fiyero" },
+      { "name": "Michelle Yeoh", "character": "Madame Morrible" },
+      { "name": "Jeff Goldblum", "character": "The Wizard" }
+    ]
+  },
+  {
+    "id": "gladiator-ii",
+    "title": "Gladiator II",
+    "releaseDate": "2024-11-22",
+    "runtime": 148,
+    "rating": 6.7,
+    "genres": ["Action", "Adventure", "Drama"],
+    "directors": ["Ridley Scott"],
+    "overview": "Years after watching Maximus die, Lucius is captured and forced into the Colosseum, where he fights for the honour of a Rome now ruled by tyrant emperors.",
+    "cast": [
+      { "name": "Paul Mescal", "character": "Lucius" },
+      { "name": "Pedro Pascal", "character": "Acacius" },
+      { "name": "Denzel Washington", "character": "Macrinus" },
+      { "name": "Connie Nielsen", "character": "Lucilla" }
+    ]
+  },
+  {
+    "id": "the-brutalist",
+    "title": "The Brutalist",
+    "releaseDate": "2024-12-20",
+    "runtime": 215,
+    "rating": 7.0,
+    "genres": ["Drama"],
+    "directors": ["Brady Corbet"],
+    "overview": "A visionary Hungarian architect who survived the Holocaust emigrates to the United States, where a wealthy industrialist offers him the commission of a lifetime, at a price.",
+    "cast": [
+      { "name": "Adrien Brody", "character": "László Tóth" },
+      { "name": "Felicity Jones", "character": "Erzsébet Tóth" },
+      { "name": "Guy Pearce", "character": "Harrison Lee Van Buren" }
+    ]
+  },
+  {
+    "id": "nosferatu",
+    "title": "Nosferatu",
+    "releaseDate": "2024-12-25",
+    "runtime": 132,
+    "rating": 6.7,
+    "genres": ["Horror", "Fantasy"],
+    "directors": ["Robert Eggers"],
+    "overview": "A gothic tale of obsession between a haunted young woman in 19th-century Germany and the ancient vampire who is infatuated with her, bringing untold horror in his wake.",
+    "cast": [
+      { "name": "Lily-Rose Depp", "character": "Ellen Hutter" },
+      { "name": "Nicholas Hoult", "character": "Thomas Hutter" },
+      { "name": "Bill Skarsgård", "character": "Count Orlok" },
+      { "name": "Willem Dafoe", "character": "Prof. Albin Eberhart von Franz" }
+    ]
+  },
+  {
+    "id": "a-complete-unknown",
+    "title": "A Complete Unknown",
+    "releaseDate": "2024-12-25",
+    "runtime": 141,
+    "rating": 7.2,
+    "genres": ["Drama", "Music"],
+    "directors": ["James Mangold"],
+    "overview": "New York, 1961. A nineteen-year-old from Minnesota named Bob Dylan arrives in Greenwich Village with a guitar, and within four years turns folk music, and then rock, upside down.",
+    "cast": [
+      { "name": "Timothée Chalamet", "character": "Bob Dylan" },
+      { "name": "Edward Norton", "character": "Pete Seeger" },
+      { "name": "Elle Fanning", "character": "Sylvie Russo" },
+      { "name": "Monica Barbaro", "character": "Joan Baez" }
+    ]
+  },
+  {
+    "id": "mickey-17",
+    "title": "Mickey 17",
+    "releaseDate": "2025-03-07",
+    "runtime": 137,
+    "rating": 6.9,
+    "genres": ["Science Fiction", "Comedy", "Adventure"],
+    "directors": ["Bong Joon-ho"],
+    "overview": "Mickey has the worst job on a colony ship: he is an expendable, sent on lethal missions and reprinted after each death. Trouble starts when one of his copies survives.",
+    "cast": [
+      { "name": "Robert Pattinson", "character": "Mickey Barnes" },
+      { "name": "Naomi Ackie", "character": "Nasha" },
+      { "name": "Steven Yeun", "character": "Timo" },
+      { "name": "Mark Ruffalo", "character": "Kenneth Marshall" },
+      { "name": "Toni Collette", "character": "Ylfa" }
+    ]
+  },
+  {
+    "id": "sinners",
+    "title": "Sinners",
+    "releaseDate": "2025-04-18",
+    "runtime": 137,
+    "rating": 7.5,
+    "genres": ["Horror", "Drama", "Thriller"],
+    "directors": ["Ryan Coogler"],
+    "overview": "Twin brothers return to their Mississippi hometown in 1932 to open a juke joint and start over, only to find that something far older and hungrier is waiting for opening night.",
+    "cast": [
+      { "name": "Michael B. Jordan", "character": "Smoke / Stack" },
+      { "name": "Hailee Steinfeld", "character": "Mary" },
+      { "name": "Miles Caton", "character": "Sammie Moore" },
+      { "name": "Jack O'Connell", "character": "Remmick" },
+      { "name": "Wunmi Mosaku", "character": "Annie" },
+      { "name": "Delroy Lindo", "character": "Delta Slim" }
+    ]
+  },
+  {
+    "id": "mission-impossible-the-final-reckoning",
+    "title": "Mission: Impossible – The Final Reckoning",
+    "releaseDate": "2025-05-23",
+    "runtime": 170,
+    "rating": 7.2,
+    "genres": ["Action", "Adventure", "Thriller"],
+    "directors": ["Christopher McQuarrie"],
+    "overview": "Ethan Hunt and the IMF team race against time to find and destroy the Entity, a rogue artificial intelligence that could bring down every system mankind depends on.",
+    "cast": [
+      { "name": "Tom Cruise", "character": "Ethan Hunt" },
+      { "name": "Hayley Atwell", "character": "Grace" },
+      { "name": "Ving Rhames", "character": "Luther Stickell" },
+      { "name": "Simon Pegg", "character": "Benji Dunn" }
+    ]
+  },
+  {
+    "id": "28-years-later",
+    "title": "28 Years Later",
+    "releaseDate": "2025-06-20",
+    "runtime": 115,
+    "rating": 6.9,
+    "genres": ["Horror", "Thriller", "Science Fiction"],
+    "directors": ["Danny Boyle"],
+    "overview": "Almost three decades after the rage virus escaped, a boy raised on a quarantined island crosses to the mainland and discovers what has become of the infected, and of the survivors.",
+    "cast": [
+      { "name": "Alfie Williams", "character": "Spike" },
+      { "name": "Jodie Comer", "character": "Isla" },
+      { "name": "Aaron Taylor-Johnson", "character": "Jamie" },
+      { "name": "Ralph Fiennes", "character": "Dr. Ian Kelson" }
+    ]
+  },
+  {
+    "id": "f1-the-movie",
+    "title": "F1: The Movie",
+    "releaseDate": "2025-06-27",
+    "runtime": 155,
+    "rating": 7.8,
+    "genres": ["Action", "Drama"],
+    "directors": ["Joseph Kosinski"],
+    "overview": "A driver whose Formula One career ended in a crash in the 1990s is talked into returning to the grid to mentor a gifted rookie and save a team at the bottom of the standings.",
+    "cast": [
+      { "name": "Brad Pitt", "character": "Sonny Hayes" },
+      { "name": "Damson Idris", "character": "Joshua Pearce" },
+      { "name": "Kerry Condon", "character": "Kate McKenna" },
+      { "name": "Javier Bardem", "character": "Ruben Cervantes" }
+    ]
+  },
+  {
+    "id": "superman",
+    "title": "Superman",
+    "releaseDate": "2025-07-11",
+    "runtime": 129,
+    "rating": 7.5,
+    "genres": ["Science Fiction", "Adventure", "Action"],
+    "directors": ["James Gunn"],
+    "overview": "Superman tries to reconcile his Kryptonian heritage with his upbringing as Clark Kent of Smallville, while Lex Luthor works to turn the world against him.",
+    "cast": [
+      { "name": "David Corenswet", "character": "Clark Kent / Superman" },
+      { "name": "Rachel Brosnahan", "character": "Lois Lane" },
+      { "name": "Nicholas Hoult", "character": "Lex Luthor" }
+    ]
+  },
+  {
+    "id": "weapons",
+    "title": "Weapons",
+    "releaseDate": "2025-08-08",
+    "runtime": 128,
+    "rating": 7.4,
+    "genres": ["Horror", "Mystery"],
+    "directors": ["Zach Cregger"],
+    "overview": "At 2:17 one night, every child but one from the same classroom gets out of bed and runs into the dark. A shaken town is left wondering who, or what, is behind it.",
+    "cast": [
+      { "name": "Julia Garner", "character": "Justine Gandy" },
+      { "name": "Josh Brolin", "character": "Archer Graff" },
+      { "name": "Alden Ehrenreich", "character": "Paul Morgan" },
+      { "name": "Amy Madigan", "character": "Gladys" }
+    ]
+  },
+  {
+    "id": "one-battle-after-another",
+    "title": "One Battle After Another",
+    "releaseDate": "2025-09-26",
+    "runtime": 162,
+    "rating": 7.6,
+    "genres": ["Action", "Thriller", "Comedy"],
+    "directors": ["Paul Thomas Anderson"],
+    "overview": "A burnt-out former revolutionary living off the grid has to pull himself together when an old enemy resurfaces after sixteen years and his teenage daughter goes missing.",
+    "cast": [
+      { "name": "Leonardo DiCaprio", "character": "Bob Ferguson" },
+      { "name": "Sean Penn", "character": "Col. Steven J. Lockjaw" },
+      { "name": "Teyana Taylor", "character": "Perfidia Beverly Hills" },
+      { "name": "Chase Infiniti", "character": "Willa Ferguson" },
+      { "name": "Benicio del Toro", "character": "Sensei Sergio" }
+    ]
+  },
+  {
+    "id": "frankenstein",
+    "title": "Frankenstein",
+    "releaseDate": "2025-10-17",
+    "runtime": 149,
+    "rating": 7.8,
+    "genres": ["Horror", "Science Fiction", "Drama"],
+    "directors": ["Guillermo del Toro"],
+    "overview": "Victor Frankenstein, a brilliant and arrogant scientist, brings a creature to life in a monstrous experiment that ends up destroying both the creator and his creation.",
+    "cast": [
+      { "name": "Oscar Isaac", "character": "Victor Frankenstein" },
+      { "name": "Jacob Elordi", "character": "The Creature" },
+      { "name": "Mia Goth", "character": "Elizabeth" },
+      { "name": "Christoph Waltz", "character": "Harlander" }
+    ]
+  }
+]
