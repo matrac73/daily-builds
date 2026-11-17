@@ -263,5 +263,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-16-javascript-validation-with-regex",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-16-javascript-validation-with-regex/"
+    },
+    {
+        "date":  "2026-11-17",
+        "title":  "Marquee",
+        "tagline":  "A no-build movie database app in vanilla Web Components: latest releases, movie pages, watchlist and reviews.",
+        "stack":  [
+                      "JavaScript",
+                      "Web Components",
+                      "HTML",
+                      "CSS",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-17-movie-app",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-17-movie-app/"
     }
 ]
