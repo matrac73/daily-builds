@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="High Striker: the classic carnival strength game. Time your swing, launch the puck and ring the bell."
+    />
+    <title>High Striker</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <header class="marquee">
+      <h1>High Striker</h1>
+      <p>Step right up! Ring the bell and score 10 points.</p>
+    </header>
+
+    <main class="fairground">
+      <section class="booth" aria-label="High Striker tower">
+        <svg
+          class="tower"
+          viewBox="-30 0 300 540"
+          role="img"
+          aria-label="High Striker tower: a bell at the top, a levered platform at the bottom and a track with a puck between them"
+        >
+          <defs>
+            <pattern id="stripes" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="20" height="20" fill="#fdf3d8" />
+              <rect width="10" height="20" fill="#f6dfb0" />
+            </pattern>
+            <radialGradient id="brass" cx="35%" cy="30%" r="75%">
+              <stop offset="0" stop-color="#fff3b0" />
+              <stop offset="0.55" stop-color="#f2b82e" />
+              <stop offset="1" stop-color="#9c6a0c" />
+            </radialGradient>
+          </defs>
+
+          <!-- Tower and track -->
+          <rect x="80" y="70" width="80" height="424" rx="6" fill="url(#stripes)" stroke="#c0392b" stroke-width="5" />
+          <rect x="116" y="92" width="8" height="396" rx="4" fill="#3b2418" />
+          <g id="scale"></g>
+
+          <!-- Bell -->
+          <g transform="translate(120 58)">
+            <g id="bell" class="bell">
+              <path class="bell-wave" d="M -44 -18 Q -58 0 -44 18" />
+              <path class="bell-wave" d="M 44 -18 Q 58 0 44 18" />
+              <path class="bell-wave bell-wave-far" d="M -54 -26 Q -74 0 -54 26" />
+              <path class="bell-wave bell-wave-far" d="M 54 -26 Q 74 0 54 26" />
+              <circle r="34" fill="url(#brass)" stroke="#7a5208" stroke-width="3" />
+              <circle r="22" fill="none" stroke="#7a5208" stroke-width="1.5" opacity="0.6" />
+              <circle r="6" fill="#7a5208" />
+            </g>
+          </g>
+
+          <!-- Puck -->
+          <g id="puck">
+            <rect x="-15" y="-6" width="30" height="12" rx="4" fill="#c0392b" stroke="#6d1d14" stroke-width="2" />
+            <rect x="-9" y="-3" width="18" height="2.5" rx="1.25" fill="#fff" opacity="0.5" />
+          </g>
+
+          <!-- Base, lever and mallet -->
+          <rect x="80" y="494" width="10" height="30" fill="#8e2a1f" />
+          <rect x="150" y="494" width="10" height="30" fill="#8e2a1f" />
+          <rect x="20" y="524" width="250" height="10" rx="5" fill="#3b2418" />
+          <path d="M 175 510 L 163 524 L 187 524 Z" fill="#5a3a26" />
+          <g transform="translate(175 506)">
+            <g id="lever" class="lever">
+              <rect x="-73" y="-4" width="123" height="8" rx="3" fill="#a9703f" stroke="#5a3a26" stroke-width="2" />
+              <rect x="28" y="-8" width="22" height="5" rx="2" fill="#2c3e50" />
+            </g>
+          </g>
+          <g transform="translate(262 494)">
+            <g id="mallet" class="mallet">
+              <rect x="-3" y="-46" width="6" height="50" rx="3" fill="#a9703f" stroke="#5a3a26" stroke-width="1.5" />
+              <rect x="-15" y="-58" width="30" height="18" rx="4" fill="#2c3e50" stroke="#151f29" stroke-width="2" />
+            </g>
+          </g>
+        </svg>
+
+        <div class="controls">
+          <div
+            class="meter"
+            id="meter"
+            role="meter"
+            aria-label="Swing power"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div class="meter-needle" id="needle"></div>
+          </div>
+          <p class="hint">Hit <strong>Strike!</strong> when the needle is in the green.</p>
+          <button type="button" class="button button-strike" id="strike">Strike!</button>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <section class="scoreboard" aria-label="Score">
+          <dl>
+            <div>
+              <dt>Bells</dt>
+              <dd id="bells">0</dd>
+            </div>
+            <div>
+              <dt>Attempts</dt>
+              <dd id="attempts">0</dd>
+            </div>
+            <div>
+              <dt>Points</dt>
+              <dd><span id="points">0</span><small>/<span id="target"></span></small></dd>
+            </div>
+          </dl>
+          <div class="progress" aria-hidden="true"><div class="progress-fill" id="progress"></div></div>
+        </section>
+
+        <p class="result" id="result" aria-live="polite">Grab the mallet and take a swing!</p>
+
+        <section class="win" id="win" hidden>
+          <h2>Congratulations!</h2>
+          <p id="win-text"></p>
+          <button type="button" class="button" id="again">Play again</button>
+        </section>
+
+        <div class="actions">
+          <button type="button" class="button button-quiet" id="clear">Clear</button>
+          <button type="button" class="button button-quiet" id="mute" aria-pressed="false">Sound: on</button>
+        </div>
+
+        <details class="rules">
+          <summary>How it works</summary>
+          <p>
+            The needle sweeps across the meter: the closer to the centre you strike, the harder you swing. A pinch of
+            carnival luck is added, then the puck flies up the rail under gravity and friction.
+          </p>
+          <ul id="rules-list"></ul>
+        </details>
+      </aside>
+    </main>
+
+    <footer class="credits">
+      Sounds are synthesised in your browser. Keyboard: <kbd>Space</kbd> or <kbd>Enter</kbd> to strike.
+    </footer>
+  </body>
+</html>
