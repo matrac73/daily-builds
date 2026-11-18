@@ -1,0 +1,12 @@
+{
+  "name": "highstriker",
+  "version": "1.0.0",
+  "description": "A carnival High Striker game for the browser: time your swing, launch the puck, ring the bell.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "start": "npx --yes serve ."
+  }
+}
