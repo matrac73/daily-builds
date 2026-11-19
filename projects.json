@@ -292,5 +292,17 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-18-highstriker-game",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-18-highstriker-game/"
+    },
+    {
+        "date":  "2026-11-19",
+        "title":  "radius-preview — Border-radius Previewer",
+        "tagline":  "Preview any CSS border-radius in your terminal, tweak all 8 values and copy the resulting CSS to the clipboard.",
+        "stack":  [
+                      "Python",
+                      "rich",
+                      "pytest"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-19-border-radius-previewer",
+        "demo":  null
     }
 ]
