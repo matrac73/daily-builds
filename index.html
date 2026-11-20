@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Bug Race — name your bugs, pick a winner and watch them race." />
+    <title>Bug Race</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='36' r='22' fill='%23d8342c'/%3E%3Ccircle cx='32' cy='14' r='10' fill='%232b2118'/%3E%3Ccircle cx='24' cy='32' r='4' fill='%232b2118'/%3E%3Ccircle cx='41' cy='36' r='5' fill='%232b2118'/%3E%3Ccircle cx='29' cy='47' r='4' fill='%232b2118'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Bug Race</h1>
+      <p>Name your bugs, pick the one you believe in, and let them scurry.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="setup-title">
+        <h2 id="setup-title">Setup</h2>
+        <fieldset id="settings" class="plain-fieldset">
+          <div id="lane-configs" class="lane-configs"></div>
+
+          <fieldset class="option-group">
+            <legend>Speed</legend>
+            <label><input type="radio" name="speed" value="slow" /> Slow</label>
+            <label><input type="radio" name="speed" value="normal" checked /> Normal</label>
+            <label><input type="radio" name="speed" value="fast" /> Fast</label>
+          </fieldset>
+
+          <label class="toggle"><input type="checkbox" id="sound-toggle" checked /> Sound effects</label>
+        </fieldset>
+      </section>
+
+      <section class="panel" aria-labelledby="race-title">
+        <div class="race-header">
+          <h2 id="race-title">Race track</h2>
+          <p class="hint">Select the lane you think will win.</p>
+        </div>
+
+        <fieldset id="track" class="plain-fieldset track">
+          <legend class="sr-only">Predicted winner</legend>
+        </fieldset>
+
+        <div class="race-actions">
+          <button id="start-button" type="button" class="start-button">Start</button>
+          <p id="result" class="result" role="status" aria-live="polite"></p>
+        </div>
+
+        <ul id="errors" class="messages messages-error" role="alert"></ul>
+        <ul id="warnings" class="messages messages-warning" role="status"></ul>
+
+        <h2 class="stats-title">Session metrics</h2>
+        <p id="session-summary" class="session-summary"></p>
+        <table class="stats">
+          <thead>
+            <tr>
+              <th scope="col">Lane</th>
+              <th scope="col">Bug</th>
+              <th scope="col">Races</th>
+              <th scope="col">Wins</th>
+              <th scope="col">Losses</th>
+            </tr>
+          </thead>
+          <tbody id="stats-body"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      Animated with <code>requestAnimationFrame</code> — no libraries, no build step.
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
