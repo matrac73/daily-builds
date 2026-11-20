@@ -304,5 +304,20 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-19-border-radius-previewer",
         "demo":  null
+    },
+    {
+        "date":  "2026-11-20",
+        "title":  "Bug Race",
+        "tagline":  "Name four bugs, bet on a winner and watch them race — a no-build browser game in vanilla JavaScript.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "SVG",
+                      "Web Audio API",
+                      "node:test"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-20-bug-race-game",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-20-bug-race-game/"
     }
 ]
