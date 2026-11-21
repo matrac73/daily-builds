@@ -1,0 +1,11 @@
+{
+  "name": "elevator-app",
+  "version": "1.0.0",
+  "description": "A four-floor elevator simulator driven by a FIFO call queue.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}
