@@ -319,5 +319,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-20-bug-race-game",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-20-bug-race-game/"
+    },
+    {
+        "date":  "2026-11-21",
+        "title":  "Elevator",
+        "tagline":  "A four-floor elevator simulator for the browser, driven by a FIFO call queue and a fully tested state machine.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "Web Audio API",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-21-elevator-app",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-21-elevator-app/"
     }
 ]
