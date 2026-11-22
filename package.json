@@ -1,0 +1,15 @@
+{
+  "name": "quiz-app",
+  "version": "1.0.0",
+  "description": "A fast, no-build quiz app for testing web development knowledge.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
