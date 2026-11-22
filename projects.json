@@ -333,5 +333,19 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-21-elevator-app",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-21-elevator-app/"
+    },
+    {
+        "date":  "2026-11-22",
+        "title":  "Quiz App",
+        "tagline":  "A fast, no-build quiz app to test your JavaScript, HTML, CSS and Git knowledge against the clock.",
+        "stack":  [
+                      "JavaScript",
+                      "HTML",
+                      "CSS",
+                      "ES Modules",
+                      "Node.js test runner"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-22-quiz-app",
+        "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-22-quiz-app/"
     }
 ]

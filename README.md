@@ -8,6 +8,7 @@ Every morning a scheduled job hands an idea to [Claude Code](https://claude.com/
 
 | Date | Project | What it does | Stack | Demo |
 | --- | --- | --- | --- | --- |
+| 2026-11-22 | [**Quiz App**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-22-quiz-app) | A fast, no-build quiz app to test your JavaScript, HTML, CSS and Git knowledge against the clock. | JavaScript · HTML · CSS · ES Modules · Node.js test runner | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-22-quiz-app/) |
 | 2026-11-21 | [**Elevator**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-21-elevator-app) | A four-floor elevator simulator for the browser, driven by a FIFO call queue and a fully tested state machine. | JavaScript · HTML · CSS · Web Audio API · Node.js test runner | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-21-elevator-app/) |
 | 2026-11-20 | [**Bug Race**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-20-bug-race-game) | Name four bugs, bet on a winner and watch them race — a no-build browser game in vanilla JavaScript. | JavaScript · HTML · CSS · SVG · Web Audio API · node:test | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-20-bug-race-game/) |
 | 2026-11-19 | [**radius-preview — Border-radius Previewer**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-19-border-radius-previewer) | Preview any CSS border-radius in your terminal, tweak all 8 values and copy the resulting CSS to the clipboard. | Python · rich · pytest | — |
