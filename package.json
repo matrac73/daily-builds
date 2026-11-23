@@ -1,0 +1,16 @@
+{
+  "name": "first-db-app",
+  "version": "1.0.0",
+  "description": "A gentle, hands-on introduction to IndexedDB built with vanilla JavaScript and Web Components.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Mathieu Ract",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.8"
+  }
+}
