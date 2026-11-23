@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A gentle, hands-on introduction to IndexedDB: load, query and clear a customer database that lives in your browser." />
+    <meta name="color-scheme" content="light dark" />
+    <title>Your First DB App — IndexedDB playground</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗄️%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Your First DB App</h1>
+      <p>
+        A customer database that lives entirely in your browser, powered by
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a>.
+        Load it, query it, clear it — then reload the page and see that the data is still there.
+      </p>
+    </header>
+
+    <main class="layout">
+      <control-panel></control-panel>
+      <notification-panel></notification-panel>
+      <query-results></query-results>
+      <log-panel></log-panel>
+    </main>
+
+    <footer class="page-footer">
+      Sample data is fictional. Browser storage is not secure — never keep confidential or personal data in it.
+    </footer>
+
+    <noscript>This app needs JavaScript to talk to IndexedDB.</noscript>
+  </body>
+</html>
