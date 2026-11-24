@@ -1,0 +1,15 @@
+{
+  "name": "survey-app",
+  "version": "1.0.0",
+  "description": "Define multiple-choice surveys, collect one response per account, and publish tabulated results — entirely in the browser.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,17 @@
+# Dependencies (none are required, but tools like `npx serve` may create these)
+node_modules/
+npm-debug.log*
+
+# Test and coverage output
+coverage/
+*.lcov
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env
+.env.*
