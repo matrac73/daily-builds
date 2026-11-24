@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Define multiple-choice surveys, collect one response per account, and publish tabulated results — entirely in the browser." />
+    <title>Survey App</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="#/">Survey App</a>
+        <nav id="nav" aria-label="Account"></nav>
+      </div>
+    </header>
+
+    <main id="main" class="wrap">
+      <p class="empty">Loading surveys…</p>
+      <noscript><p class="error">Survey App needs JavaScript to run.</p></noscript>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          Everything — accounts, surveys and responses — is stored in this browser only.
+          Nothing is sent to a server.
+        </p>
+        <button type="button" id="reset">Reset sample data</button>
+      </div>
+    </footer>
+  </body>
+</html>
