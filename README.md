@@ -8,6 +8,7 @@ Every morning a scheduled job hands an idea to [Claude Code](https://claude.com/
 
 | Date | Project | What it does | Stack | Demo |
 | --- | --- | --- | --- | --- |
+| 2026-11-25 | [**Slack Archiver**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-25-slack-archiver) | Python CLI that incrementally archives Slack channels to SQLite, with export, search and a read-only JSON API. | Python · SQLite · Rich · pytest | — |
 | 2026-11-24 | [**Survey App**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-24-survey-app) | Define multiple-choice surveys, collect one response per account and publish tabulated results, all in the browser. | JavaScript · HTML · CSS · Web Crypto API · Node.js test runner | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-24-survey-app/) |
 | 2026-11-23 | [**Your First DB App**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-23-first-db-app) | A hands-on IndexedDB playground: load, query and clear an in-browser customer database with vanilla Web Components. | JavaScript · Web Components · IndexedDB · HTML · CSS · node:test | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-23-first-db-app/) |
 | 2026-11-22 | [**Quiz App**](https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-22-quiz-app) | A fast, no-build quiz app to test your JavaScript, HTML, CSS and Git knowledge against the clock. | JavaScript · HTML · CSS · ES Modules · Node.js test runner | [demo](https://matrac73.github.io/daily-builds/projects/2026-11-22-quiz-app/) |

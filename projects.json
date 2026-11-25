@@ -376,5 +376,18 @@
                   ],
         "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-24-survey-app",
         "demo":  "https://matrac73.github.io/daily-builds/projects/2026-11-24-survey-app/"
+    },
+    {
+        "date":  "2026-11-25",
+        "title":  "Slack Archiver",
+        "tagline":  "Python CLI that incrementally archives Slack channels to SQLite, with export, search and a read-only JSON API.",
+        "stack":  [
+                      "Python",
+                      "SQLite",
+                      "Rich",
+                      "pytest"
+                  ],
+        "code":  "https://github.com/matrac73/daily-builds/tree/main/projects/2026-11-25-slack-archiver",
+        "demo":  null
     }
 ]
