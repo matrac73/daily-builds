@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Convert JSON to CSV and back, entirely in your browser." />
+    <title>JSON2CSV — JSON to CSV converter</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>JSON<span class="accent">2</span>CSV</h1>
+      <p>Paste JSON, get a spreadsheet-ready CSV — and back. Nothing leaves your browser.</p>
+    </header>
+
+    <main>
+      <div class="toolbar">
+        <button type="button" class="primary" data-action="toCsv" title="Ctrl + Enter">
+          Convert JSON → CSV
+        </button>
+        <button type="button" data-action="toJson">Convert CSV → JSON</button>
+        <label class="inline-field">
+          Delimiter
+          <select id="delimiter">
+            <option value=",">Comma ( , )</option>
+            <option value=";">Semicolon ( ; )</option>
+            <option value="&#9;">Tab</option>
+          </select>
+        </label>
+        <span class="spacer"></span>
+        <button type="button" data-action="sample">Load sample</button>
+        <button type="button" class="danger" data-action="clear">Clear</button>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite" hidden></p>
+
+      <div class="workspace">
+        <section class="panel">
+          <div class="panel-header">
+            <label for="json-input">JSON</label>
+            <button type="button" data-action="open" data-format="json">Open…</button>
+            <button type="button" data-action="copy" data-format="json">Copy</button>
+          </div>
+          <textarea
+            id="json-input"
+            spellcheck="false"
+            placeholder='[{ "name": "Ada", "age": 36 }]'
+          ></textarea>
+          <div class="panel-footer">
+            <input id="json-name" type="text" value="data.json" aria-label="JSON file name" />
+            <button type="button" data-action="save" data-format="json">Save</button>
+          </div>
+          <input id="json-file" type="file" accept=".json,application/json,text/plain" hidden />
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <label for="csv-input">CSV</label>
+            <button type="button" data-action="open" data-format="csv">Open…</button>
+            <button type="button" data-action="copy" data-format="csv">Copy</button>
+          </div>
+          <textarea id="csv-input" spellcheck="false" placeholder="name,age&#10;Ada,36"></textarea>
+          <div class="panel-footer">
+            <input id="csv-name" type="text" value="data.csv" aria-label="CSV file name" />
+            <button type="button" data-action="save" data-format="csv">Save</button>
+          </div>
+          <input id="csv-file" type="file" accept=".csv,.tsv,text/csv,text/plain" hidden />
+        </section>
+      </div>
+
+      <section id="preview" class="preview" hidden>
+        <h2>Preview <small id="preview-summary"></small></h2>
+        <div class="table-scroll">
+          <table id="preview-table"></table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Flat objects only — nested JSON is not supported. Open source under the MIT license.
+    </footer>
+  </body>
+</html>
