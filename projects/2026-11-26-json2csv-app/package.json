@@ -1,0 +1,11 @@
+{
+  "name": "json2csv-app",
+  "version": "1.0.0",
+  "description": "Paste JSON, get CSV (and back) — a dependency-free converter that runs entirely in the browser.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}
