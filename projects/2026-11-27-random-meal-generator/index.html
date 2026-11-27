@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Out of dinner ideas? Get a random recipe with ingredients, step-by-step instructions, a picture and a video.">
+  <meta name="color-scheme" content="light dark">
+  <title>Random Meal Generator</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Random Meal Generator</p>
+      <h1>Feeling hungry?</h1>
+      <p class="lead">Stop scrolling for dinner ideas. One click, one recipe — ingredients, steps, a picture and a video to cook along.</p>
+      <button id="generate" type="button">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="label">Get a random meal</span>
+      </button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <article id="meal" class="meal" aria-live="polite" hidden></article>
+  </main>
+
+  <footer>
+    Recipes from <a href="https://www.themealdb.com" target="_blank" rel="noopener noreferrer">TheMealDB</a>.
+  </footer>
+</body>
+</html>
