@@ -1,0 +1,15 @@
+{
+  "name": "random-meal-generator",
+  "version": "1.0.0",
+  "description": "Get a random recipe with ingredients, instructions, a picture and a video, powered by TheMealDB.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
